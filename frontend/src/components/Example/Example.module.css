@@ -10,7 +10,7 @@
 
 .example {
     word-break: break-word;
-    background: #dbdbdb;
+    background: #dbdbdb84;
     border-radius: 8px;
     display: flex;
     flex-direction: column;

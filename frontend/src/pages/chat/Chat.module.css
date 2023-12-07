@@ -2,7 +2,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    margin-top: 20px;
+    margin-top: 100px;
 }
 
 .chatRoot {
@@ -26,6 +26,9 @@
     align-items: center;
     max-height: 1024px;
     padding-top: 60px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-bottom: 12px;
 }
 
 .chatEmptyStateTitle {
@@ -40,7 +43,33 @@
     margin-bottom: 10px;
 }
 
+@media only screen and (max-width: 980px) {
+    .chatAnalysisPanel {
+        flex: 1;
+        overflow-y: auto;
+        max-height: 74vh;
+        margin-left: 20px;
+        margin-right: 20px;
+        background-color: #fff;
+        border-radius: 12px;
+        color: #000;
+        padding: 20px;
+        margin-top: -4rem;
+        position: fixed;   /* Fixed position */
+        top: 50%;         /* Half the height of the viewport */
+        left: 50%;        /* Half the width of the viewport */
+        transform: translate(-52%, -46%); /* Shift the element back by its own half width and height */
+        width: 90%;
+        max-width: 1024px;
+        box-shadow: 1px 5px 15px black;
+       
+    }
+}
+
 @media only screen and (max-height: 780px) {
+
+    
+
     .chatEmptyState {
         padding-top: 0;
     }
@@ -53,21 +82,22 @@
 
 .chatMessageStream {
     flex-grow: 1;
-    max-height: 1024px;
+    /* max-height: 1024px; */
     max-width: 1028px;
     width: 100%;
-    overflow-y: auto;
+    /* overflow-y: auto; */
     padding-left: 24px;
     padding-right: 24px;
     display: flex;
     flex-direction: column;
+    margin-bottom: 8rem;
 }
 
 .chatMessageGpt {
     margin-bottom: 20px;
     max-width: 80%;
     display: flex;
-    min-width: 500px;
+    /* min-width: 500px; */
 }
 
 .chatMessageGptMinWidth {
@@ -84,8 +114,10 @@
     padding-left: 24px;
     padding-right: 24px;
     width: 100%;
-    max-width: 1028px;
-    background: #f2f2f2;
+    /* max-width: 1028px; */
+    background: #f2f2f2a9;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(40px);
 }
 
 .chatAnalysisPanel {
@@ -94,6 +126,13 @@
     max-height: 89vh;
     margin-left: 20px;
     margin-right: 20px;
+    background-color: #fff;
+    border-radius: 12px;
+    background-color: #cccccc3d;
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    padding: 20px;
+        
 }
 
 .chatSettingsSeparator {
@@ -112,4 +151,13 @@
 .commandButton {
     margin-right: 20px;
     margin-bottom: 20px;
+}
+
+/* New CSS */
+
+.myDIV{
+
+    height: 100%;
+    width: 100%;
+
 }

@@ -21,9 +21,9 @@ if (userLanguage.startsWith('pt')) {
 
 export const ClearChatButton = ({ className, disabled, onClick }: Props) => {
     return (
-        <div className={`${styles.container} ${className ?? ""} ${disabled && styles.disabled}`} onClick={onClick}>
+        <a className={`${styles.container} ${className ?? ""} ${disabled && styles.disabled}`} onClick={onClick}>
             <Delete24Regular />
             <Text>{reiniciar_text}</Text>
-        </div>
+        </a>
     );
 };
