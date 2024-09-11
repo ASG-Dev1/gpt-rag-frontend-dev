@@ -1,5 +1,6 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Stack, IconButton } from "@fluentui/react";
+import { Lightbulb, LightbulbFill } from 'react-bootstrap-icons';
 import DOMPurify from "dompurify";
 
 import styles from "./Answer.module.css";
@@ -7,6 +8,12 @@ import styles from "./Answer.module.css";
 import { AskResponse, getCitationFilePath } from "../../api";
 import { parseAnswerToHtml } from "./AnswerParser";
 import { AnswerIcon } from "./AnswerIcon";
+
+const [isHovered, setIsHovered] = useState(false);
+
+// const hovered = (bool: boolean) => {
+//     setIsHovered(bool)
+// }
 
 interface Props {
     answer: AskResponse;
@@ -21,12 +28,12 @@ interface Props {
 
 function truncateString(str: string, maxLength: number): string {
     if (str.length <= maxLength) {
-      return str;
+        return str;
     }
     const startLength = Math.ceil((maxLength - 3) / 2);
     const endLength = Math.floor((maxLength - 3) / 2);
     return str.substring(0, startLength) + "..." + str.substring(str.length - endLength);
-  }
+}
 
 export const Answer = ({
     answer,
@@ -49,13 +56,20 @@ export const Answer = ({
                     <AnswerIcon />
                     <div>
                         <IconButton
-                            style={{ color: "black" }}
-                            iconProps={{ iconName: "Lightbulb" }}
                             title="Show thought process"
                             ariaLabel="Show thought process"
                             onClick={() => onThoughtProcessClicked()}
                             disabled={!answer.thoughts}
-                        />
+                            onMouseEnter={() => setIsHovered(true)}
+                            onMouseLeave={() => setIsHovered(false)}
+                            styles={{
+                                root: { // Apply styles directly to the root or button element
+                                    color: isHovered ? '#ffbf00' : 'red',
+                                },
+                            }}
+                        >
+                            {isHovered ? <LightbulbFill /> : <Lightbulb />}
+                        </IconButton>
                         {/* <IconButton
                             style={{ color: "black" }}
                             iconProps={{ iconName: "ClipboardList" }}
@@ -76,7 +90,7 @@ export const Answer = ({
                 <Stack.Item>
                     <Stack horizontal wrap tokens={{ childrenGap: 5 }}>
                         <span className={styles.citationLearnMore}>Fuentes:</span>
-                       
+
                         {parsedAnswer.citations.map((x, i) => {
                             console.log(parsedAnswer.citations);
                             const path = getCitationFilePath(x);

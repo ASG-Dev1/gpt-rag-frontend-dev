@@ -1,0 +1,38 @@
+.btnText{
+  color:white !important;
+}
+
+.buttonStructure {
+     border-radius: 1.875rem !important;
+     background-image: linear-gradient(to bottom right, #47396a, #6b509e, #d19bd6 ) !important;
+     color: white;
+   }
+   
+   .buttonStructure:hover {
+     background-image: linear-gradient(to top left, #47396a, #6b509e, #d19bd6 ) !important;
+   }
+
+   .faqOptions {
+    word-break: break-word;
+    background: linear-gradient(to right, #F9E4F0, #CAE5FF);
+    transition: background-color 0.3s ease;
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    color:black;
+   }
+
+   .faqOptions:hover {
+    background: linear-gradient(to left, #F9E4F0, #CAE5FF);
+    transition: background-color 0.3s ease;
+   }
+
+.commandBtn{
+    width: 2rem;
+    height: 1rem;
+    color:white;
+   }

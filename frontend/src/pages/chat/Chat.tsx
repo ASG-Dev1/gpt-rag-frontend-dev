@@ -3,6 +3,7 @@ import { Checkbox, Panel, DefaultButton, TextField, SpinButton } from "@fluentui
 import { SparkleFilled } from "@fluentui/react-icons";
 
 import styles from "./Chat.module.css";
+import btnStyles from '../../components/Common/Button.module.css'
 
 import { chatApiGpt, Approaches, AskResponse, ChatRequest, ChatRequestGpt, ChatTurn } from "../../api";
 import { Answer, AnswerError, AnswerLoading } from "../../components/Answer";
@@ -193,8 +194,8 @@ const Chat = () => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.commandsContainer}>
-                <ClearChatButton className={styles.commandButton} onClick={clearChat} disabled={!lastQuestionRef.current || isLoading} />
+            <div className={`${styles.commandsContainer} ${btnStyles.buttonStructure}`}>
+                <ClearChatButton className={btnStyles.commandButton} onClick={clearChat} disabled={!lastQuestionRef.current || isLoading} />
             </div>
             <div className={styles.chatRoot}>
                 <div className={styles.chatContainer}>

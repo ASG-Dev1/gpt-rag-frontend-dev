@@ -3,10 +3,9 @@
     align-items: center;
     gap: 6px;
     cursor: pointer;
-    background-color: #ff7500;
     border-radius: 29px;
     padding: 11px;
-    color: black;
+    color:white;
 }
 
 .disabled {

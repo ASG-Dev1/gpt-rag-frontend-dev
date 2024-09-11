@@ -146,11 +146,7 @@
 .commandsContainer {
     display: flex;
     align-self: flex-end;
-}
-
-.commandButton {
-    margin-right: 20px;
-    margin-bottom: 20px;
+    margin-right: 3.125rem !important;
 }
 
 /* New CSS */

@@ -1,4 +1,5 @@
 import styles from "./Example.module.css";
+import btnStyles from '../../components/Common/Button.module.css'
 
 interface Props {
     text: string;
@@ -8,7 +9,7 @@ interface Props {
 
 export const Example = ({ text, value, onClick }: Props) => {
     return (
-        <div className={styles.example} onClick={() => onClick(value)}>
+        <div className={btnStyles.faqOptions} onClick={() => onClick(value)}>
             <p className={styles.exampleText}>{text}</p>
         </div>
     );
