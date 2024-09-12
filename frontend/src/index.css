@@ -20,7 +20,7 @@ html {
         linear-gradient(to bottom left, #907ecf, #af71d0 10%, #c26cd1 10%),
         linear-gradient(to top right, #c26cd1 20%, #ab79cf 20%, #8a8dc9 20%);
     background-size: 200% 400%;
-    animation: waveAnimation 20s ease-in-out infinite;
+    animation: waveAnimation 15s ease-in-out infinite;
     background-position: center;
     color: white;
     box-shadow:
@@ -33,7 +33,7 @@ html {
 
 @keyframes waveAnimation {
     0% {
-        background-position: 0% 0%;
+        background-position: 0% 50%;
     }
 
     50% {
