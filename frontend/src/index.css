@@ -48,3 +48,14 @@ html {
 #root {
     height: 100%;
 }
+
+/* This is to hide the scrollbar */
+*::-webkit-scrollbar {
+    display: none;
+}
+
+/* Disable scrollbar for all elements */
+* {
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none; /* For Internet Explorer and Edge */
+}

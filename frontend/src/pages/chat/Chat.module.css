@@ -123,16 +123,18 @@
 .chatAnalysisPanel {
     flex: 1;
     overflow-y: auto;
-    max-height: 89vh;
+    max-height: 87vh;
     margin-left: 20px;
     margin-right: 20px;
     background-color: #fff;
     border-radius: 12px;
-    background-color: #cccccc3d;
+    background-color: #cccccc5e;
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
     padding: 20px;
-        
+    position:sticky;
+    top: 6.25rem;
+    color:black;
 }
 
 .chatSettingsSeparator {
@@ -147,6 +149,7 @@
     display: flex;
     align-self: flex-end;
     margin-right: 3.125rem !important;
+    margin-bottom: 1.50rem;
 }
 
 /* New CSS */
