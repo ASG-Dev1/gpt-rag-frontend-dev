@@ -11,7 +11,7 @@ const Layout = () => {
         <div className={styles.layout}>
             <header className={styles.header} role={"banner"}>
                 <div className={styles.headerContainer}>
-                <button className={`${btnStyles.buttonStructure} ${btnStyles.commandBtn}`} > {/*onClick={toggleChatHistory}*/}
+                <button className={`${btnStyles.buttonStructure} ${btnStyles.commandBtn} ${btnStyles.btn}`} > {/*onClick={toggleChatHistory}*/}
                         <BiShowAlt size='1.5625rem' /> Historial
                     </button>
                     <Link to="/" className={styles.headerTitleContainer}>

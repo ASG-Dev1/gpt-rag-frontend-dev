@@ -194,9 +194,9 @@ const Chat = () => {
 
     return (
         <div className={styles.container}>
-            <div className={`${styles.commandsContainer} ${btnStyles.buttonStructure}`}>
+            {/* <div className={`${styles.commandsContainer} ${btnStyles.buttonStructure}`}>
                 <ClearChatButton className={btnStyles.commandButton} onClick={clearChat} disabled={!lastQuestionRef.current || isLoading} />
-            </div>
+            </div> */}
             <div className={styles.chatRoot}>
                 <div className={styles.chatContainer}>
                     {!lastQuestionRef.current ? (
@@ -251,6 +251,8 @@ const Chat = () => {
                     )}
 
                     <div className={styles.chatInput}>
+                    <ClearChatButton className={`${btnStyles.buttonStructure} ${btnStyles.deleteConversationBtn}`} 
+                        onClick={clearChat} disabled={!lastQuestionRef.current || isLoading} />
                         <QuestionInput
                             clearOnSend
                             placeholder={placeholderText}

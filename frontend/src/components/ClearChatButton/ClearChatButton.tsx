@@ -24,7 +24,7 @@ export const ClearChatButton = ({ className, disabled, onClick }: Props) => {
     return (
         <a className={`${styles.container} ${className ?? ""} ${disabled && styles.disabled}`} onClick={onClick}>
             <Delete24Regular />
-            <Text className={btnStyles.btnText}>{reiniciar_text}</Text>
+            {/* <Text className={btnStyles.btnText}>{reiniciar_text}</Text> */}
         </a>
     );
 };
