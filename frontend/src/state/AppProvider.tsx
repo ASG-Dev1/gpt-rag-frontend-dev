@@ -48,7 +48,7 @@ export type Action =
 
   
 const initialState: AppState = {
-  isChatHistoryOpen: false,
+  isChatHistoryOpen: true, //Joshua Prueba true
   chatHistoryLoadingState: ChatHistoryLoadingState.Loading,
   chatHistory: null,
   filteredChatHistory: null,

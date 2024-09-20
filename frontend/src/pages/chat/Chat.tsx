@@ -1,11 +1,11 @@
-import { useRef, useState, useEffect } from "react";
-import { Checkbox, Panel, DefaultButton, TextField, SpinButton } from "@fluentui/react";
+import { useRef, useState, useEffect, useContext } from "react";
+import { Checkbox, Panel, DefaultButton, TextField, SpinButton, Stack } from "@fluentui/react";
 import { SparkleFilled } from "@fluentui/react-icons";
 
 import styles from "./Chat.module.css";
 import btnStyles from '../../components/Common/Button.module.css'
 
-import { chatApiGpt, Approaches, AskResponse, ChatRequest, ChatRequestGpt, ChatTurn } from "../../api";
+import { chatApiGpt, Approaches, AskResponse, ChatRequest, ChatRequestGpt, ChatTurn, CosmosDBStatus } from "../../api";
 import { Answer, AnswerError, AnswerLoading } from "../../components/Answer";
 import { QuestionInput } from "../../components/QuestionInput";
 import { ExampleList } from "../../components/Example";
@@ -14,6 +14,8 @@ import { AnalysisPanel, AnalysisPanelTabs } from "../../components/AnalysisPanel
 import { ClearChatButton } from "../../components/ClearChatButton";
 import { getTokenOrRefresh } from '../../components/QuestionInput/token_util';
 import { SpeechConfig, AudioConfig, SpeechSynthesizer, ResultReason } from 'microsoft-cognitiveservices-speech-sdk';
+import { AppStateContext } from "../../state/AppProvider";
+import { ChatHistoryPanel } from "../../components/ChatHistory/ChatHistoryPanel";
 
 const userLanguage = navigator.language;
 let error_message_text = '';
@@ -28,6 +30,9 @@ if (userLanguage.startsWith('pt')) {
 const Chat = () => {
     // speech synthesis is disabled by default
     const speechSynthesisEnabled = false;
+
+    // Joshua Prueba
+    const appStateContext = useContext(AppStateContext)
 
     const [placeholderText, setPlaceholderText] = useState('');
     const [isConfigPanelOpen, setIsConfigPanelOpen] = useState(false);
@@ -141,6 +146,11 @@ const Chat = () => {
         }
     }, [isLoading]);
 
+    // Joshua Prueba
+    useEffect(() => {
+        console.log("Chat history open status:", appStateContext?.state.isChatHistoryOpen);
+    }, [appStateContext?.state.isChatHistoryOpen]);
+
     const onPromptTemplateChange = (_ev?: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
         setPromptTemplate(newValue || "");
     };
@@ -193,138 +203,141 @@ const Chat = () => {
 
 
     return (
-    <>
-        <section>
-        {appStateContext?.state.isChatHistoryOpen &&
-            appStateContext?.state.isCosmosDBAvailable?.status !== CosmosDBStatus.NotConfigured && <ChatHistoryPanel />}
-        </section>
-        <div className={styles.container}>
-            <div className={styles.chatRoot}>
-                <div className={styles.chatContainer}>
-                    {!lastQuestionRef.current ? (
-                        <div className={styles.chatEmptyState}>
-                            {
-                                <img height="120px" src="https://asgwebpageprodstorage.blob.core.windows.net/static/assets/images/Blue%20White%20Robot%20Technology%20Logo.png"></img>
-                            /* <SparkleFilled fontSize={"120px"} primaryFill={"rgba(115, 118, 225, 1)"} aria-hidden="true" aria-label="Chat logo" /> */}
-                            <h1 className={styles.chatEmptyStateTitle}>¡Adquisiciones en un click!</h1>
-                            <h2 className={styles.chatEmptyStateSubtitle}>Haz cualquier pregunta o utiliza uno de los siguientes ejemplos</h2>
-                            <ExampleList onExampleClicked={onExampleClicked} />
-                            {/*<SparkleFilled fontSize={"120px"} primaryFill={"rgba(115, 118, 225, 1)"} aria-hidden="true" aria-label="Chat logo" />
-                            <h1 className={styles.chatEmptyStateTitle}>Conversación con datos</h1>*/}
-                        </div>
-                    ) : (
-                        <div className={styles.chatMessageStream}>
-                            {answers.map((answer, index) => (
-                                <div key={index}>
-                                    <UserChatMessage message={answer[0]} />
-                                    <div className={styles.chatMessageGpt}>
-                                        <Answer
-                                            key={index}
-                                            answer={answer[1]}
-                                            isSelected={selectedAnswer === index && activeAnalysisPanelTab !== undefined}
-                                            onCitationClicked={c => onShowCitation(c, index)}
-                                            onThoughtProcessClicked={() => onToggleTab(AnalysisPanelTabs.ThoughtProcessTab, index)}
-                                            onSupportingContentClicked={() => onToggleTab(AnalysisPanelTabs.SupportingContentTab, index)}
-                                            onFollowupQuestionClicked={q => makeApiRequestGpt(q)}
-                                            showFollowupQuestions={false}
-                                            showSources={true}
-                                        />
+        <>
+
+            <div className={styles.container}>
+                <div className={styles.chatRoot}>
+                    <div className={styles.chatContainer}>
+                        
+                                {!lastQuestionRef.current ? (
+                                    <div className={styles.chatEmptyState}>
+                                        {
+                                            <img height="120px" src="https://asgwebpageprodstorage.blob.core.windows.net/static/assets/images/Blue%20White%20Robot%20Technology%20Logo.png"></img>
+                                    /* <SparkleFilled fontSize={"120px"} primaryFill={"rgba(115, 118, 225, 1)"} aria-hidden="true" aria-label="Chat logo" /> */}
+                                        <h1 className={styles.chatEmptyStateTitle}>¡Adquisiciones en un click!</h1>
+                                        <h2 className={styles.chatEmptyStateSubtitle}>Haz cualquier pregunta o utiliza uno de los siguientes ejemplos</h2>
+                                        <ExampleList onExampleClicked={onExampleClicked} />
+                                        {/*<SparkleFilled fontSize={"120px"} primaryFill={"rgba(115, 118, 225, 1)"} aria-hidden="true" aria-label="Chat logo" />
+                                <h1 className={styles.chatEmptyStateTitle}>Conversación con datos</h1>*/}
                                     </div>
+                                ) : (
+                                    <div className={styles.chatMessageStream}>
+                                        {answers.map((answer, index) => (
+                                            <div key={index}>
+                                                <UserChatMessage message={answer[0]} />
+                                                <div className={styles.chatMessageGpt}>
+                                                    <Answer
+                                                        key={index}
+                                                        answer={answer[1]}
+                                                        isSelected={selectedAnswer === index && activeAnalysisPanelTab !== undefined}
+                                                        onCitationClicked={c => onShowCitation(c, index)}
+                                                        onThoughtProcessClicked={() => onToggleTab(AnalysisPanelTabs.ThoughtProcessTab, index)}
+                                                        onSupportingContentClicked={() => onToggleTab(AnalysisPanelTabs.SupportingContentTab, index)}
+                                                        onFollowupQuestionClicked={q => makeApiRequestGpt(q)}
+                                                        showFollowupQuestions={false}
+                                                        showSources={true}
+                                                    />
+                                                </div>
+                                            </div>
+                                        ))}
+                                        {isLoading && (
+                                            <>
+                                                <UserChatMessage message={lastQuestionRef.current} />
+                                                <div className={styles.chatMessageGptMinWidth}>
+                                                    <AnswerLoading />
+                                                </div>
+                                            </>
+                                        )}
+                                        {error ? (
+                                            <>
+                                                <UserChatMessage message={lastQuestionRef.current} />
+                                                <div className={styles.chatMessageGptMinWidth}>
+                                                    <AnswerError error={error_message_text + error.toString()} onRetry={() => makeApiRequestGpt(lastQuestionRef.current)} />
+                                                </div>
+                                            </>
+                                        ) : null}
+                                        <div ref={chatMessageStreamEnd} />
+                                    </div>
+                                )}
+
+                                <div className={styles.chatInput}>
+                                    <ClearChatButton className={`${btnStyles.buttonStructure} ${btnStyles.deleteConversationBtn}`}
+                                        onClick={clearChat} disabled={!lastQuestionRef.current || isLoading} />
+                                    <QuestionInput
+                                        clearOnSend
+                                        placeholder={placeholderText}
+                                        disabled={isLoading}
+                                        onSend={question => makeApiRequestGpt(question)}
+                                    />
                                 </div>
-                            ))}
-                            {isLoading && (
-                                <>
-                                    <UserChatMessage message={lastQuestionRef.current} />
-                                    <div className={styles.chatMessageGptMinWidth}>
-                                        <AnswerLoading />
-                                    </div>
-                                </>
+                            </div>
+
+                            {answers.length > 0 && activeAnalysisPanelTab && (
+                                <AnalysisPanel
+                                    className={styles.chatAnalysisPanel}
+                                    activeCitation={activeCitation}
+                                    onActiveTabChanged={x => onToggleTab(x, selectedAnswer)}
+                                    citationHeight="720px"
+                                    answer={answers[selectedAnswer][1]}
+                                    activeTab={activeAnalysisPanelTab}
+                                />
                             )}
-                            {error ? (
-                                <>
-                                    <UserChatMessage message={lastQuestionRef.current} />
-                                    <div className={styles.chatMessageGptMinWidth}>
-                                        <AnswerError error={error_message_text + error.toString()} onRetry={() => makeApiRequestGpt(lastQuestionRef.current)} />
-                                    </div>
-                                </>
-                            ) : null}
-                            <div ref={chatMessageStreamEnd} />
-                        </div>
-                    )}
 
-                    <div className={styles.chatInput}>
-                        <ClearChatButton className={`${btnStyles.buttonStructure} ${btnStyles.deleteConversationBtn}`}
-                            onClick={clearChat} disabled={!lastQuestionRef.current || isLoading} />
-                        <QuestionInput
-                            clearOnSend
-                            placeholder={placeholderText}
-                            disabled={isLoading}
-                            onSend={question => makeApiRequestGpt(question)}
-                        />
-                    </div>
+                            <Panel
+                                headerText="Configure answer generation"
+                                isOpen={isConfigPanelOpen}
+                                isBlocking={false}
+                                onDismiss={() => setIsConfigPanelOpen(false)}
+                                closeButtonAriaLabel="Close"
+                                onRenderFooterContent={() => <DefaultButton onClick={() => setIsConfigPanelOpen(false)}>Close</DefaultButton>}
+                                isFooterAtBottom={true}
+                            >
+                                <TextField
+                                    className={styles.chatSettingsSeparator}
+                                    defaultValue={promptTemplate}
+                                    label="Override prompt template"
+                                    multiline
+                                    autoAdjustHeight
+                                    onChange={onPromptTemplateChange}
+                                />
+
+                                <SpinButton
+                                    className={styles.chatSettingsSeparator}
+                                    label="Retrieve this many documents from search:"
+                                    min={1}
+                                    max={50}
+                                    defaultValue={retrieveCount.toString()}
+                                    onChange={onRetrieveCountChange}
+                                />
+                                <TextField className={styles.chatSettingsSeparator} label="Exclude category" onChange={onExcludeCategoryChanged} />
+                                <Checkbox
+                                    className={styles.chatSettingsSeparator}
+                                    checked={useSemanticRanker}
+                                    label="Use semantic ranker for retrieval"
+                                    onChange={onUseSemanticRankerChange}
+                                />
+                                <Checkbox
+                                    className={styles.chatSettingsSeparator}
+                                    checked={useSemanticCaptions}
+                                    label="Use query-contextual summaries instead of whole documents"
+                                    onChange={onUseSemanticCaptionsChange}
+                                    disabled={!useSemanticRanker}
+                                />
+                                <Checkbox
+                                    className={styles.chatSettingsSeparator}
+                                    checked={useSuggestFollowupQuestions}
+                                    label="Suggest follow-up questions"
+                                    onChange={onUseSuggestFollowupQuestionsChange}
+                                />
+                            </Panel>
+                        <Stack horizontal horizontalAlign="center">
+                            {appStateContext?.state.isChatHistoryOpen &&
+                                appStateContext?.state.isCosmosDBAvailable?.status !== CosmosDBStatus.NotConfigured && <ChatHistoryPanel />}
+                        </Stack>
                 </div>
-
-                {answers.length > 0 && activeAnalysisPanelTab && (
-                    <AnalysisPanel
-                        className={styles.chatAnalysisPanel}
-                        activeCitation={activeCitation}
-                        onActiveTabChanged={x => onToggleTab(x, selectedAnswer)}
-                        citationHeight="720px"
-                        answer={answers[selectedAnswer][1]}
-                        activeTab={activeAnalysisPanelTab}
-                    />
-                )}
-
-                <Panel
-                    headerText="Configure answer generation"
-                    isOpen={isConfigPanelOpen}
-                    isBlocking={false}
-                    onDismiss={() => setIsConfigPanelOpen(false)}
-                    closeButtonAriaLabel="Close"
-                    onRenderFooterContent={() => <DefaultButton onClick={() => setIsConfigPanelOpen(false)}>Close</DefaultButton>}
-                    isFooterAtBottom={true}
-                >
-                    <TextField
-                        className={styles.chatSettingsSeparator}
-                        defaultValue={promptTemplate}
-                        label="Override prompt template"
-                        multiline
-                        autoAdjustHeight
-                        onChange={onPromptTemplateChange}
-                    />
-
-                    <SpinButton
-                        className={styles.chatSettingsSeparator}
-                        label="Retrieve this many documents from search:"
-                        min={1}
-                        max={50}
-                        defaultValue={retrieveCount.toString()}
-                        onChange={onRetrieveCountChange}
-                    />
-                    <TextField className={styles.chatSettingsSeparator} label="Exclude category" onChange={onExcludeCategoryChanged} />
-                    <Checkbox
-                        className={styles.chatSettingsSeparator}
-                        checked={useSemanticRanker}
-                        label="Use semantic ranker for retrieval"
-                        onChange={onUseSemanticRankerChange}
-                    />
-                    <Checkbox
-                        className={styles.chatSettingsSeparator}
-                        checked={useSemanticCaptions}
-                        label="Use query-contextual summaries instead of whole documents"
-                        onChange={onUseSemanticCaptionsChange}
-                        disabled={!useSemanticRanker}
-                    />
-                    <Checkbox
-                        className={styles.chatSettingsSeparator}
-                        checked={useSuggestFollowupQuestions}
-                        label="Suggest follow-up questions"
-                        onChange={onUseSuggestFollowupQuestionsChange}
-                    />
-                </Panel>
             </div>
-        </div>
-    </>
+
+        </>
     );
 };
 

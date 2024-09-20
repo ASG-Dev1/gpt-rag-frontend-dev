@@ -1,0 +1,81 @@
+.container {
+  max-height: calc(100vh - 100px);
+  width: 300px;
+  color:black;
+}
+
+.listContainer {
+  overflow: hidden auto;
+  max-height: calc(90vh - 105px);
+}
+
+.itemCell {
+  max-width: 270px;
+  min-height: 32px;
+  cursor: pointer;
+  padding-left: 15px;
+  padding-right: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  box-sizing: border-box;
+  border-radius: 5px;
+  display: flex;
+}
+
+.itemCell:hover {
+  background: #9ac4e3;
+}
+
+.itemButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 5px;
+  margin: auto 2.5px;
+  cursor: pointer;
+  color:white;
+}
+
+.itemButton:hover {
+  color: white
+}
+
+.chatGroup {
+  margin: auto 5px;
+  width: 100%;
+}
+
+.spinnerContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+}
+
+.chatList {
+  width: 100%;
+}
+
+.chatMonth {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  padding-left: 15px;
+  color:black;
+}
+
+.chatTitle {
+  width: 80%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color:rgb(0, 0, 0) !important;
+}
+
+@media (max-width: 480px) {
+  .container {
+    width: 100%;
+  }
+}
