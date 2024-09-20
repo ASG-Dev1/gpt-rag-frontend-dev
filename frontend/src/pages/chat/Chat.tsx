@@ -63,7 +63,7 @@ const Chat = () => {
         setActiveCitation(undefined);
         setActiveAnalysisPanelTab(undefined);
 
-       try {
+        try {
             const history: ChatTurn[] = answers.map(a => ({ user: a[0], bot: a[1].answer }));
             const request: ChatRequestGpt = {
                 history: [...history, { user: question, bot: undefined }],
@@ -133,12 +133,12 @@ const Chat = () => {
         }
         const language = navigator.language;
         if (language.startsWith('pt')) {
-          setPlaceholderText('Escreva aqui sua pergunta');
-        }if (language.startsWith('es')) {
-          setPlaceholderText('Escribe tu pregunta aqui');
+            setPlaceholderText('Escreva aqui sua pergunta');
+        } if (language.startsWith('es')) {
+            setPlaceholderText('Escribe tu pregunta aqui');
         } else {
-          setPlaceholderText('Write your question here');
-        }        
+            setPlaceholderText('Write your question here');
+        }
     }, [isLoading]);
 
     const onPromptTemplateChange = (_ev?: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
@@ -170,7 +170,7 @@ const Chat = () => {
     };
 
     const onShowCitation = (citation: string, index: number) => {
-        
+
         if (activeCitation === citation && activeAnalysisPanelTab === AnalysisPanelTabs.CitationTab && selectedAnswer === index) {
             setActiveAnalysisPanelTab(undefined);
         } else {
@@ -193,16 +193,18 @@ const Chat = () => {
 
 
     return (
+    <>
+        <section>
+        {appStateContext?.state.isChatHistoryOpen &&
+            appStateContext?.state.isCosmosDBAvailable?.status !== CosmosDBStatus.NotConfigured && <ChatHistoryPanel />}
+        </section>
         <div className={styles.container}>
-            {/* <div className={`${styles.commandsContainer} ${btnStyles.buttonStructure}`}>
-                <ClearChatButton className={btnStyles.commandButton} onClick={clearChat} disabled={!lastQuestionRef.current || isLoading} />
-            </div> */}
             <div className={styles.chatRoot}>
                 <div className={styles.chatContainer}>
                     {!lastQuestionRef.current ? (
                         <div className={styles.chatEmptyState}>
                             {
-                            <img height="120px" src="https://asgwebpageprodstorage.blob.core.windows.net/static/assets/images/Blue%20White%20Robot%20Technology%20Logo.png"></img>
+                                <img height="120px" src="https://asgwebpageprodstorage.blob.core.windows.net/static/assets/images/Blue%20White%20Robot%20Technology%20Logo.png"></img>
                             /* <SparkleFilled fontSize={"120px"} primaryFill={"rgba(115, 118, 225, 1)"} aria-hidden="true" aria-label="Chat logo" /> */}
                             <h1 className={styles.chatEmptyStateTitle}>¡Adquisiciones en un click!</h1>
                             <h2 className={styles.chatEmptyStateSubtitle}>Haz cualquier pregunta o utiliza uno de los siguientes ejemplos</h2>
@@ -225,7 +227,7 @@ const Chat = () => {
                                             onSupportingContentClicked={() => onToggleTab(AnalysisPanelTabs.SupportingContentTab, index)}
                                             onFollowupQuestionClicked={q => makeApiRequestGpt(q)}
                                             showFollowupQuestions={false}
-                                            showSources={true}                                            
+                                            showSources={true}
                                         />
                                     </div>
                                 </div>
@@ -251,8 +253,8 @@ const Chat = () => {
                     )}
 
                     <div className={styles.chatInput}>
-                    <ClearChatButton className={`${btnStyles.buttonStructure} ${btnStyles.deleteConversationBtn}`} 
-                        onClick={clearChat} disabled={!lastQuestionRef.current || isLoading} />
+                        <ClearChatButton className={`${btnStyles.buttonStructure} ${btnStyles.deleteConversationBtn}`}
+                            onClick={clearChat} disabled={!lastQuestionRef.current || isLoading} />
                         <QuestionInput
                             clearOnSend
                             placeholder={placeholderText}
@@ -261,7 +263,7 @@ const Chat = () => {
                         />
                     </div>
                 </div>
-                          
+
                 {answers.length > 0 && activeAnalysisPanelTab && (
                     <AnalysisPanel
                         className={styles.chatAnalysisPanel}
@@ -322,6 +324,7 @@ const Chat = () => {
                 </Panel>
             </div>
         </div>
+    </>
     );
 };
 
