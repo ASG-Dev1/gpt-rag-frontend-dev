@@ -92,7 +92,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
             >
                 <div className={styles.thoughtProcess} >
                     
-                    <div style={{whiteSpace:'pre-wrap'}} >{Items1.data_points} </div>
+                    <div style={{whiteSpace:'pre-wrap'}}>{Items1.data_points} </div>
 
                 </div>
             </PivotItem>
