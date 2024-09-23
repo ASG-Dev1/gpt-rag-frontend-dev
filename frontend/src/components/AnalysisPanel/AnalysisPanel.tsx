@@ -7,6 +7,10 @@ import styles from "./AnalysisPanel.module.css";
 import { AskResponse } from "../../api";
 import { AnalysisPanelTabs } from "./AnalysisPanelTabs";
 
+//Cat Test - added 2 imports
+import PdfModal from '../PdfModal/PdfModal'
+import {useState} from 'react'
+
 interface Props {
     className: string;
     activeTab: AnalysisPanelTabs;
@@ -18,6 +22,9 @@ interface Props {
 
 const pivotItemDisabledStyle = { disabled: true, style: { color: "grey" } };
 
+//Cat Test - added 2 const for pdf modal
+const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
+const [pdfUrl, setPdfUrl] = useState("");
 
 
 export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeight, className, onActiveTabChanged }: Props) => {
@@ -65,6 +72,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
 
     console.log(Items1.data_points);
     return (
+        <div>
         <Pivot
             className={className}
             selectedKey={activeTab}
@@ -101,16 +109,28 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                 headerText="Citation"
                 headerButtonProps={isDisabledCitationTab ? pivotItemDisabledStyle : undefined}
                 
+                // Cat Test - added Onclick
+                onClick={() =>{
+                    setPdfUrl(activeCitation || "");
+                    setIsPdfModalOpen(true);
+                }}
+
             >
                 
-                <iframe title="Citation" src={iframeSrc} width="100%" height={citationHeight}/>
+                {/* Cat Test - I commented the Iframe below to see if I can open the Citation by Modal instead of by NavTab  */}
+                {/* <iframe title="Citation" src={iframeSrc} width="100%" height={citationHeight}/> */}
 
-                {/* <iframe title="Citation" src={activeCitation} width="100%" height={citationHeight} /> */}
             </PivotItem>
-
-            
-           
         </Pivot>
+
+{/* Cat Test- Added PdfModal Component */}
+<PdfModal
+    isOpen={isPdfModalOpen}
+    closeModal={() => setIsPdfModalOpen(false)}
+    data={{ name: "PDF Title", url: pdfUrl }}  // Ensure pdfUrl is passed correctly
+/>
+</div>
+
     );
 };
 
