@@ -5,7 +5,7 @@ import { SparkleFilled } from "@fluentui/react-icons";
 import styles from "./Chat.module.css";
 import btnStyles from '../../components/Common/Button.module.css'
 
-import { chatApiGpt, Approaches, AskResponse, ChatRequest, ChatRequestGpt, ChatTurn, CosmosDBStatus, getCitationFilePath } from "../../api";
+import { chatApiGpt, Approaches, AskResponse, ChatRequest, ChatRequestGpt, ChatTurn, CosmosDBStatus } from "../../api";
 import { Answer, AnswerError, AnswerLoading } from "../../components/Answer";
 import { QuestionInput } from "../../components/QuestionInput";
 import { ExampleList } from "../../components/Example";
@@ -16,8 +16,6 @@ import { getTokenOrRefresh } from '../../components/QuestionInput/token_util';
 import { SpeechConfig, AudioConfig, SpeechSynthesizer, ResultReason } from 'microsoft-cognitiveservices-speech-sdk';
 import { AppStateContext } from "../../state/AppProvider";
 import { ChatHistoryPanel } from "../../components/ChatHistory/ChatHistoryPanel";
-// Cat Test - Import PdfModal
-import PdfModal from '../../components/PdfModal/PdfModal'
 
 const userLanguage = navigator.language;
 let error_message_text = '';
@@ -183,35 +181,15 @@ const Chat = () => {
 
     const onShowCitation = (citation: string, index: number) => {
 
-        setActiveCitation(citation);
-        setActiveAnalysisPanelTab(undefined);
-
-        setPdfUrl(getCitationFilePath(citation));
-        setIsPdfModalOpen(true);
+        if (activeCitation === citation && activeAnalysisPanelTab === AnalysisPanelTabs.CitationTab && selectedAnswer === index) {
+            setActiveAnalysisPanelTab(undefined);
+        } else {
+            setActiveCitation(citation);
+            setActiveAnalysisPanelTab(AnalysisPanelTabs.CitationTab);
+        }
 
         setSelectedAnswer(index);
-
-// Cat Test - Commented the below to test the above
-        // if (activeCitation === citation && activeAnalysisPanelTab === AnalysisPanelTabs.CitationTab && selectedAnswer === index) {
-        //     setActiveAnalysisPanelTab(undefined);
-        // } else {
-        //     setActiveCitation(citation);
-        //     setActiveAnalysisPanelTab(AnalysisPanelTabs.CitationTab);
-        // }
-
-        // setSelectedAnswer(index);
     };
-
-    // Cat Test = Added 3 const
-    const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
-    const [pdfUrl, setPdfUrl] = useState("");
-    const onCitationClicked = (citation: string) => {
-        setPdfUrl(getCitationFilePath(citation));  // Set the PDF URL for the modal
-        setIsPdfModalOpen(true);  // Open the modal
-    };
-    
-
-    
 
     const onToggleTab = (tab: AnalysisPanelTabs, index: number) => {
         if (activeAnalysisPanelTab === tab && selectedAnswer === index) {
@@ -302,8 +280,6 @@ const Chat = () => {
                                     citationHeight="720px"
                                     answer={answers[selectedAnswer][1]}
                                     activeTab={activeAnalysisPanelTab}
-                                    // Cat Test 
-                                    onCitationClicked={onCitationClicked}
                                 />
                             )}
 
@@ -358,12 +334,6 @@ const Chat = () => {
                             {appStateContext?.state.isChatHistoryOpen &&
                                 appStateContext?.state.isCosmosDBAvailable?.status !== CosmosDBStatus.NotConfigured && <ChatHistoryPanel />}
                         </Stack>
-
-                        <PdfModal
-                        isOpen={isPdfModalOpen}
-                        closeModal={() => setIsPdfModalOpen(false)}
-                        data={{ name: "PDF Title", url: pdfUrl }}
-                    />
                 </div>
             </div>
 
