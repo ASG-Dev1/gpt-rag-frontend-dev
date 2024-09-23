@@ -8,8 +8,8 @@ import { AskResponse } from "../../api";
 import { AnalysisPanelTabs } from "./AnalysisPanelTabs";
 
 //Cat Test - added 2 imports
-import PdfModal from '../PdfModal/PdfModal'
-import {useState} from 'react'
+// import PdfModal from '../PdfModal/PdfModal'
+// import {useState} from 'react'
 
 interface Props {
     className: string;
@@ -18,16 +18,19 @@ interface Props {
     activeCitation: string | undefined;
     citationHeight: string;
     answer: AskResponse;
+    // Cat Test 
+    onCitationClicked: (citation: string) => void;
 }
 
 const pivotItemDisabledStyle = { disabled: true, style: { color: "grey" } };
 
-//Cat Test - added 2 const for pdf modal
-const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
-const [pdfUrl, setPdfUrl] = useState("");
+// //Cat Test - added 2 const for pdf modal
+// const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
+// const [pdfUrl, setPdfUrl] = useState("");
+// console.log("Is modal open:", isPdfModalOpen)
+// console.log("PDF URL:", pdfUrl);
 
-
-export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeight, className, onActiveTabChanged }: Props) => {
+export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeight, className, onActiveTabChanged, onCitationClicked }: Props) => {
 
     const isDisabledThoughtProcessTab: boolean = !answer.thoughts;
     // const isDisabledSupportingContentTab: boolean = !answer.data_points.length;
@@ -110,25 +113,36 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                 headerButtonProps={isDisabledCitationTab ? pivotItemDisabledStyle : undefined}
                 
                 // Cat Test - added Onclick
-                onClick={() =>{
-                    setPdfUrl(activeCitation || "");
-                    setIsPdfModalOpen(true);
-                }}
+                // onClick={() =>{
+                //     if (activeCitation){
+                //     setPdfUrl(activeCitation);
+                //     setIsPdfModalOpen(true);
+                //     }else{
+                //         console.error("No activateCitation found.");
+                //     }
+                // }}
 
             >
                 
                 {/* Cat Test - I commented the Iframe below to see if I can open the Citation by Modal instead of by NavTab  */}
                 {/* <iframe title="Citation" src={iframeSrc} width="100%" height={citationHeight}/> */}
 
+                {/* Cat Test  */}
+                <a onClick={() => activeCitation && onCitationClicked(activeCitation)}>
+                        Click here to view the citation
+                    </a>
+
+
             </PivotItem>
         </Pivot>
 
 {/* Cat Test- Added PdfModal Component */}
-<PdfModal
+{/* <PdfModal
     isOpen={isPdfModalOpen}
     closeModal={() => setIsPdfModalOpen(false)}
     data={{ name: "PDF Title", url: pdfUrl }}  // Ensure pdfUrl is passed correctly
-/>
+    
+/> */}
 </div>
 
     );
