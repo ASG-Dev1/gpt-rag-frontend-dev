@@ -40,12 +40,12 @@
 .commandBtn{
   position: absolute;
   right:0;
-  width: 8rem;
+  width: 7rem;
   height: 2.5rem;
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
-  margin-right: 1rem;
+  justify-content: center;
+  margin-right: 3rem;
 }
 
 .deleteConversationBtn {

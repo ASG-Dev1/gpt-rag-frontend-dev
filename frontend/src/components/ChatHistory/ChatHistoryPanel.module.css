@@ -2,6 +2,8 @@
   max-height: calc(100vh - 100px);
   width: 300px;
   color:black;
+  background: #6353531f;
+  border-radius: .5rem;
 }
 
 .listContainer {

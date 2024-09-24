@@ -48,7 +48,7 @@ export type Action =
 
   
 const initialState: AppState = {
-  isChatHistoryOpen: true, //Joshua Prueba true
+  isChatHistoryOpen: false, //Joshua Prueba true
   chatHistoryLoadingState: ChatHistoryLoadingState.Loading,
   chatHistory: null,
   filteredChatHistory: null,
@@ -147,6 +147,10 @@ export const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) 
     }
     getFrontendSettings()
   }, [])
+
+  useEffect(() => {
+    console.log("Debug Joshua - AppStateProvider: ", state);
+  }, [state]);
 
   return <AppStateContext.Provider value={{ state, dispatch }}>{children}</AppStateContext.Provider>
 }

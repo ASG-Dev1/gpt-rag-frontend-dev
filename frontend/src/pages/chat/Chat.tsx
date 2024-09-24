@@ -134,7 +134,7 @@ const Chat = () => {
         chatMessageStreamEnd.current?.scrollIntoView({ behavior: "smooth" });
         if (triggered.current === false) {
             triggered.current = true;
-            console.log(triggered.current);
+            // console.log(triggered.current);
         }
         const language = navigator.language;
         if (language.startsWith('pt')) {
@@ -146,10 +146,11 @@ const Chat = () => {
         }
     }, [isLoading]);
 
-    // Joshua Prueba
-    useEffect(() => {
-        console.log("Chat history open status:", appStateContext?.state.isChatHistoryOpen);
-    }, [appStateContext?.state.isChatHistoryOpen]);
+    // // Joshua Prueba
+    // useEffect(() => {
+    //     console.log("Chat history open status:", appStateContext);
+    //     console.log("Checkpoint")
+    // }, [appStateContext?.state.isChatHistoryOpen]);
 
     const onPromptTemplateChange = (_ev?: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
         setPromptTemplate(newValue || "");
@@ -330,9 +331,10 @@ const Chat = () => {
                                     onChange={onUseSuggestFollowupQuestionsChange}
                                 />
                             </Panel>
+                            
                         <Stack horizontal horizontalAlign="center">
                             {appStateContext?.state.isChatHistoryOpen &&
-                                appStateContext?.state.isCosmosDBAvailable?.status !== CosmosDBStatus.NotConfigured && <ChatHistoryPanel />}
+                                 <ChatHistoryPanel />}
                         </Stack>
                 </div>
             </div>
