@@ -1,7 +1,7 @@
 .container {
   max-height: calc(100vh - 100px);
   width: 300px;
-  color:black;
+  color: black;
   background: #6353531f;
   border-radius: .5rem;
 }
@@ -37,7 +37,7 @@
   border-radius: 5px;
   margin: auto 2.5px;
   cursor: pointer;
-  color:white;
+  color: white;
 }
 
 .itemButton:hover {
@@ -65,7 +65,7 @@
   font-weight: 600;
   margin-bottom: 5px;
   padding-left: 15px;
-  color:black;
+  color: black;
 }
 
 .chatTitle {
@@ -73,7 +73,17 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  color:rgb(0, 0, 0) !important;
+  color: rgb(0, 0, 0) !important;
+}
+
+.headingText {
+  align-self: 'center';
+  font-weight: 600;
+  font-size: 18px;
+  margin-right: auto;
+  padding-left: 20px;
+  padding-top: 1rem;
+  color: black;
 }
 
 @media (max-width: 480px) {
