@@ -105,7 +105,6 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                 
                 <iframe title="Citation" src={iframeSrc} width="100%" height={citationHeight}/>
 
-                {/* <iframe title="Citation" src={activeCitation} width="100%" height={citationHeight} /> */}
             </PivotItem>
 
             
