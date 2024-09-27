@@ -69,6 +69,8 @@ const Chat = () => {
         setActiveAnalysisPanelTab(undefined);
 
         try {
+            console.log("JAMR Current userId:", userId);
+
             const history: ChatTurn[] = answers.map(a => ({ user: a[0], bot: a[1].answer }));
             const request: ChatRequestGpt = {
                 history: [...history, { user: question, bot: undefined }],
@@ -84,7 +86,13 @@ const Chat = () => {
                     suggestFollowupQuestions: useSuggestFollowupQuestions
                 }
             };
+
+                // Debugging: Log the conversation_id within the request
+    
+
             const result = await chatApiGpt(request);
+            
+            console.log("JAMR Request conversation_id:", request.history);
             console.log(result)
             console.log(result.answer)
             setAnswers([...answers, [question, result]]);
