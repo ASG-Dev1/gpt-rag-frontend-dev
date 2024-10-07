@@ -17,7 +17,7 @@ const modalOverlay = {
 }
 
 const BaseModal = (props: Props) => {
-  const { children, isOpen } = props
+  const { children, isOpen, onRequestClose} = props
 
   const modalStyle = { ...props.style, ...modalOverlay }
 
@@ -30,8 +30,11 @@ const BaseModal = (props: Props) => {
   }, [isOpen])
 
   return isOpen ? (
-    <Modal {...props} style={modalStyle}>
-      {children}
+    <Modal {...props} 
+    style={modalStyle}>
+    {children}
+    shouldCloseOnOverlayClick={true}  // Enable closing the modal when clicking outside
+    onRequestClose={onRequestClose}   // Call the provided close function when clicking outside
     </Modal>
   ) : null
 }

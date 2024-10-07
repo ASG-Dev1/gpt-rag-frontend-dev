@@ -34,9 +34,9 @@ const PdfModal: FC<PdfModalProps> = ({ isOpen, closeModal, data }) => {
 
   const pdfURL = data?.url ? `${data.url}#page=${data.page || 1}` : '';
   return (
-    <BaseModal isOpen={isOpen} style={modalStyle}>
+    <BaseModal isOpen={isOpen} style={modalStyle} onRequestClose={() => closeModal()}>
       <div className={styles.header}>
-        <span className={styles.title}>{data?.name || ' '}</span>{' '}
+        <span className={styles.title}><strong>{data?.name || ' '}</strong></span>{' '}
         <XLg onClick={() => closeModal()} className={styles.close} />
       </div>
       <div className={styles.body}>

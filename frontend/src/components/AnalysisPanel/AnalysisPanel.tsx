@@ -6,6 +6,8 @@ import styles from "./AnalysisPanel.module.css";
 // import { SupportingContent } from "../SupportingContent";
 import { AskResponse } from "../../api";
 import { AnalysisPanelTabs } from "./AnalysisPanelTabs";
+import PdfModal from "../PdfModal/PdfModal";
+import { useState } from 'react'
 
 interface Props {
     className: string;
@@ -24,14 +26,33 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
 
     const isDisabledThoughtProcessTab: boolean = !answer.thoughts;
     // const isDisabledSupportingContentTab: boolean = !answer.data_points.length;
-    const isDisabledCitationTab: boolean = !activeCitation;
+    // const isDisabledCitationTab: boolean = !activeCitation;
     const isDisabledItemsTab: boolean = !answer.thoughts;
     const sanitizedThoughts = DOMPurify.sanitize(answer.thoughts!);
 
     const Items1  : AskResponse = answer
     const iframeSrc = `https://docs.google.com/gview?url=${activeCitation}&embedded=true`;
 
+    const [isModalOpen, setIsModalOpen] = useState(false); // State to manage the modal visibility
+    const [pdfData, setPdfData] = useState<{ name: string; url: string } | null>(null); // State to hold PDF data
+    const isDisabledCitationTab: boolean = !activeCitation;
 
+     // Function to extract the filename from a URL
+     const extractFilename = (url: string) => {
+        return url.split('/').pop()?.split('#')[0]?.split('?')[0] || "Unknown Filename"; // Extract file name from the URL
+    };
+
+    const handlePdfButtonClick = () => {
+        if (activeCitation) {
+            const filename = extractFilename(activeCitation);  // Get the filename from the citation URL
+
+            setPdfData({
+                name: filename,  // Set the filename as the name of the PDF
+                url: activeCitation      // Use the activeCitation URL
+            });
+            setIsModalOpen(true);  // Open the modal when the button is clicked
+        }
+    };
   
 
 
@@ -65,6 +86,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
 
     console.log(Items1.data_points);
     return (
+        <>
         <Pivot
             className={className}
             selectedKey={activeTab}
@@ -85,18 +107,16 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
             >
                 <div className={styles.thoughtProcess} dangerouslySetInnerHTML={{ __html: "Hi" }}></div>
             </PivotItem> */}
-            <PivotItem
-                itemKey={AnalysisPanelTabs.Items}
-                headerText="Items"
-                headerButtonProps={isDisabledItemsTab ? pivotItemDisabledStyle : undefined}
-            >
-                <div className={styles.thoughtProcess} >
-                    
-                    <div style={{whiteSpace:'pre-wrap'}}>{Items1.data_points} </div>
-
-                </div>
-            </PivotItem>
-            <PivotItem
+        <PivotItem
+            itemKey={AnalysisPanelTabs.Items}
+            headerText="Items"
+            headerButtonProps={isDisabledItemsTab ? pivotItemDisabledStyle : undefined}
+        >
+            <div className={styles.thoughtProcess} >    
+                <div style={{whiteSpace:'pre-wrap'}}>{Items1.data_points} </div>
+            </div>
+        </PivotItem>
+            {/* <PivotItem
                 itemKey={AnalysisPanelTabs.CitationTab}
                 headerText="Citation"
                 headerButtonProps={isDisabledCitationTab ? pivotItemDisabledStyle : undefined}
@@ -105,11 +125,30 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                 
                 <iframe title="Citation" src={iframeSrc} width="100%" height={citationHeight}/>
 
+            </PivotItem> */}
+            <PivotItem
+                itemKey={AnalysisPanelTabs.CitationTab}
+                headerText="Citation"
+                headerButtonProps={isDisabledCitationTab ? pivotItemDisabledStyle : undefined}
+            >
+                <div className={styles.thoughtProcess}>
+                    {activeCitation ? (
+                        <button onClick={handlePdfButtonClick}>{extractFilename(activeCitation)}</button>  // Show the extracted file name on the button
+                    ) : (
+                        <p>No citation available</p>
+                    )}
+                </div>
             </PivotItem>
-
-            
-           
         </Pivot>
+         {/* Modal for displaying the PDF */}
+         {pdfData && (
+            <PdfModal
+                isOpen={isModalOpen}
+                closeModal={() => setIsModalOpen(false)}
+                data={pdfData}  // Pass the PDF data to the modal
+            />
+            )}
+        </>
     );
 };
 

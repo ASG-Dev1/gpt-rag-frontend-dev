@@ -4,6 +4,7 @@ import time
 import logging
 import requests
 import json
+import uuid
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -41,28 +42,26 @@ CORS(app)
 @app.route("/<path:path>")
 def static_file(path):
     return app.send_static_file(path)
-
 @app.route("/chatgpt", methods=["POST"])
 def chatgpt():
-    conversation_id = request.json["conversation_id"]
+    conversation_id = request.json.get("conversation_id", None)
     question = request.json["query"]
     client_principal_id = request.headers.get('X-MS-CLIENT-PRINCIPAL-ID')
     client_principal_name = request.headers.get('X-MS-CLIENT-PRINCIPAL-NAME')
-    logging.info("[webbackend] conversation_id: " + conversation_id)    
-    logging.info("[webbackend] question: " + question)
+
+    # If conversation_id is None, generate a new conversation ID (e.g., using UUID)
+    if conversation_id is None:
+        conversation_id = str(uuid.uuid4())  # Generate new conversation ID
+
+    logging.info(f"[webbackend] conversation_id: {conversation_id}")    
+    logging.info(f"[webbackend] question: {question}")
     logging.info(f"[webbackend] User principal: {client_principal_id}")
     logging.info(f"[webbackend] User name: {client_principal_name}")
 
+    # Process the request and call the orchestrator with the conversation ID
+    # Ensure to return the conversation_id in the response
     try:
-        # keySecretName is the name of the secret in Azure Key Vault which holds the key for the orchestrator function
-        # It is set during the infrastructure deployment.
-        keySecretName = 'orchestrator-host--functionKey'
-        functionKey = get_secret(keySecretName)
-    except Exception as e:
-        logging.exception("[webbackend] exception in /api/orchestrator-host--functionKey")
-        return jsonify({"error": f"Check orchestrator's function key was generated in Azure Portal and try again. ({keySecretName} not found in key vault)"}), 500
-        
-    try:
+        functionKey = get_secret('orchestrator-host--functionKey')
         url = ORCHESTRATOR_ENDPOINT
         payload = json.dumps({
             "conversation_id": conversation_id,
@@ -72,14 +71,52 @@ def chatgpt():
         })
         headers = {
             'Content-Type': 'application/json',
-            'x-functions-key': functionKey            
+            'x-functions-key': functionKey
         }
-        response = requests.request("GET", url, headers=headers, data=payload)
+        response = requests.post(url, headers=headers, data=payload)
         logging.info(f"[webbackend] response: {response.text[:500]}...")   
-        return(response.text)
+        return jsonify({"conversation_id": conversation_id, **response.json()})
     except Exception as e:
         logging.exception("[webbackend] exception in /chatgpt")
         return jsonify({"error": str(e)}), 500
+# @app.route("/chatgpt", methods=["POST"])
+# def chatgpt():
+#     conversation_id = request.json["conversation_id"]
+#     question = request.json["query"]
+#     client_principal_id = request.headers.get('X-MS-CLIENT-PRINCIPAL-ID')
+#     client_principal_name = request.headers.get('X-MS-CLIENT-PRINCIPAL-NAME')
+#     logging.info("[webbackend] conversation_id: " + conversation_id)    
+#     logging.info("[webbackend] question: " + question)
+#     logging.info(f"[webbackend] User principal: {client_principal_id}")
+#     logging.info(f"[webbackend] User name: {client_principal_name}")
+
+#     try:
+#         # keySecretName is the name of the secret in Azure Key Vault which holds the key for the orchestrator function
+#         # It is set during the infrastructure deployment.
+#         keySecretName = 'orchestrator-host--functionKey'
+#         functionKey = get_secret(keySecretName)
+#     except Exception as e:
+#         logging.exception("[webbackend] exception in /api/orchestrator-host--functionKey")
+#         return jsonify({"error": f"Check orchestrator's function key was generated in Azure Portal and try again. ({keySecretName} not found in key vault)"}), 500
+        
+#     try:
+#         url = ORCHESTRATOR_ENDPOINT
+#         payload = json.dumps({
+#             "conversation_id": conversation_id,
+#             "question": question,
+#             "client_principal_id": client_principal_id,
+#             "client_principal_name": client_principal_name
+#         })
+#         headers = {
+#             'Content-Type': 'application/json',
+#             'x-functions-key': functionKey            
+#         }
+#         response = requests.request("GET", url, headers=headers, data=payload)
+#         logging.info(f"[webbackend] response: {response.text[:500]}...")   
+#         return(response.text)
+#     except Exception as e:
+#         logging.exception("[webbackend] exception in /chatgpt")
+#         return jsonify({"error": str(e)}), 500
     
 
 # methods to provide access to speech services and blob storage account blobs
