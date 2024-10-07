@@ -32,11 +32,14 @@ const modalStyle: Styles = {
 
 const PdfModal: FC<PdfModalProps> = ({ isOpen, closeModal, data }) => {
 
-  const pdfURL = data?.url ? `${data.url}#page=${data.page || 1}` : '';
+  // const pdfURL = data?.url ? `${data.url}#page=${data.page || 1}` : '';
+  const pdfURL = data?.url
+  ? `https://docs.google.com/gview?url=${data.url}&embedded=true`
+  : '';
   return (
     <BaseModal isOpen={isOpen} style={modalStyle} onRequestClose={() => closeModal()}>
       <div className={styles.header}>
-        <span className={styles.title}><strong>{data?.name || ' '}</strong></span>{' '}
+        <span className={styles.title}><strong>{data?.url || ' '}</strong></span>{' '}
         <XLg onClick={() => closeModal()} className={styles.close} />
       </div>
       <div className={styles.body}>
