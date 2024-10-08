@@ -8,6 +8,8 @@ import { AskResponse } from "../../api";
 import { AnalysisPanelTabs } from "./AnalysisPanelTabs";
 import PdfModal from "../PdfModal/PdfModal";
 import { useState } from 'react'
+// import css from '../../components/common/Button.module.css'
+
 
 interface Props {
     className: string;
@@ -30,15 +32,18 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
     const isDisabledItemsTab: boolean = !answer.thoughts;
     const sanitizedThoughts = DOMPurify.sanitize(answer.thoughts!);
 
-    const Items1  : AskResponse = answer
+    const Items1: AskResponse = answer
+    const dataPoints = Items1.data_points;
+    console.log('Items1.data_points:', Items1.data_points)
+
     const iframeSrc = `https://docs.google.com/gview?url=${activeCitation}&embedded=true`;
 
     const [isModalOpen, setIsModalOpen] = useState(false); // State to manage the modal visibility
     const [pdfData, setPdfData] = useState<{ name: string; url: string } | null>(null); // State to hold PDF data
     const isDisabledCitationTab: boolean = !activeCitation;
 
-     // Function to extract the filename from a URL
-     const extractFilename = (url: string) => {
+    // Function to extract the filename from a URL
+    const extractFilename = (url: string) => {
         return url.split('/').pop()?.split('#')[0]?.split('?')[0] || "Unknown Filename"; // Extract file name from the URL
     };
 
@@ -53,7 +58,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
             setIsModalOpen(true);  // Open the modal when the button is clicked
         }
     };
-  
+
 
 
     function extractDataFromResponse(response: AskResponse): { [key: string]: string } {
@@ -62,7 +67,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
         let result: { [key: string]: string } = {};
         let currentKey = '';
         let currentValue = '';
-    
+
         for (let i = 0; i < tokens.length; i++) {
             if (tokens[i].endsWith(':')) {
                 if (currentKey) {
@@ -74,49 +79,44 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                 currentValue += tokens[i] + ' ';
             }
         }
-    
+
         if (currentKey) {
             result[currentKey] = currentValue.trim();
         }
-    
+
         return result;
     }
-    
+
+
     const extractedData = extractDataFromResponse(Items1);
+    console.log('Extracted Data:', extractedData);
 
     console.log(Items1.data_points);
+
     return (
         <>
-        <Pivot
-            className={className}
-            selectedKey={activeTab}
-            
-            onLinkClick={pivotItem => pivotItem && onActiveTabChanged(pivotItem.props.itemKey! as AnalysisPanelTabs)}
-        >
-            {/* <PivotItem
-                itemKey={AnalysisPanelTabs.ThoughtProcessTab}
-                headerText="Thought process"
-                headerButtonProps={isDisabledThoughtProcessTab ? pivotItemDisabledStyle : undefined}
+            <Pivot
+                className={className}
+                selectedKey={activeTab}
+
+                onLinkClick={pivotItem => pivotItem && onActiveTabChanged(pivotItem.props.itemKey! as AnalysisPanelTabs)}
             >
-                <div className={styles.thoughtProcess} dangerouslySetInnerHTML={{ __html: sanitizedThoughts }}></div>
-            </PivotItem> */}
-            {/* <PivotItem
-                itemKey={AnalysisPanelTabs.SupportingContentTab}
-                headerText="Supporting Content"
-                headerButtonProps={isDisabledSupportingContentTab ? pivotItemDisabledStyle : undefined}
-            >
-                <div className={styles.thoughtProcess} dangerouslySetInnerHTML={{ __html: "Hi" }}></div>
-            </PivotItem> */}
-        <PivotItem
-            itemKey={AnalysisPanelTabs.Items}
-            headerText="Items"
-            headerButtonProps={isDisabledItemsTab ? pivotItemDisabledStyle : undefined}
-        >
-            <div className={styles.thoughtProcess} >    
-                <div style={{whiteSpace:'pre-wrap'}}>{Items1.data_points} </div>
-            </div>
-        </PivotItem>
-            {/* <PivotItem
+
+                <PivotItem
+                    itemKey={AnalysisPanelTabs.Items}
+                    headerText="Items"
+                    headerButtonProps={isDisabledItemsTab ? pivotItemDisabledStyle : undefined}
+                >
+                    <div>
+                        {Items1.data_points && Items1.data_points.length > 0 ? (
+                            <div>{(Items1.data_points)}</div>
+                        ) : (
+                            <p>No data points found</p>
+                        )}
+                    </div>
+
+                </PivotItem>
+                {/* <PivotItem
                 itemKey={AnalysisPanelTabs.CitationTab}
                 headerText="Citation"
                 headerButtonProps={isDisabledCitationTab ? pivotItemDisabledStyle : undefined}
@@ -126,155 +126,28 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                 <iframe title="Citation" src={iframeSrc} width="100%" height={citationHeight}/>
 
             </PivotItem> */}
-            <PivotItem
-                itemKey={AnalysisPanelTabs.CitationTab}
-                headerText="Citation"
-                headerButtonProps={isDisabledCitationTab ? pivotItemDisabledStyle : undefined}
-            >
-                <div className={styles.thoughtProcess}>
-                    {activeCitation ? (
-                        <button onClick={handlePdfButtonClick}>{extractFilename(activeCitation)}</button>  // Show the extracted file name on the button
-                    ) : (
-                        <p>No citation available</p>
-                    )}
-                </div>
-            </PivotItem>
-        </Pivot>
-         {/* Modal for displaying the PDF */}
-         {pdfData && (
-            <PdfModal
-                isOpen={isModalOpen}
-                closeModal={() => setIsModalOpen(false)}
-                data={pdfData}  // Pass the PDF data to the modal
-            />
+                <PivotItem
+                    itemKey={AnalysisPanelTabs.CitationTab}
+                    headerText="Citation"
+                    headerButtonProps={isDisabledCitationTab ? pivotItemDisabledStyle : undefined}
+                >
+                    <div className={styles.thoughtProcess}>
+                        {activeCitation ? (
+                            <button className={`${styles.itemButton} ${styles.buttonCitation}`} onClick={handlePdfButtonClick}>{extractFilename(activeCitation)}</button>  // Show the extracted file name on the button
+                        ) : (
+                            <p>No citation available</p>
+                        )}
+                    </div>
+                </PivotItem>
+            </Pivot>
+            {/* Modal for displaying the PDF */}
+            {pdfData && (
+                <PdfModal
+                    isOpen={isModalOpen}
+                    closeModal={() => setIsModalOpen(false)}
+                    data={pdfData}  // Pass the PDF data to the modal
+                />
             )}
         </>
     );
-};
-
-
-
-
-
-// import React from "react";
-// import { Pivot, PivotItem } from "@fluentui/react";
-// import DOMPurify from "dompurify";
-
-// import styles from "./AnalysisPanel.module.css";
-
-// import { SupportingContent } from "../SupportingContent";
-// import { AskResponse } from "../../api";
-// import { AnalysisPanelTabs } from "./AnalysisPanelTabs";
-
-// interface Props {
-//     className: string;
-//     activeTab: AnalysisPanelTabs;
-//     onActiveTabChanged: (tab: AnalysisPanelTabs) => void;
-//     activeCitation: string | undefined;
-//     citationHeight: string;
-//     answer: AskResponse;
-// }
-
-// interface State {
-//     articles: ArticleOrService[];
-// }
-
-// interface ArticleOrService {
-//     id: string;
-//     title: string;
-//     priceInUsDollars: string;
-//     providerOrSupplierName: string;
-//     sourceName: string;
-// }
-
-// const pivotItemDisabledStyle = { disabled: true, style: { color: "grey" } };
-
-// export class AnalysisPanel extends React.Component<Props, State> {
-//     constructor(props: Props) {
-//         super(props);
-//         this.state = {
-//             articles: []
-//         };
-//     }
-
-//     componentDidUpdate(prevProps: Props) {
-//         if (prevProps.answer.thoughts !== this.props.answer.thoughts) {
-//             const extractedArticles = this.extractInformation(this.props.answer.thoughts!);
-//             this.setState({ articles: extractedArticles });
-//         }
-//     }
-
-//     extractInformation(text: string): ArticleOrService[] {
-//         const results: ArticleOrService[] = [];
-
-//         const id = text.match(/Numero Caso:/)?.[1];
-//         const tituloRequisicion = text.match(/Titulo Requisicion: (.+?) Categoria/)?.[1];
-//         const costoEstimado = text.match(/Costo Estimado:/)?.[1];
-//         const nombreSuplidor = text.match(/Nombre Suplidor: /)?.[1];
-//         const sourceName = id ? "[" + id + ".txt]" : "";
-    
-//         if (id && tituloRequisicion && costoEstimado && nombreSuplidor) {
-//             results.push({
-//                 id: id,
-//                 title: tituloRequisicion,
-//                 priceInUsDollars: costoEstimado,
-//                 providerOrSupplierName: nombreSuplidor,
-//                 sourceName: sourceName
-//             });
-//         }
-    
-//         return results;
-//     }
-
-//     render() {
-//         const { answer, activeTab, activeCitation, citationHeight, className, onActiveTabChanged } = this.props;
-//         const sanitizedThoughts = DOMPurify.sanitize(answer.thoughts!);
-//         const isDisabledThoughtProcessTab: boolean = !answer.thoughts;
-//         const isDisabledSupportingContentTab: boolean = !answer.data_points.length;
-//         const isDisabledCitationTab: boolean = !activeCitation;
-//         const isDisabledItemsTab: boolean = !answer.thoughts;
-
-//         return (
-//             <Pivot
-//                 className={className}
-//                 selectedKey={activeTab}
-//                 onLinkClick={pivotItem => pivotItem && onActiveTabChanged(pivotItem.props.itemKey! as AnalysisPanelTabs)}
-//             >
-//                <PivotItem
-//                 itemKey={AnalysisPanelTabs.ThoughtProcessTab}
-//                 headerText="Thought process"
-//                 headerButtonProps={isDisabledThoughtProcessTab ? pivotItemDisabledStyle : undefined}
-//             >
-//                 <div className={styles.thoughtProcess} dangerouslySetInnerHTML={{ __html: sanitizedThoughts }}></div>
-//             </PivotItem>
-//             <PivotItem
-//                 itemKey={AnalysisPanelTabs.SupportingContentTab}
-//                 headerText="Supporting Content"
-//                 headerButtonProps={isDisabledSupportingContentTab ? pivotItemDisabledStyle : undefined}
-//             >
-//                 <div className={styles.thoughtProcess} dangerouslySetInnerHTML={{ __html: "Hi" }}></div>
-//             </PivotItem>
-
-//                 <PivotItem
-//                     itemKey={AnalysisPanelTabs.Items}
-//                     headerText="Items"
-//                     headerButtonProps={this.state.articles.length === 0 ? pivotItemDisabledStyle : undefined}
-//                 >
-//                     <div className={styles.thoughtProcess}>
-//                         {this.state.articles.map(article => (
-//                             <div key={article.id}>
-//                                 <strong>{article.title}</strong><br />
-//                                 Precio: ${article.priceInUsDollars}<br />
-//                                 Proveedor: {article.providerOrSupplierName}<br />
-//                                 Fuente: {article.sourceName}
-//                                 <hr />
-//                             </div>
-//                         ))}
-//                     </div>
-//                 </PivotItem>
-
-//                 {/* ... other PivotItems ... */}
-//             </Pivot>
-//         );
-//     }
-// }
+}
