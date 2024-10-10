@@ -62,16 +62,16 @@ export const Answer = ({
                             ariaLabel="Show thought process"
                             onClick={() => onThoughtProcessClicked()}
                             disabled={!answer.thoughts}
-                            />
-                            {/* // onMouseEnter={() => setIsHovered(true)}
+                        />
+                        {/* // onMouseEnter={() => setIsHovered(true)}
                             // onMouseLeave={() => setIsHovered(false)} */}
-                            {/* styles={{
+                        {/* styles={{
                                 root: { // Apply styles directly to the root or button element
                                     color: isHovered ? '#ffbf00' : 'red',
                                 },
                             }}
                         > */}
-                            {/* {isHovered ? <LightbulbFill /> : <Lightbulb />}
+                        {/* {isHovered ? <LightbulbFill /> : <Lightbulb />}
                         </IconButton> */}
                         {/* <IconButton
                             style={{ color: "black" }}

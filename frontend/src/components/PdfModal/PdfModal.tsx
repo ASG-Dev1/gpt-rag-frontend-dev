@@ -27,15 +27,20 @@ const modalStyle: Styles = {
     backgroundColor: '#FFFFFF',
     overflow: 'hidden',
     resize: 'both',
-  }
-}
+  },
+  overlay: {
+    zIndex: 9999,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)', // Semi-transparent background
+  },
+};
+
+
 
 const PdfModal: FC<PdfModalProps> = ({ isOpen, closeModal, data }) => {
-
-  // const pdfURL = data?.url ? `${data.url}#page=${data.page || 1}` : '';
   const pdfURL = data?.url
-  ? `https://docs.google.com/gview?url=${data.url}&embedded=true`
-  : '';
+    ? `https://docs.google.com/gview?url=${data.url}&embedded=true`
+    : '';
+
   return (
     <BaseModal isOpen={isOpen} style={modalStyle} onRequestClose={() => closeModal()}>
       <div className={styles.header}>

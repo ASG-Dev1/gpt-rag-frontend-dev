@@ -27,26 +27,23 @@ const pivotItemDisabledStyle = { disabled: true, style: { color: "grey" } };
 export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeight, className, onActiveTabChanged }: Props) => {
 
     const isDisabledThoughtProcessTab: boolean = !answer.thoughts;
-    // const isDisabledSupportingContentTab: boolean = !answer.data_points.length;
-    // const isDisabledCitationTab: boolean = !activeCitation;
     const isDisabledItemsTab: boolean = !answer.thoughts;
     const sanitizedThoughts = DOMPurify.sanitize(answer.thoughts!);
-
     const Items1: AskResponse = answer
     const dataPoints = Items1.data_points;
     console.log('Items1.data_points:', Items1.data_points)
 
     const iframeSrc = `https://docs.google.com/gview?url=${activeCitation}&embedded=true`;
-
     const [isModalOpen, setIsModalOpen] = useState(false); // State to manage the modal visibility
     const [pdfData, setPdfData] = useState<{ name: string; url: string } | null>(null); // State to hold PDF data
     const isDisabledCitationTab: boolean = !activeCitation;
 
-    // Function to extract the filename from a URL
+    // Function to extract the filename from a URL for modal pdfbutton
     const extractFilename = (url: string) => {
         return url.split('/').pop()?.split('#')[0]?.split('?')[0] || "Unknown Filename"; // Extract file name from the URL
     };
 
+    // modal pdfbutton 
     const handlePdfButtonClick = () => {
         if (activeCitation) {
             const filename = extractFilename(activeCitation);  // Get the filename from the citation URL
@@ -58,6 +55,10 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
             setIsModalOpen(true);  // Open the modal when the button is clicked
         }
     };
+
+    console.log('Items1.data_points type:', typeof Items1.data_points);
+    console.log('Items1.data_points value:', Items1.data_points);
+
 
 
 
@@ -90,15 +91,14 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
 
     const extractedData = extractDataFromResponse(Items1);
     console.log('Extracted Data:', extractedData);
-
     console.log(Items1.data_points);
+    console.log('Items1.data_points type:', typeof Items1.data_points);
 
     return (
         <>
             <Pivot
                 className={className}
                 selectedKey={activeTab}
-
                 onLinkClick={pivotItem => pivotItem && onActiveTabChanged(pivotItem.props.itemKey! as AnalysisPanelTabs)}
             >
 
@@ -109,28 +109,20 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                 >
                     <div>
                         {Items1.data_points && Items1.data_points.length > 0 ? (
-                            <div>{(Items1.data_points)}</div>
+                            // Check if data_points is an array; if so, join the elements into a single string
+                            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(Array.isArray(Items1.data_points) ? Items1.data_points.join('') : Items1.data_points) }} />
                         ) : (
                             <p>No data points found</p>
                         )}
                     </div>
-
                 </PivotItem>
-                {/* <PivotItem
-                itemKey={AnalysisPanelTabs.CitationTab}
-                headerText="Citation"
-                headerButtonProps={isDisabledCitationTab ? pivotItemDisabledStyle : undefined}
-                
-            >
-                
-                <iframe title="Citation" src={iframeSrc} width="100%" height={citationHeight}/>
 
-            </PivotItem> */}
                 <PivotItem
                     itemKey={AnalysisPanelTabs.CitationTab}
                     headerText="Citation"
                     headerButtonProps={isDisabledCitationTab ? pivotItemDisabledStyle : undefined}
                 >
+                    {/* <iframe title="Citation" src={iframeSrc} width="100%" height={citationHeight}/> */}
                     <div className={styles.thoughtProcess}>
                         {activeCitation ? (
                             <button className={`${styles.itemButton} ${styles.buttonCitation}`} onClick={handlePdfButtonClick}>{extractFilename(activeCitation)}</button>  // Show the extracted file name on the button
@@ -139,7 +131,9 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                         )}
                     </div>
                 </PivotItem>
+
             </Pivot>
+
             {/* Modal for displaying the PDF */}
             {pdfData && (
                 <PdfModal
