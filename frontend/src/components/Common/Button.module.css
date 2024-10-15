@@ -6,6 +6,8 @@
   border-radius: 0.6875rem !important;
   background-image: linear-gradient(to bottom right, #47396a, #6b509e, #d19bd6) !important;
   color: white;
+  border: none;
+  font-weight: 600;
 }
 
 .buttonStructure:hover {
@@ -30,16 +32,17 @@
   background: linear-gradient(to left, #F9E4F0, #CAE5FF);
   transition: background-color 0.3s ease;
 }
+
 /* Btn = button */
 
 .btn {
-  height: 2.5rem;  
+  height: 2.5rem;
   border: none;
 }
 
-.commandBtn{
+.commandBtn {
   position: absolute;
-  right:0;
+  right: 0;
   width: 7rem;
   height: 2.5rem;
   display: flex;
@@ -51,4 +54,11 @@
 .deleteConversationBtn {
   height: 3rem;
   margin-right: 1rem;
+}
+
+.buttonCitation {
+  color: white;
+  width: 100%;
+  height: auto;
+  padding: .5rem;
 }

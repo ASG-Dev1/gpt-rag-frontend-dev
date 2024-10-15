@@ -18,11 +18,3 @@
     cursor: pointer;
     color: white;
 }
-
-.buttonCitation {
-    border-radius: 0.6875rem !important;
-    background-image: linear-gradient(to bottom right, #47396a, #6b509e, #d19bd6) !important;
-    color: white;
-    width: 100px;
-    height: 30px;
-}

@@ -8,7 +8,7 @@ import { AskResponse } from "../../api";
 import { AnalysisPanelTabs } from "./AnalysisPanelTabs";
 import PdfModal from "../PdfModal/PdfModal";
 import { useState } from 'react'
-// import css from '../../components/common/Button.module.css'
+import css from '../../components/common/Button.module.css'
 
 
 interface Props {
@@ -125,7 +125,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                     {/* <iframe title="Citation" src={iframeSrc} width="100%" height={citationHeight}/> */}
                     <div className={styles.thoughtProcess}>
                         {activeCitation ? (
-                            <button className={`${styles.itemButton} ${styles.buttonCitation}`} onClick={handlePdfButtonClick}>{extractFilename(activeCitation)}</button>  // Show the extracted file name on the button
+                            <button className={`${css.buttonStructure} ${css.buttonCitation}`} onClick={handlePdfButtonClick}>{extractFilename(activeCitation)}</button>  // Show the extracted file name on the button
                         ) : (
                             <p>No citation available</p>
                         )}
