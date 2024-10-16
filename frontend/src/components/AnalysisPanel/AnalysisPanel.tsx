@@ -28,7 +28,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
     const isDisabledItemsTab: boolean = !answer.thoughts;
     const sanitizedThoughts = DOMPurify.sanitize(answer.thoughts!);
     const Items1: AskResponse = answer
-    const dataPoints = Items1.data_points;
+    const dataPoints = Items1?.data_points ?? [];
     console.log('Items1.data_points:', Items1.data_points)
 
     const iframeSrc = `https://docs.google.com/gview?url=${activeCitation}&embedded=true`;
@@ -52,6 +52,15 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
             });
             setIsModalOpen(true);  // Open the modal when the button is clicked
         }
+    };
+
+    const handleDataPointUrlClick = (url: string) => {
+        const filename = extractFilename(url);
+        setPdfData({
+            name: filename,
+            url: url
+        });
+        setIsModalOpen(true); // Open the modal
     };
 
     console.log('Items1.data_points type:', typeof Items1.data_points);
@@ -124,7 +133,8 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                 <PivotItem
                     itemKey={AnalysisPanelTabs.Items}
                     headerText="Items"
-                    headerButtonProps={isDisabledItemsTab ? pivotItemDisabledStyle : undefined}
+                    // headerButtonProps={isDisabledItemsTab ? pivotItemDisabledStyle : undefined}
+                    headerButtonProps={dataPoints.length === 0 ? { disabled: true, style: { color: "grey" } } : undefined}
                 >
                     <div>
                         {Items1.data_points && Items1.data_points.length > 0 ? (
@@ -155,7 +165,12 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                                     <p><strong>Nombre de Suplidor:</strong> {item.Nombre_de_Suplidor}</p>
                                     <p><strong>Teléfono de Contacto de Suplidor:</strong> {item.Telefono_de_Contacto_de_Suplidor}</p>
                                     <p><strong>Email de Suplidor:</strong> {item.Email_de_Suplidor}</p>
-                                    <p><strong>URL de Archivo de Orden de Compra:</strong> <a href={item.Url_de_Archivo_de_Orden_de_Compra} target="_blank" rel="noopener noreferrer">{item.Url_de_Archivo_de_Orden_de_Compra}</a></p>
+                                    {/* <p><strong>URL de Archivo de Orden de Compra:</strong> <a href={item.Url_de_Archivo_de_Orden_de_Compra} target="_blank" rel="noopener noreferrer">{item.Url_de_Archivo_de_Orden_de_Compra}</a></p> */}
+                                    <p><strong>URL de Archivo de Orden de Compra:</strong>
+                                        <button className={`${css.buttonStructure} ${css.buttonCitation}`} onClick={() => handleDataPointUrlClick(item.Url_de_Archivo_de_Orden_de_Compra)}>
+                                            {item.Url_de_Archivo_de_Orden_de_Compra}
+                                        </button>
+                                    </p>
                                 </div>
                             ))
                         ) : (
