@@ -174,7 +174,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                                 </div>
                             ))
                         ) : (
-                            <p>No data points found</p>
+                            <p>No se encontraron Items disponibles.</p>
                         )}
                     </div>
                 </PivotItem>
