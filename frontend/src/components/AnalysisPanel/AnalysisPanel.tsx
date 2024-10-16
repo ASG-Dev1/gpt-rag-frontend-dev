@@ -9,6 +9,7 @@ import { AnalysisPanelTabs } from "./AnalysisPanelTabs";
 import PdfModal from "../PdfModal/PdfModal";
 import { useState } from 'react'
 import css from '../../components/common/Button.module.css'
+import { AccordionItemList } from "../AccordionItemsList/AccordionItemList";
 
 
 interface Props {
@@ -52,15 +53,6 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
             });
             setIsModalOpen(true);  // Open the modal when the button is clicked
         }
-    };
-
-    const handleDataPointUrlClick = (url: string) => {
-        const filename = extractFilename(url);
-        setPdfData({
-            name: filename,
-            url: url
-        });
-        setIsModalOpen(true); // Open the modal
     };
 
     console.log('Items1.data_points type:', typeof Items1.data_points);
@@ -141,36 +133,37 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                             Items1.data_points.map((item, index) => (
                                 <div key={index} className={styles.itemContainer}>
                                     {/* Display the fields you need */}
-                                    <p><strong>Número de Caso:</strong> {item.Numero_de_Caso}</p>
-                                    <p><strong>Costo Unitario Estimado de Artículo:</strong> {item.Costo_Unitario_Estimado_de_Articulo}</p>
-                                    <p><strong>Fecha Recibo de Requisición:</strong> {item.Fecha_Recibo_de_Requisicion}</p>
-                                    <p><strong>Número de Requisición:</strong> {item.Numero_de_Requisicion}</p>
-                                    <p><strong>Título de Requisición:</strong> {item.Titulo_de_Requisicion}</p>
-                                    <p><strong>Categoría de Requisición:</strong> {item.Categoria_de_Requisicion}</p>
-                                    <p><strong>Subcategoría de Requisición:</strong> {item.SubCategoria_de_Requisicion}</p>
-                                    <p><strong>Agencia:</strong> {item.Agencia}</p>
-                                    <p><strong>Nombre de Agencia de Entrega:</strong> {item.Nombre_de_Agencia_de_Entrega}</p>
-                                    <p><strong>Método de Adquisición:</strong> {item.Metodo_de_Adquisicion}</p>
-                                    <p><strong>Descripción de Artículo:</strong> {item.Descripcion_de_Articulo}</p>
-                                    <p><strong>Marca de Artículo:</strong> {item.Marca_de_Articulo}</p>
-                                    <p><strong>Modelo de Artículo:</strong> {item.Modelo_de_Articulo}</p>
-                                    <p><strong>Garantía de Artículo:</strong> {item.Garantia_de_Articulo}</p>
-                                    <p><strong>Unidad de Medida:</strong> {item.Unidad_de_Medida}</p>
-                                    <p><strong>Cantidad:</strong> {item.Cantidad}</p>
-                                    <p><strong>Costo Estimado Total de Orden de Artículo:</strong> {item.Costo_Estimado_Total_de_Orden_de_Articulo}</p>
-                                    <p><strong>Número de Contrato:</strong> {item.Numero_de_Contrato}</p>
-                                    <p><strong>Costo Final de Orden de Artículo:</strong> {item.Costo_Final_de_Orden_de_Articulo}</p>
-                                    <p><strong>Número de Orden de Compra:</strong> {item.Numero_de_Orden_de_Compra}</p>
-                                    <p><strong>Nombre de Archivo de Orden de Compra:</strong> {item.Nombre_de_Archivo_de_Orden_de_Compra}</p>
-                                    <p><strong>Nombre de Suplidor:</strong> {item.Nombre_de_Suplidor}</p>
-                                    <p><strong>Teléfono de Contacto de Suplidor:</strong> {item.Telefono_de_Contacto_de_Suplidor}</p>
-                                    <p><strong>Email de Suplidor:</strong> {item.Email_de_Suplidor}</p>
+                                    < AccordionItemList
+                                        header={item.Numero_de_Caso}
+                                        content={{
+                                            "Costo Unitario Estimado de Artículo": item.Costo_Unitario_Estimado_de_Articulo,
+                                            "Fecha Recibo de Requisición": item.Fecha_Recibo_de_Requisicion,
+                                            "Número de Requisición": item.Numero_de_Requisicion,
+                                            "Título de Requisición": item.Titulo_de_Requisicion,
+                                            "Categoría de Requisición": item.Categoria_de_Requisicion,
+                                            "Subcategoría de Requisición": item.SubCategoria_de_Requisicion,
+                                            "Agencia": item.Agencia,
+                                            "Nombre de Agencia de Entrega": item.Nombre_de_Agencia_de_Entrega,
+                                            "Método de Adquisición": item.Metodo_de_Adquisicion,
+                                            "Descripción de Artículo": item.Descripcion_de_Articulo,
+                                            "Marca de Artículo": item.Marca_de_Articulo,
+                                            "Modelo de Artículo": item.Modelo_de_Articulo,
+                                            "Garantía de Artículo": item.Garantia_de_Articulo,
+                                            "Unidad de Medida": item.Unidad_de_Medida,
+                                            "Cantidad": item.Cantidad,
+                                            "Costo Estimado Total de Orden de Artículo": item.Costo_Estimado_Total_de_Orden_de_Articulo,
+                                            "Número de Contrato": item.Numero_de_Contrato,
+                                            "Costo Final de Orden de Artículo": item.Costo_Final_de_Orden_de_Articulo,
+                                            "Número de Orden de Compra": item.Numero_de_Orden_de_Compra,
+                                            "Nombre de Archivo de Orden de Compra": item.Nombre_de_Archivo_de_Orden_de_Compra,
+                                            "Nombre de Suplidor": item.Nombre_de_Suplidor,
+                                            "Teléfono de Contacto de Suplidor": item.Telefono_de_Contacto_de_Suplidor,
+                                            "Email de Suplidor": item.Email_de_Suplidor,
+                                        }}
+                                        url={item.Url_de_Archivo_de_Orden_de_Compra}
+                                    />
+
                                     {/* <p><strong>URL de Archivo de Orden de Compra:</strong> <a href={item.Url_de_Archivo_de_Orden_de_Compra} target="_blank" rel="noopener noreferrer">{item.Url_de_Archivo_de_Orden_de_Compra}</a></p> */}
-                                    <p><strong>URL de Archivo de Orden de Compra:</strong>
-                                        <button className={`${css.buttonStructure} ${css.urlItemPdf}`} onClick={() => handleDataPointUrlClick(item.Url_de_Archivo_de_Orden_de_Compra)}>
-                                            {item.Url_de_Archivo_de_Orden_de_Compra}
-                                        </button>
-                                    </p>
                                 </div>
                             ))
                         ) : (
