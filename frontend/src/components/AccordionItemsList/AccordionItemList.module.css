@@ -1,9 +1,19 @@
+.itemsHeader {
+     margin: 0;
+     font-weight: 700;
+     text-align: center;
+ }
+
 .itemsTitle{
+     display: inline-block;
      color:black;
-     font-weight: 800;
+     font-weight: 700;
+     margin: 3px 0;
 }
 
 .itemsValue{
+     display: inline-block;
      color:black;
      font-weight:500;
+     margin: 0;
 }

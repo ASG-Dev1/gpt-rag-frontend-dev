@@ -36,13 +36,13 @@ export const AccordionItemList = ({ header, content, url }: AccordionItemListPro
      // Renders Each Item List Modal
      return <>
           <div className='accorion' onClick={handleAccordionClick} >
-               <p>
+               <p className={styles.itemsHeader}>
                     {header}
                </p>
                <div className='accordion-content' style={{ display: itemContent === true ? 'block' : 'none' }}>
                     {Object.entries(content).map(([key, value], index) => (
                          <><div key={index}>
-                              <p className={styles.itemsTitle}>{key}:</p> <p className={styles.itemValue}>{value}</p>
+                              <p className={styles.itemsTitle}>{key}:</p> <p className={styles.itemsValue}>{value}</p>
                          </div>
                          </>
                     ))}
