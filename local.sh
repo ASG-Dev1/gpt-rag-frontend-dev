@@ -10,4 +10,4 @@ cd ..
 
 echo "Starting local run"
 
-./start.sh
+./startwin.sh

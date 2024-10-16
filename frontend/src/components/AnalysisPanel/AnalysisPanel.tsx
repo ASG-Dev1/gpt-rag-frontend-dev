@@ -167,7 +167,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                                     <p><strong>Email de Suplidor:</strong> {item.Email_de_Suplidor}</p>
                                     {/* <p><strong>URL de Archivo de Orden de Compra:</strong> <a href={item.Url_de_Archivo_de_Orden_de_Compra} target="_blank" rel="noopener noreferrer">{item.Url_de_Archivo_de_Orden_de_Compra}</a></p> */}
                                     <p><strong>URL de Archivo de Orden de Compra:</strong>
-                                        <button className={`${css.buttonStructure} ${css.buttonCitation}`} onClick={() => handleDataPointUrlClick(item.Url_de_Archivo_de_Orden_de_Compra)}>
+                                        <button className={`${css.buttonStructure} ${css.urlItemPdf}`} onClick={() => handleDataPointUrlClick(item.Url_de_Archivo_de_Orden_de_Compra)}>
                                             {item.Url_de_Archivo_de_Orden_de_Compra}
                                         </button>
                                     </p>

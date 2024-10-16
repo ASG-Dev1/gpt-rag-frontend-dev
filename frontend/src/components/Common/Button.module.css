@@ -62,3 +62,9 @@
   height: auto;
   padding: .5rem;
 }
+
+.urlItemPdf {
+  width: 66%;
+  height: 25px;
+  margin-left: 15px;
+}
