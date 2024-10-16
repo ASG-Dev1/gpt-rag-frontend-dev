@@ -74,11 +74,33 @@ def chatgpt():
             'x-functions-key': functionKey
         }
         response = requests.post(url, headers=headers, data=payload)
-        logging.info(f"[webbackend] response: {response.text[:500]}...")   
-        return jsonify({"conversation_id": conversation_id, **response.json()})
+        logging.info(f"[webbackend] response status code: {response.status_code}")
+        logging.info(f"[webbackend] response text: {response.text[:500]}...")
+        
+        if response.status_code != 200:
+            logging.error(f"[webbackend] Error response from orchestrator: {response.status_code} {response.reason}")
+            return jsonify({
+                "conversation_id": conversation_id,
+                "error": f"Orchestrator returned status code {response.status_code}",
+                "details": response.text[:500]  # Include a snippet of the response text
+            }), response.status_code
+
+        try:
+                response_json = response.json()
+        except json.JSONDecodeError as e:
+            logging.error(f"[webbackend] Failed to decode JSON response: {str(e)}")
+            logging.error(f"[webbackend] Response text: {response.text[:500]}...")
+            return jsonify({
+                "conversation_id": conversation_id,
+                "error": "Failed to decode JSON response from orchestrator"
+            }), 500
+
+        return jsonify({"conversation_id": conversation_id, **response_json})
+
     except Exception as e:
         logging.exception("[webbackend] exception in /chatgpt")
         return jsonify({"error": str(e)}), 500
+
 # @app.route("/chatgpt", methods=["POST"])
 # def chatgpt():
 #     conversation_id = request.json["conversation_id"]
