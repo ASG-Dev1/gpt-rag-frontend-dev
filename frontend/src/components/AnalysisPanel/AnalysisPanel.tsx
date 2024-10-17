@@ -1,8 +1,8 @@
 import { Pivot, PivotItem } from "@fluentui/react";
 import DOMPurify from "dompurify";
-
+ 
 import styles from "./AnalysisPanel.module.css";
-
+ 
 // import { SupportingContent } from "../SupportingContent";
 import { AskResponse } from "../../api";
 import { AnalysisPanelTabs } from "./AnalysisPanelTabs";
@@ -10,8 +10,8 @@ import PdfModal from "../PdfModal/PdfModal";
 import { useState } from 'react'
 import css from '../../components/common/Button.module.css'
 import { AccordionItemList } from "../AccordionItemsList/AccordionItemList";
-
-
+ 
+ 
 interface Props {
     className: string;
     activeTab: AnalysisPanelTabs;
@@ -20,54 +20,68 @@ interface Props {
     citationHeight: string;
     answer: AskResponse;
 }
-
+ 
 const pivotItemDisabledStyle = { disabled: true, style: { color: "grey" } };
-
+ 
 export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeight, className, onActiveTabChanged }: Props) => {
-
+ 
     const isDisabledThoughtProcessTab: boolean = !answer.thoughts;
     const isDisabledItemsTab: boolean = !answer.thoughts;
     const sanitizedThoughts = DOMPurify.sanitize(answer.thoughts!);
     const Items1: AskResponse = answer
     const dataPoints = Items1?.data_points ?? [];
     console.log('Items1.data_points:', Items1.data_points)
-
+ 
     const iframeSrc = `https://docs.google.com/gview?url=${activeCitation}&embedded=true`;
-    const [isModalOpen, setIsModalOpen] = useState(false); // State to manage the modal visibility
+ 
+    const [isModalOpenForCitation, setIsModalOpenForCitation] = useState(false); // Citation modal
+    const [isModalOpenForItems, setIsModalOpenForItems] = useState(false); // Items modal
     const [pdfData, setPdfData] = useState<{ name: string; url: string } | null>(null); // State to hold PDF data
+ 
     const isDisabledCitationTab: boolean = !activeCitation;
-
-    // Function to extract the filename from a URL for modal pdfbutton
+ 
+    // Function to extract the filename from a URL for the modal
     const extractFilename = (url: string) => {
         return url.split('/').pop()?.split('#')[0]?.split('?')[0] || "Unknown Filename"; // Extract file name from the URL
     };
-
-    // modal pdfbutton 
-    const handlePdfButtonClick = () => {
+ 
+    // Handle Citation PDF button click
+    const handlePdfButtonClickForCitation = () => {
         if (activeCitation) {
-            const filename = extractFilename(activeCitation);  // Get the filename from the citation URL
-
+            const filename = extractFilename(activeCitation);
+ 
             setPdfData({
-                name: filename,  // Set the filename as the name of the PDF
-                url: activeCitation      // Use the activeCitation URL
+                name: filename,
+                url: activeCitation
             });
-            setIsModalOpen(true);  // Open the modal when the button is clicked
+            setIsModalOpenForCitation(true); // Open the modal for citation
         }
     };
-
+ 
+    // Handle data point URL click
+    const handleDataPointUrlClick = (url: string) => {
+        const filename = extractFilename(url);
+ 
+        setPdfData({
+            name: filename,
+            url: url
+        });
+        setIsModalOpenForItems(true); // Open the modal for data points (items)
+    };
+ 
     console.log('Items1.data_points type:', typeof Items1.data_points);
     console.log('Items1.data_points value:', Items1.data_points);
-
-
-
-
+ 
+ 
+ 
+ 
     function extractDataFromResponse(response: AskResponse): { [key: string]: string } {
         let input = response.thoughts!;
         let tokens = input.split(' ');
         let result: { [key: string]: string } = {};
         let currentKey = '';
         let currentValue = '';
-
+ 
         for (let i = 0; i < tokens.length; i++) {
             if (tokens[i].endsWith(':')) {
                 if (currentKey) {
@@ -79,20 +93,20 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                 currentValue += tokens[i] + ' ';
             }
         }
-
+ 
         if (currentKey) {
             result[currentKey] = currentValue.trim();
         }
-
+ 
         return result;
     }
-
-
+ 
+ 
     const extractedData = extractDataFromResponse(Items1);
     console.log('Extracted Data:', extractedData);
     console.log(Items1.data_points);
     console.log('Items1.data_points type:', typeof Items1.data_points);
-
+ 
     return (
         <>
             <Pivot
@@ -100,40 +114,17 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                 selectedKey={activeTab}
                 onLinkClick={pivotItem => pivotItem && onActiveTabChanged(pivotItem.props.itemKey! as AnalysisPanelTabs)}
             >
-
-                {/* <PivotItem
-                    itemKey={AnalysisPanelTabs.Items}
-                    headerText="Items"
-                    headerButtonProps={isDisabledItemsTab ? pivotItemDisabledStyle : undefined}
-                >
-                    <div>
-                       
-
-                    {Items1.data_points && Items1.data_points.length > 0 ? (
-                            // Check if data_points is an array; if so, join the elements into a single string
-                            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(Array.isArray(Items1.data_points) ? Items1.data_points.join('') : Items1.data_points) }} />
-                        ) : (
-                            <p>No data points found</p>
-                        )}
-
-
-
-                    </div>
-                </PivotItem> */}
-
-                {/* Prueba JAMR */}
                 <PivotItem
                     itemKey={AnalysisPanelTabs.Items}
                     headerText="Items"
-                    // headerButtonProps={isDisabledItemsTab ? pivotItemDisabledStyle : undefined}
                     headerButtonProps={dataPoints.length === 0 ? { disabled: true, style: { color: "grey" } } : undefined}
                 >
                     <div>
                         {Items1.data_points && Items1.data_points.length > 0 ? (
                             Items1.data_points.map((item, index) => (
                                 <div key={index} className={styles.itemContainer}>
-                                    {/* Display the fields you need */}
-                                    < AccordionItemList
+                                    {/* Display the fields you need in an accordion */}
+                                    <AccordionItemList
                                         header={item.Numero_de_Caso}
                                         content={{
                                             "Costo Unitario Estimado de Artículo": item.Costo_Unitario_Estimado_de_Articulo,
@@ -161,61 +152,50 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                                             "Email de Suplidor": item.Email_de_Suplidor,
                                         }}
                                         url={item.Url_de_Archivo_de_Orden_de_Compra}
+                                        onUrlClick={handleDataPointUrlClick} // Use this for URL click in data points
                                     />
-
-                                    {/* <p><strong>URL de Archivo de Orden de Compra:</strong> <a href={item.Url_de_Archivo_de_Orden_de_Compra} target="_blank" rel="noopener noreferrer">{item.Url_de_Archivo_de_Orden_de_Compra}</a></p> */}
                                 </div>
                             ))
                         ) : (
-                            <p>No se encontraron Items disponibles.</p>
+                            <p>No items available.</p>
                         )}
                     </div>
                 </PivotItem>
+ 
                 <PivotItem
                     itemKey={AnalysisPanelTabs.CitationTab}
                     headerText="Citation"
                     headerButtonProps={isDisabledCitationTab ? pivotItemDisabledStyle : undefined}
                 >
-                    {/* <iframe title="Citation" src={iframeSrc} width="100%" height={citationHeight}/> */}
                     <div className={styles.thoughtProcess}>
                         {activeCitation ? (
-                            <button className={`${css.buttonStructure} ${css.buttonCitation}`} onClick={handlePdfButtonClick}>{extractFilename(activeCitation)}</button>  // Show the extracted file name on the button
+                            <button className={`${css.buttonStructure} ${css.buttonCitation}`} onClick={handlePdfButtonClickForCitation}>
+                                {extractFilename(activeCitation)}
+                            </button>
                         ) : (
                             <p>No citation available</p>
                         )}
                     </div>
                 </PivotItem>
-
             </Pivot>
+ 
+            {/* Modal for displaying the PDF for citations */}
+            {pdfData && (
+                <PdfModal
+                    isOpen={isModalOpenForCitation}
+                    closeModal={() => setIsModalOpenForCitation(false)} // Close the citation modal
+                    data={pdfData}
+                />
+            )}
+ 
+            {/* Modal for displaying the PDF for data points (items) */}
+            {pdfData && (
+                <PdfModal
+                    isOpen={isModalOpenForItems}
+                    closeModal={() => setIsModalOpenForItems(false)} // Close the items modal
+                    data={pdfData}
+                />
+            )}
         </>
     );
 }
-{/* {Items1.data_points && Items1.data_points.length > 0 ? (
-                            Items1.data_points.map((item, index) => (
-                                <div key={index}>
-                                    <p>Número de Caso: {item.Numero_de_Caso}</p>
-                                    <p>Costo Unitario Estimado del Artículo: {item.Costo_Unitario_Estimado_de_Articulo}</p>
-                                    {/* Other fields... */}
-
-{/* Render the button for the URL */ }
-{/* {item.Url_de_Archivo_de_Orden_de_Compra && (
-                                        <button
-                                            onClick={() => window.open(item.Url_de_Archivo_de_Orden_de_Compra, '_blank')}
-                                            className="archivo-button"
-                                        >
-                                            Archivo de Orden de Compra
-                                        </button>
-                                    )}
-                                </div>
-                            ))
-                        ) : (
-                            <p>No data points found</p>
-                        )} */}
-
-{/* 
-{Items1.data_points && Items1.data_points.length > 0 ? (
-                            // Check if data_points is an array; if so, join the elements into a single string
-                            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(Array.isArray(Items1.data_points) ? Items1.data_points.join('') : Items1.data_points) }} />
-                        ) : (
-                            <p>No data points found</p>
-                        )} */}
