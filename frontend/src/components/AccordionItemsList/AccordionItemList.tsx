@@ -1,6 +1,7 @@
 import css from '../../components/Common/Button.module.css'
-import styles from   "./AccordionItemList.module.css"
+import styles from "./AccordionItemList.module.css"
 import { useState } from 'react'
+import PdfModal from "../PdfModal/PdfModal";
 
 type AccordionItemListProps = {
      header: string,
@@ -25,6 +26,8 @@ export const AccordionItemList = ({ header, content, url }: AccordionItemListPro
      }
 
      const handleDataPointUrlClick = (url: string) => {
+          console.log("Clicked! V2")
+          console.log(url)
           const filename = extractFilename(url);
           setPdfData({
                name: filename,
@@ -36,7 +39,7 @@ export const AccordionItemList = ({ header, content, url }: AccordionItemListPro
      // Renders Each Item List Modal
      return <>
           <div className='accorion' onClick={handleAccordionClick} >
-               <p className={styles.itemsHeader}>
+               <p className={styles.itemsHeader} >
                     {header}
                </p>
                <div className='accordion-content' style={{ display: itemContent === true ? 'block' : 'none' }}>
@@ -46,10 +49,19 @@ export const AccordionItemList = ({ header, content, url }: AccordionItemListPro
                          </div>
                          </>
                     ))}
-                   <p className={styles.itemsTitle}> Url_de_Archivo_de_Orden_de_Compra:</p> 
+                    <p className={styles.itemsTitle}> Url de Archivo de Orden de Compra:</p>
                     <button className={`${css.buttonStructure} ${css.urlItemPdf}`} onClick={() => handleDataPointUrlClick(url)}> {url}</button>
                </div>
           </div>
+
+          {/* Modal for displaying the PDF */}
+          {pdfData && (
+                <PdfModal
+                    isOpen={isModalOpen}
+                    closeModal={() => setIsModalOpen(false)}
+                    data={pdfData}  // Pass the PDF data to the modal
+                />
+            )}
      </>
 }
 

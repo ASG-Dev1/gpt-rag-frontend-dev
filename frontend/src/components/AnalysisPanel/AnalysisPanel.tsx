@@ -187,15 +187,6 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                 </PivotItem>
 
             </Pivot>
-
-            {/* Modal for displaying the PDF */}
-            {pdfData && (
-                <PdfModal
-                    isOpen={isModalOpen}
-                    closeModal={() => setIsModalOpen(false)}
-                    data={pdfData}  // Pass the PDF data to the modal
-                />
-            )}
         </>
     );
 }

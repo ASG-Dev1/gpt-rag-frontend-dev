@@ -25,3 +25,8 @@
     margin: 8px 0;
     font-weight: 400;
 }
+
+.itemContainer:hover {
+    cursor:pointer;
+    background: #6c89a9;
+}
