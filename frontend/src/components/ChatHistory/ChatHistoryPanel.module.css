@@ -12,7 +12,7 @@
 }
 
 .itemCell {
-  max-width: 270px;
+  max-width: 100%;
   min-height: 32px;
   cursor: pointer;
   padding-left: 15px;

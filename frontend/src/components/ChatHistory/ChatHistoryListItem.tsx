@@ -1,4 +1,5 @@
 import * as React from 'react';
+import styles from './ChatHistoryPanel.module.css'
 
 type ChatHistoryListProps = {
   conversation: {
@@ -11,11 +12,8 @@ type ChatHistoryListProps = {
 
 export const ChatHistoryListItem: React.FC<ChatHistoryListProps> = ({ conversation }) => {
   return (
-    <div>
-      <p><strong>Conversation ID:</strong> {conversation.id}</p>
-      <p><strong>User ID:</strong> {conversation.userId}</p>
-      <p><strong>User Ask:</strong> {conversation.userAsk}</p>
-      <p><strong>Answer:</strong> {conversation.answer}</p>
+    <div className={styles.itemCell}>
+      {conversation.id}
     </div>
   );
 };
