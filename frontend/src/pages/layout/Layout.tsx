@@ -6,26 +6,11 @@ import asgpt from "../../assets/asgpt.png";
 import styles from "./Layout.module.css";
 import btnStyles from '../../components/Common/Button.module.css'
 import { BiShowAlt, BiHide } from "react-icons/bi";
-import { AppStateContext } from "../../state/AppProvider";
-
+import { useChatHistory } from "../../components/ChatHistory/ChatHistoryContext";
 
 const Layout = () => {
+    const { isHistoryVisible, toggleHistoryVisibility } = useChatHistory();;
 
-    const appStateContext = useContext(AppStateContext)
-
-    const handleHistoryClick = () => {
-        appStateContext?.dispatch({ type: 'TOGGLE_CHAT_HISTORY' })
-    }
-
-    // useEffect(() => {
-    //     console.log("appStateContext:", appStateContext);
-    //     console.log("appStateContext")
-    //   }, [appStateContext]);
-
-    // Joshua Prueba
-    useEffect(() => {
-        console.log("Chat history open status:", appStateContext?.state.isChatHistoryOpen);
-    }, [appStateContext?.state.isChatHistoryOpen]);
 
     return (
         <div className={styles.layout}>
@@ -35,11 +20,12 @@ const Layout = () => {
                         <img height="70px" src={asgpt}></img>
                         <h3 className={styles.headerTitle}></h3>
                     </Link>
-                    <button className={`${btnStyles.buttonStructure} ${btnStyles.commandBtn} ${btnStyles.btn}`} onClick={handleHistoryClick} >
-                        {appStateContext?.state?.isChatHistoryOpen ?
-                            (<><BiHide color="#fff" size="25px" /><span className={styles.text}>History</span></>
-                            ) : (
-                                <><BiShowAlt color="#fff" size="25px" /><span className={styles.text}>History</span></>)}
+                    <button className={`${btnStyles.buttonStructure} ${btnStyles.commandBtn}`} onClick={toggleHistoryVisibility}>
+                        {isHistoryVisible ? (
+                            <><BiHide color="#fff" size="25px" /><span className={styles.text}>Hide History</span></>
+                        ) : (
+                            <><BiShowAlt color="#fff" size="25px" /><span className={styles.text}>Show History</span></>
+                        )}
                     </button>
                 </div>
             </header>

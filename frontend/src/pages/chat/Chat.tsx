@@ -1,11 +1,10 @@
-import { useRef, useState, useEffect, useContext } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Checkbox, Panel, DefaultButton, TextField, SpinButton, Stack } from "@fluentui/react";
-import { SparkleFilled } from "@fluentui/react-icons";
 
 import styles from "./Chat.module.css";
 import btnStyles from '../../components/Common/Button.module.css'
 
-import { chatApiGpt, Approaches, AskResponse, ChatRequest, ChatRequestGpt, ChatTurn, CosmosDBStatus } from "../../api";
+import { chatApiGpt, Approaches, AskResponse, ChatRequest, ChatRequestGpt, ChatTurn } from "../../api";
 import { Answer, AnswerError, AnswerLoading } from "../../components/Answer";
 import { QuestionInput } from "../../components/QuestionInput";
 import { ExampleList } from "../../components/Example";
@@ -14,7 +13,6 @@ import { AnalysisPanel, AnalysisPanelTabs } from "../../components/AnalysisPanel
 import { ClearChatButton } from "../../components/ClearChatButton";
 import { getTokenOrRefresh } from '../../components/QuestionInput/token_util';
 import { SpeechConfig, AudioConfig, SpeechSynthesizer, ResultReason } from 'microsoft-cognitiveservices-speech-sdk';
-import { AppStateContext } from "../../state/AppProvider";
 import { ChatHistoryPanel } from "../../components/ChatHistory/ChatHistoryPanel";
 
 const userLanguage = navigator.language;
@@ -32,7 +30,6 @@ const Chat = () => {
     const speechSynthesisEnabled = false;
 
     // Joshua Prueba
-    const appStateContext = useContext(AppStateContext)
 
     const [placeholderText, setPlaceholderText] = useState('');
     const [isConfigPanelOpen, setIsConfigPanelOpen] = useState(false);
@@ -69,8 +66,6 @@ const Chat = () => {
         setActiveAnalysisPanelTab(undefined);
 
         try {
-            console.log("JAMR Current userId:", userId);
-
             const history: ChatTurn[] = answers.map(a => ({ user: a[0], bot: a[1].answer }));
             const request: ChatRequestGpt = {
                 history: [...history, { user: question, bot: undefined }],
@@ -92,11 +87,12 @@ const Chat = () => {
 
             const result = await chatApiGpt(request);
 
-            console.log("JAMR Request conversation_id:", request.history);
+
             console.log(result)
             console.log(result.answer)
             setAnswers([...answers, [question, result]]);
             setUserId(result.conversation_id);
+
 
             // Voice Synthesis
             if (speechSynthesisEnabled) {
@@ -342,8 +338,8 @@ const Chat = () => {
                     </Panel>
 
                     <Stack horizontal horizontalAlign="center">
-                        {appStateContext?.state.isChatHistoryOpen &&
-                            <ChatHistoryPanel />}
+
+                        <ChatHistoryPanel />
                     </Stack>
                 </div>
             </div>

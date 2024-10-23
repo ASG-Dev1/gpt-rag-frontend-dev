@@ -21,9 +21,7 @@ import {
 import { useBoolean } from '@fluentui/react-hooks'
 
 import { ChatHistoryLoadingState, historyDeleteAll } from '../../api'
-import { AppStateContext } from '../../state/AppProvider'
 
-import ChatHistoryList from './ChatHistoryList'
 
 import styles from './ChatHistoryPanel.module.css'
 
@@ -44,7 +42,6 @@ const commandBarStyle: ICommandBarStyles = {
 const commandBarButtonStyle: Partial<IStackStyles> = { root: { height: '50px' } }
 
 export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
-  const appStateContext = useContext(AppStateContext)
   const [showContextualMenu, setShowContextualMenu] = React.useState(false)
   const [hideClearAllDialog, { toggle: toggleClearAllDialog }] = useBoolean(true)
   const [clearing, setClearing] = React.useState(false)
@@ -70,9 +67,6 @@ export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
     { key: 'clearAll', text: 'Clear all chat history', iconProps: { iconName: 'Delete' } }
   ]
 
-  const handleHistoryClick = () => {
-    appStateContext?.dispatch({ type: 'TOGGLE_CHAT_HISTORY' })
-  }
 
   const onShowContextualMenu = React.useCallback((ev: React.MouseEvent<HTMLElement>) => {
     ev.preventDefault() // don't navigate
@@ -81,17 +75,7 @@ export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
 
   const onHideContextualMenu = React.useCallback(() => setShowContextualMenu(false), [])
 
-  const onClearAllChatHistory = async () => {
-    setClearing(true)
-    const response = await historyDeleteAll()
-    if (!response.ok) {
-      setClearingError(true)
-    } else {
-      appStateContext?.dispatch({ type: 'DELETE_CHAT_HISTORY' })
-      toggleClearAllDialog()
-    }
-    setClearing(false)
-  }
+
 
   const onHideClearAllDialog = () => {
     toggleClearAllDialog()
@@ -101,12 +85,12 @@ export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
   }
 
   //Renders Chat History Panel and its items
-  React.useEffect(() => { }, [appStateContext?.state.chatHistory, clearingError])
+  React.useEffect(() => { },)
 
   return (
     <Stack className={styles.container} data-is-scrollable aria-label={'chat history panel'}>
       <Stack horizontal horizontalAlign="space-between" verticalAlign="center" wrap aria-label="chat history header">
-        <StackItem style={{paddingTop: '1rem'}}> {/* Aqui es donde vas a editar el padding Joshua!!!!  */}
+        <StackItem style={{ paddingTop: '1rem' }}> {/* Aqui es donde vas a editar el padding Joshua!!!!  */}
           <Text
             className={styles.headingText}
             role="heading"
@@ -124,15 +108,17 @@ export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
               onClick={onShowContextualMenu}
               aria-label={'clear all chat history'}
               styles={
-                { root: { backgroundColor: "transparent" },
+                {
+                  root: { backgroundColor: "transparent" },
                   rootHovered: { backgroundColor: '#9ac4e3' },
                   rootPressed: { backgroundColor: "#9ac4e3" },
                   icon: { color: 'black' },
                   iconHovered: { color: 'black' },
-                  iconPressed: { color: 'black' } }}
+                  iconPressed: { color: 'black' }
+                }}
               role="button"
               id="moreButton"
-            /> 
+            />
 
             {/* Items in the more options button (...) drop down */}
             <ContextualMenu
@@ -157,7 +143,7 @@ export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
                             color: "black",
                           }
                         },
-                        ":active":{
+                        ":active": {
                           backgroundColor: "#9ac4e3"
                         }
                       }
@@ -173,7 +159,6 @@ export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
             <CommandBarButton
               iconProps={{ iconName: 'Cancel' }}
               title={'Esconder'}
-              onClick={handleHistoryClick}
               aria-label={'hide button'}
               styles={{ root: { backgroundColor: "transparent" }, rootHovered: { backgroundColor: '#9ac4e3' }, rootPressed: { backgroundColor: "#9ac4e3" }, icon: { color: 'black' }, iconHovered: { color: 'black' }, iconPressed: { color: 'black' } }}
               role="button"
@@ -206,7 +191,7 @@ export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
         dialogContentProps={clearAllDialogContentProps}
         modalProps={modalProps}>
         <DialogFooter>
-          {!clearingError && <PrimaryButton onClick={onClearAllChatHistory} disabled={clearing} text="Borrar todo" />}
+          {!clearingError && <PrimaryButton disabled={clearing} text="Borrar todo" />}
           <DefaultButton
             onClick={onHideClearAllDialog}
             disabled={clearing}
@@ -214,58 +199,6 @@ export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
           />
         </DialogFooter>
       </Dialog>
-      </Stack>
+    </Stack>
   )
 }
-
-// Esta parte necesita la conexion con la base de datos para funcionar
-
-{/* <Stack className={styles.chatHistoryListContainer}>
-          {appStateContext?.state.chatHistoryLoadingState === ChatHistoryLoadingState.Success &&
-            appStateContext?.state.isCosmosDBAvailable.cosmosDB && <ChatHistoryList />}
-          {appStateContext?.state.chatHistoryLoadingState === ChatHistoryLoadingState.Fail &&
-            appStateContext?.state.isCosmosDBAvailable && (
-              <>
-                <Stack>
-                  <Stack horizontalAlign="center" verticalAlign="center" style={{ width: '100%', marginTop: 10 }}>
-                    <StackItem>
-                      <Text style={{ alignSelf: 'center', fontWeight: '400', fontSize: 16, color: 'white' }}>
-                        {appStateContext?.state.isCosmosDBAvailable?.status && (
-                          <span>{appStateContext?.state.isCosmosDBAvailable?.status}</span>
-                        )}
-                        {!appStateContext?.state.isCosmosDBAvailable?.status && <span>Error al cargar el historial de chat</span>}
-                      </Text>
-                    </StackItem>
-                    <StackItem>
-                      <Text style={{ alignSelf: 'center', fontWeight: '400', fontSize: 14, color: 'white' }}>
-                        <span>El historial de chat no se puede guardar en este momento</span>
-                      </Text>
-                    </StackItem>
-                  </Stack>
-                </Stack>
-              </>
-            )}
-          {appStateContext?.state.chatHistoryLoadingState === ChatHistoryLoadingState.Loading && (
-            <>
-              <Stack>
-                <Stack
-                  horizontal
-                  horizontalAlign="center"
-                  verticalAlign="center"
-                  style={{ width: '100%', marginTop: 10 }}>
-                  <StackItem style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <Spinner
-                      style={{ alignSelf: 'flex-start', height: '100%', marginRight: '5px' }}
-                      size={SpinnerSize.medium}
-                    />
-                  </StackItem>
-                  <StackItem>
-                    <Text style={{ alignSelf: 'center', fontWeight: '400', fontSize: 14, color: 'white' }}>
-                      <span style={{ whiteSpace: 'pre-wrap' }}>Cargando historial de chat</span>
-                    </Text>
-                  </StackItem>
-                </Stack>
-              </Stack>
-            </>
-          )}
-        </Stack> */}
