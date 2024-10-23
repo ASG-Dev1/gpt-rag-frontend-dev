@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import React from 'react'
 import {
   CommandBarButton,
@@ -21,13 +21,14 @@ import {
 import { useBoolean } from '@fluentui/react-hooks'
 
 import { ChatHistoryLoadingState, historyDeleteAll } from '../../api'
-import { AppStateContext } from '../../state/AppProvider'
 
-import ChatHistoryList from './ChatHistoryList'
+import  { ChatHistoryListItem } from './ChatHistoryListItem'
+import { get_ChatHistory } from '../../api'; // Fetch Chat History JAMR
 
 import styles from './ChatHistoryPanel.module.css'
 
-interface ChatHistoryPanelProps { }
+interface ChatHistoryPanelProps {
+}
 
 export enum ChatHistoryPanelTabs {
   History = 'History'
@@ -44,11 +45,11 @@ const commandBarStyle: ICommandBarStyles = {
 const commandBarButtonStyle: Partial<IStackStyles> = { root: { height: '50px' } }
 
 export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
-  const appStateContext = useContext(AppStateContext)
   const [showContextualMenu, setShowContextualMenu] = React.useState(false)
   const [hideClearAllDialog, { toggle: toggleClearAllDialog }] = useBoolean(true)
   const [clearing, setClearing] = React.useState(false)
   const [clearingError, setClearingError] = React.useState(false)
+  const [chatHistory, setChatHistory] = useState([]); //JAMR
 
   const clearAllDialogContentProps = {
     type: DialogType.close,
@@ -71,7 +72,7 @@ export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
   ]
 
   const handleHistoryClick = () => {
-    appStateContext?.dispatch({ type: 'TOGGLE_CHAT_HISTORY' })
+      console.log("I got clicked ChatHistoryPanel")
   }
 
   const onShowContextualMenu = React.useCallback((ev: React.MouseEvent<HTMLElement>) => {
@@ -87,7 +88,6 @@ export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
     if (!response.ok) {
       setClearingError(true)
     } else {
-      appStateContext?.dispatch({ type: 'DELETE_CHAT_HISTORY' })
       toggleClearAllDialog()
     }
     setClearing(false)
@@ -100,13 +100,26 @@ export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
     }, 2000)
   }
 
-  //Renders Chat History Panel and its items
-  React.useEffect(() => { }, [appStateContext?.state.chatHistory, clearingError])
+  // Fetch Chat History
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const data = await get_ChatHistory();
+        setChatHistory(data);
+        console.log("Test in Chat History Panel")
+        console.log(data)
+      } catch (error) {
+        console.error('Error loading chat history:', error);
+      }
+    };
+
+    fetchHistory();
+  }, []);
 
   return (
     <Stack className={styles.container} data-is-scrollable aria-label={'chat history panel'}>
       <Stack horizontal horizontalAlign="space-between" verticalAlign="center" wrap aria-label="chat history header">
-        <StackItem style={{paddingTop: '1rem'}}> {/* Aqui es donde vas a editar el padding Joshua!!!!  */}
+        <StackItem style={{ paddingTop: '1rem' }}> {/* Aqui es donde vas a editar el padding Joshua!!!!  */}
           <Text
             className={styles.headingText}
             role="heading"
@@ -124,15 +137,17 @@ export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
               onClick={onShowContextualMenu}
               aria-label={'clear all chat history'}
               styles={
-                { root: { backgroundColor: "transparent" },
+                {
+                  root: { backgroundColor: "transparent" },
                   rootHovered: { backgroundColor: '#9ac4e3' },
                   rootPressed: { backgroundColor: "#9ac4e3" },
                   icon: { color: 'black' },
                   iconHovered: { color: 'black' },
-                  iconPressed: { color: 'black' } }}
+                  iconPressed: { color: 'black' }
+                }}
               role="button"
               id="moreButton"
-            /> 
+            />
 
             {/* Items in the more options button (...) drop down */}
             <ContextualMenu
@@ -157,7 +172,7 @@ export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
                             color: "black",
                           }
                         },
-                        ":active":{
+                        ":active": {
                           backgroundColor: "#9ac4e3"
                         }
                       }
@@ -179,6 +194,15 @@ export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
               role="button"
             />
           </Stack>
+
+          <Stack>
+            {chatHistory.map((item, index) => (
+              <div key={index}>
+                <ChatHistoryListItem conversation={item} />
+              </div>
+            ))}
+          </Stack>
+
         </Stack>
       </Stack>
       <Stack
@@ -214,7 +238,7 @@ export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
           />
         </DialogFooter>
       </Dialog>
-      </Stack>
+    </Stack>
   )
 }
 

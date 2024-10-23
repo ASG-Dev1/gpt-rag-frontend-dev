@@ -260,3 +260,27 @@ export const historyRename = async (convId: string, title: string): Promise<Resp
     })
   return response
 }
+
+export const get_ChatHistory = async () => {
+  try {
+    const response = await fetch('/get_ChatHistory', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || 'Failed to fetch chat history');
+    }
+
+    const data = await response.json();
+    // console.log("API data")
+    // console.log(data)
+    return data;
+  } catch (error) {
+    console.error('Error fetching chat history:', error);
+    throw error;
+  }
+};

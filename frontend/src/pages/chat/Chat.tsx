@@ -14,8 +14,9 @@ import { AnalysisPanel, AnalysisPanelTabs } from "../../components/AnalysisPanel
 import { ClearChatButton } from "../../components/ClearChatButton";
 import { getTokenOrRefresh } from '../../components/QuestionInput/token_util';
 import { SpeechConfig, AudioConfig, SpeechSynthesizer, ResultReason } from 'microsoft-cognitiveservices-speech-sdk';
-import { AppStateContext } from "../../state/AppProvider";
 import { ChatHistoryPanel } from "../../components/ChatHistory/ChatHistoryPanel";
+
+import { useMenu } from '../../context/MenuContext'; // Toggle Chat History JAMR
 
 const userLanguage = navigator.language;
 let error_message_text = '';
@@ -31,9 +32,6 @@ const Chat = () => {
     // speech synthesis is disabled by default
     const speechSynthesisEnabled = false;
 
-    // Joshua Prueba
-    const appStateContext = useContext(AppStateContext)
-
     const [placeholderText, setPlaceholderText] = useState('');
     const [isConfigPanelOpen, setIsConfigPanelOpen] = useState(false);
     const [promptTemplate, setPromptTemplate] = useState<string>("");
@@ -42,6 +40,7 @@ const Chat = () => {
     const [useSemanticCaptions, setUseSemanticCaptions] = useState<boolean>(false);
     const [excludeCategory, setExcludeCategory] = useState<string>("");
     const [useSuggestFollowupQuestions, setUseSuggestFollowupQuestions] = useState<boolean>(false);
+
 
     const lastQuestionRef = useRef<string>("");
     const chatMessageStreamEnd = useRef<HTMLDivElement | null>(null);
@@ -58,10 +57,13 @@ const Chat = () => {
     const [userId, setUserId] = useState<string>("");
     const triggered = useRef(false);
 
+    const { isMenuOpen } = useMenu(); // Toggle Chat History Panel JAMR
+    console.log('Is menu open in Chat:', isMenuOpen);
+
     const makeApiRequestGpt = async (question: string) => {
         lastQuestionRef.current = question;
-        console.log("question", question);
-        console.log("userId", userId);
+        // console.log("question", question);
+        // console.log("userId", userId);
 
         error && setError(undefined);
         setIsLoading(true);
@@ -69,7 +71,7 @@ const Chat = () => {
         setActiveAnalysisPanelTab(undefined);
 
         try {
-            console.log("JAMR Current userId:", userId);
+            // console.log("JAMR Current userId:", userId);
 
             const history: ChatTurn[] = answers.map(a => ({ user: a[0], bot: a[1].answer }));
             const request: ChatRequestGpt = {
@@ -92,9 +94,9 @@ const Chat = () => {
 
             const result = await chatApiGpt(request);
 
-            console.log("JAMR Request conversation_id:", request.history);
-            console.log(result)
-            console.log(result.answer)
+            // console.log("JAMR Request conversation_id:", request.history);
+            // console.log(result)
+            // console.log(result.answer)
             setAnswers([...answers, [question, result]]);
             setUserId(result.conversation_id);
 
@@ -154,12 +156,6 @@ const Chat = () => {
         }
     }, [isLoading]);
 
-    // // Joshua Prueba
-    // useEffect(() => {
-    //     console.log("Chat history open status:", appStateContext);
-    //     console.log("Checkpoint")
-    // }, [appStateContext?.state.isChatHistoryOpen]);
-
     const onPromptTemplateChange = (_ev?: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
         setPromptTemplate(newValue || "");
     };
@@ -209,7 +205,6 @@ const Chat = () => {
 
         setSelectedAnswer(index);
     };
-
 
     return (
         <>
@@ -342,8 +337,7 @@ const Chat = () => {
                     </Panel>
 
                     <Stack horizontal horizontalAlign="center">
-                        {appStateContext?.state.isChatHistoryOpen &&
-                            <ChatHistoryPanel />}
+                        {isMenuOpen && <ChatHistoryPanel />}
                     </Stack>
                 </div>
             </div>
