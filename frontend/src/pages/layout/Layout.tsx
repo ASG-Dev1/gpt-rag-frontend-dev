@@ -8,11 +8,7 @@ import { BiShowAlt, BiHide } from "react-icons/bi";
 const Layout = () => {
     const { toggleMenu } = useMenu();
 
-    const historyClicked = () => {
-        console.log("Checkpoint in Layout");
-    };
-
-    console.log('Layout component rendered, toggleMenu:', toggleMenu); // Debugging
+    // console.log('Layout component rendered, toggleMenu:', toggleMenu); // Debugging
 
     return (
         <div className={styles.layout}>
@@ -26,7 +22,6 @@ const Layout = () => {
                         className={`${btnStyles.buttonStructure} ${btnStyles.commandBtn} ${btnStyles.btn}`}
                         onClick={() => {
                             toggleMenu();
-                            historyClicked();
                         }}
                     >
                         <BiHide color="#fff" size="25px" />

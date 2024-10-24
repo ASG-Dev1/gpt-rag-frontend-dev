@@ -125,7 +125,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                                 <div key={index} className={styles.itemContainer}>
                                     {/* Display the fields you need in an accordion */}
                                     <AccordionItemList
-                                        header={item.Numero_de_Caso}
+                                        header={item.Marca_de_Articulo + " " + item.Modelo_de_Articulo + " (" + item.Numero_de_Caso + ")"}
                                         content={{
                                             "Costo Unitario Estimado de Artículo": item.Costo_Unitario_Estimado_de_Articulo,
                                             "Fecha Recibo de Requisición": item.Fecha_Recibo_de_Requisicion,

@@ -22,12 +22,13 @@ import { useBoolean } from '@fluentui/react-hooks'
 
 import { ChatHistoryLoadingState, historyDeleteAll } from '../../api'
 
-import  { ChatHistoryListItem } from './ChatHistoryListItem'
+import { ChatHistoryListItem } from './ChatHistoryListItem'
 import { get_ChatHistory } from '../../api'; // Fetch Chat History JAMR
 
 import styles from './ChatHistoryPanel.module.css'
 
 interface ChatHistoryPanelProps {
+  onConversationSelected: (conversationId: string) => void;
 }
 
 export enum ChatHistoryPanelTabs {
@@ -44,7 +45,7 @@ const commandBarStyle: ICommandBarStyles = {
 
 const commandBarButtonStyle: Partial<IStackStyles> = { root: { height: '50px' } }
 
-export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
+export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelProps) {
   const [showContextualMenu, setShowContextualMenu] = React.useState(false)
   const [hideClearAllDialog, { toggle: toggleClearAllDialog }] = useBoolean(true)
   const [clearing, setClearing] = React.useState(false)
@@ -72,7 +73,7 @@ export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
   ]
 
   const handleHistoryClick = () => {
-      console.log("I got clicked ChatHistoryPanel")
+    console.log("I got clicked ChatHistoryPanel")
   }
 
   const onShowContextualMenu = React.useCallback((ev: React.MouseEvent<HTMLElement>) => {
@@ -106,8 +107,8 @@ export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
       try {
         const data = await get_ChatHistory();
         setChatHistory(data);
-        console.log("Test in Chat History Panel")
-        console.log(data)
+        // console.log("Test in Chat History Panel")
+        // console.log(data)
       } catch (error) {
         console.error('Error loading chat history:', error);
       }
@@ -198,7 +199,10 @@ export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
           <Stack>
             {chatHistory.map((item, index) => (
               <div key={index}>
-                <ChatHistoryListItem conversation={item} />
+                <ChatHistoryListItem
+                  key={index}
+                  conversation={item}
+                  onConversationSelected={onConversationSelected} />
               </div>
             ))}
           </Stack>

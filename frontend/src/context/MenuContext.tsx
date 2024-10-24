@@ -18,8 +18,6 @@ export const MenuProvider = ({ children }: { children: React.ReactNode }) => {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
-    console.log("Menu Context Provider")
-    console.log('Menu toggled:', isMenuOpen)
   };
 
   return (

@@ -58,7 +58,14 @@ const Chat = () => {
     const triggered = useRef(false);
 
     const { isMenuOpen } = useMenu(); // Toggle Chat History Panel JAMR
-    console.log('Is menu open in Chat:', isMenuOpen);
+    // console.log('Is menu open in Chat:', isMenuOpen);
+
+    const [ conversationId, setConversationId] = useState<string>(); // Selected Conversation
+
+    const handleConversationSelected = (conversationId: string) => {
+        setConversationId(conversationId)
+        console.log("Conversation ID selected", conversationId)
+    }
 
     const makeApiRequestGpt = async (question: string) => {
         lastQuestionRef.current = question;
@@ -337,7 +344,7 @@ const Chat = () => {
                     </Panel>
 
                     <Stack horizontal horizontalAlign="center">
-                        {isMenuOpen && <ChatHistoryPanel />}
+                        {isMenuOpen && <ChatHistoryPanel onConversationSelected={handleConversationSelected}/>}{/*   */}
                     </Stack>
                 </div>
             </div>
