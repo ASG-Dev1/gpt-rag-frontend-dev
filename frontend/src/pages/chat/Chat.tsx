@@ -73,18 +73,20 @@ const Chat = () => {
 
 
     const makeApiRequestGpt = async (question: string) => {
+        if (isViewingHistory) {
+            return;  // Prevent adding new messages when viewing history
+        }
+
         lastQuestionRef.current = question;
-        setError(undefined); // Clear previous errors
-        setIsLoading(true); // Start the loading state
+        setError(undefined);
+        setIsLoading(true);
 
         try {
-            // Use the updated ChatTurn interface that uses AskResponse
-            const history: ChatTurn[] = answers.map(a => ({ user: a.user, bot: a.bot }));
-
+            const history: ChatTurn[] = currentConversation.map(a => ({ user: a.user, bot: a.bot }));
             const request: ChatRequestGpt = {
                 history: [...history, { user: question, bot: undefined }],
                 approach: Approaches.ReadRetrieveRead,
-                conversation_id: userId,
+                conversation_id: "",
                 query: question,
                 overrides: {
                     promptTemplate: promptTemplate || undefined,
@@ -95,25 +97,22 @@ const Chat = () => {
                     suggestFollowupQuestions: useSuggestFollowupQuestions
                 }
             };
-
             const result = await chatApiGpt(request);
 
-            // Ensure result.answer is present before adding to answers array
             if (!result.answer) {
                 throw new Error("No answer received from API");
             }
 
-            // Add the question and result (AskResponse) to the answers array
-            setAnswers([...answers, { user: question, bot: result }]); // Correctly store result as AskResponse
-            setUserId(result.conversation_id); // Update the conversation ID
+            setCurrentConversation([...currentConversation, { user: question, bot: result }]);
 
         } catch (error) {
             console.error('Error during API request:', error);
-            setError(error); // Handle errors
+            setError(error);
         } finally {
-            setIsLoading(false); // Stop the loading state
+            setIsLoading(false);
         }
     };
+
 
 
 
@@ -185,18 +184,18 @@ const Chat = () => {
     //     }
     // };
     const onConversationSelected = async (conversationId: string) => {
-        console.log('Conversation selected with ID:', conversationId); // Log selected ID
-        setUserId(conversationId);
+        console.log('Conversation selected with ID:', conversationId);
+        setIsViewingHistory(true);
         try {
             const result = await fetchConversationById(conversationId);
-            console.log("OnConversationSelected result:", result); // Log the result to see the structure
+            console.log("OnConversationSelected result:", result);
+
             if (result && result.history) {
                 const conversationHistory = result.history.map((item: HistoryItem) => ({
                     user: item.userAsk,
                     bot: item.answer
                 }));
-                setHistoryConversation(conversationHistory); // Set the history correctly
-                setIsViewingHistory(true); // Indicate that we're viewing a historical conversation
+                setHistoryConversation(conversationHistory);
             } else {
                 console.error("Invalid conversation structure");
             }
@@ -206,9 +205,6 @@ const Chat = () => {
     };
 
 
-
-
-    // 2. This function fetches the conversation details from the server
     const fetchConversationById = async (conversationId: string) => {
         try {
             const response = await fetch(`/api/conversations/${conversationId}`);
@@ -216,7 +212,6 @@ const Chat = () => {
                 throw new Error('Failed to fetch conversation');
             }
             const result = await response.json();
-            console.log("Conversation data:", result);
             return result;
         } catch (error) {
             console.error('Error fetching conversation:', error);
@@ -224,29 +219,22 @@ const Chat = () => {
         }
     };
 
-
-
     const clearChat = () => {
         lastQuestionRef.current = "";
-        error && setError(undefined);
+        setError(undefined);
         setActiveCitation(undefined);
         setActiveAnalysisPanelTab(undefined);
-        setCurrentConversation([]); // Clear current conversation
-        setUserId("");
-        setIsViewingHistory(false); // Reset to indicate we are starting a new conversation
+        setCurrentConversation([]);
+        setHistoryConversation([]);
+        setIsViewingHistory(false);
     };
-
 
     useEffect(() => {
         chatMessageStreamEnd.current?.scrollIntoView({ behavior: "smooth" });
-        if (triggered.current === false) {
-            triggered.current = true;
-            // console.log(triggered.current);
-        }
         const language = navigator.language;
         if (language.startsWith('pt')) {
             setPlaceholderText('Escreva aqui sua pergunta');
-        } if (language.startsWith('es')) {
+        } else if (language.startsWith('es')) {
             setPlaceholderText('Escribe tu pregunta aqui');
         } else {
             setPlaceholderText('Write your question here');
@@ -314,7 +302,12 @@ const Chat = () => {
             <div className={styles.container}>
                 <div className={styles.chatRoot}>
                     <div className={styles.chatContainer}>
-
+                        {/* Conditional rendering: Show the "Back to Current Conversation" button only when viewing history */}
+                        {isViewingHistory && (
+                            <DefaultButton onClick={() => setIsViewingHistory(false)}>
+                                Back to Current Conversation
+                            </DefaultButton>
+                        )}
                         {!lastQuestionRef.current ? (
                             <div className={styles.chatEmptyState}>
                                 {
@@ -326,53 +319,34 @@ const Chat = () => {
                                 {/*<SparkleFilled fontSize={"120px"} primaryFill={"rgba(115, 118, 225, 1)"} aria-hidden="true" aria-label="Chat logo" />
                                 <h1 className={styles.chatEmptyStateTitle}>Conversación con datos</h1>*/}
                             </div>
+
                         ) : (
+
                             <div className={styles.chatMessageStream}>
-                                {isViewingHistory
-                                    ? historyConversation.map((item: ChatTurn, index: number) => (
-                                        <div key={index}>
-                                            <UserChatMessage message={item.user} /> {/* Render the user's message */}
-                                            <div className={styles.chatMessageGpt}>
-                                                {item.bot ? (
-                                                    <Answer
-                                                        key={index}
-                                                        answer={item.bot}
-                                                        isSelected={selectedAnswer === index && activeAnalysisPanelTab !== undefined}
-                                                        onCitationClicked={c => onShowCitation(c, index)}
-                                                        onThoughtProcessClicked={() => onToggleTab(AnalysisPanelTabs.ThoughtProcessTab, index)}
-                                                        onSupportingContentClicked={() => onToggleTab(AnalysisPanelTabs.SupportingContentTab, index)}
-                                                        onFollowupQuestionClicked={q => makeApiRequestGpt(q)}
-                                                        showFollowupQuestions={false}
-                                                        showSources={true}
-                                                    />
-                                                ) : (
-                                                    <div>No answer available</div>
-                                                )}
-                                            </div>
+                                {(isViewingHistory ? historyConversation : currentConversation).map((item: ChatTurn, index: number) => (
+                                    <div key={index}>
+                                        <UserChatMessage message={item.user} />
+                                        <div className={styles.chatMessageGpt}>
+                                            {item.bot ? (
+                                                <Answer
+                                                    key={index}
+                                                    answer={item.bot}
+                                                    isSelected={selectedAnswer === index && activeAnalysisPanelTab !== undefined}
+                                                    onCitationClicked={c => onShowCitation(c, index)}
+                                                    onThoughtProcessClicked={() => onToggleTab(AnalysisPanelTabs.ThoughtProcessTab, index)}
+                                                    onSupportingContentClicked={() => onToggleTab(AnalysisPanelTabs.SupportingContentTab, index)}
+                                                    onFollowupQuestionClicked={makeApiRequestGpt}
+                                                    showFollowupQuestions={false}
+                                                    showSources={true}
+                                                />
+                                            ) : (
+                                                <div>No answer available</div>
+                                            )}
                                         </div>
-                                    ))
-                                    : currentConversation.map((item: ChatTurn, index: number) => (
-                                        <div key={index}>
-                                            <UserChatMessage message={item.user} /> {/* Render the user's message */}
-                                            <div className={styles.chatMessageGpt}>
-                                                {item.bot ? (
-                                                    <Answer
-                                                        key={index}
-                                                        answer={item.bot}
-                                                        isSelected={selectedAnswer === index && activeAnalysisPanelTab !== undefined}
-                                                        onCitationClicked={c => onShowCitation(c, index)}
-                                                        onThoughtProcessClicked={() => onToggleTab(AnalysisPanelTabs.ThoughtProcessTab, index)}
-                                                        onSupportingContentClicked={() => onToggleTab(AnalysisPanelTabs.SupportingContentTab, index)}
-                                                        onFollowupQuestionClicked={q => makeApiRequestGpt(q)}
-                                                        showFollowupQuestions={false}
-                                                        showSources={true}
-                                                    />
-                                                ) : (
-                                                    <div>No answer available</div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    ))}
+                                    </div>
+                                ))}
+
+
                                 {isLoading && (
                                     <>
                                         <UserChatMessage message={lastQuestionRef.current} />
@@ -392,6 +366,7 @@ const Chat = () => {
                                 <div ref={chatMessageStreamEnd} />
                             </div>
 
+
                         )}
 
                         <div className={styles.chatInput}>
@@ -406,7 +381,7 @@ const Chat = () => {
                         </div>
                     </div>
 
-                    {answers.length > 0 && activeAnalysisPanelTab && (
+                    {/* {answers.length > 0 && activeAnalysisPanelTab && (
                         <AnalysisPanel
                             className={styles.chatAnalysisPanel}
                             activeCitation={activeCitation}
@@ -470,7 +445,71 @@ const Chat = () => {
                         {isMenuOpen && <ChatHistoryPanel onConversationSelected={onConversationSelected} />}
                     </Stack>
                 </div>
+            </div> */}
+
+                    {(isViewingHistory ? historyConversation : currentConversation).length > 0 && activeAnalysisPanelTab && (
+                        <AnalysisPanel
+                            className={styles.chatAnalysisPanel}
+                            activeCitation={activeCitation}
+                            onActiveTabChanged={x => onToggleTab(x as AnalysisPanelTabs, selectedAnswer)}
+                            citationHeight="720px"
+                            answer={(isViewingHistory ? historyConversation : currentConversation)[selectedAnswer]?.bot!} // Ensure the correct conversation is shown
+                            activeTab={activeAnalysisPanelTab}
+                        />
+                    )}
+                    <Panel
+                        headerText="Configure answer generation"
+                        isOpen={isConfigPanelOpen}
+                        isBlocking={false}
+                        onDismiss={() => setIsConfigPanelOpen(false)}
+                        closeButtonAriaLabel="Close"
+                        onRenderFooterContent={() => <DefaultButton onClick={() => setIsConfigPanelOpen(false)}>Close</DefaultButton>}
+                        isFooterAtBottom={true}
+                    >
+                        <TextField
+                            className={styles.chatSettingsSeparator}
+                            defaultValue={promptTemplate}
+                            label="Override prompt template"
+                            multiline
+                            autoAdjustHeight
+                            onChange={onPromptTemplateChange}
+                        />
+                        <SpinButton
+                            className={styles.chatSettingsSeparator}
+                            label="Retrieve this many documents from search:"
+                            min={1}
+                            max={50}
+                            defaultValue={retrieveCount.toString()}
+                            onChange={onRetrieveCountChange}
+                        />
+                        <TextField className={styles.chatSettingsSeparator} label="Exclude category" onChange={onExcludeCategoryChanged} />
+                        <Checkbox
+                            className={styles.chatSettingsSeparator}
+                            checked={useSemanticRanker}
+                            label="Use semantic ranker for retrieval"
+                            onChange={onUseSemanticRankerChange}
+                        />
+                        <Checkbox
+                            className={styles.chatSettingsSeparator}
+                            checked={useSemanticCaptions}
+                            label="Use query-contextual summaries instead of whole documents"
+                            onChange={onUseSemanticCaptionsChange}
+                            disabled={!useSemanticRanker}
+                        />
+                        <Checkbox
+                            className={styles.chatSettingsSeparator}
+                            checked={useSuggestFollowupQuestions}
+                            label="Suggest follow-up questions"
+                            onChange={onUseSuggestFollowupQuestionsChange}
+                        />
+                    </Panel>
+
+                    <Stack horizontal horizontalAlign="center">
+                        {isMenuOpen && <ChatHistoryPanel onConversationSelected={onConversationSelected} />}
+                    </Stack>
+                </div>
             </div>
+
 
         </>
     );
