@@ -13,7 +13,7 @@ type ChatHistoryListProps = {
 export const ChatHistoryListItem: React.FC<ChatHistoryListProps> = ({ conversation }) => {
   return (
     <div className={styles.itemCell}>
-      {conversation.id}
+      <div className={styles.itemText}>{conversation.id}</div>
     </div>
   );
 };

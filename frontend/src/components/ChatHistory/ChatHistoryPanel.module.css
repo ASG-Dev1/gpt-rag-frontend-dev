@@ -12,16 +12,21 @@
 }
 
 .itemCell {
-  max-width: 100%;
-  min-height: 32px;
+  height: 3.5rem;
+  width: 100%;
   cursor: pointer;
-  padding-left: 15px;
-  padding-right: 5px;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  padding: .6rem 1rem;
   box-sizing: border-box;
   border-radius: 5px;
   display: flex;
+  align-items: center;
+}
+
+.itemText {
+  white-space: nowrap; /* Prevents wrapping */
+  overflow: hidden; /* Hides the overflow */
+  text-overflow: ellipsis; /* Adds the ellipsis */
+  width: 100%; /* Makes sure it takes the available width */
 }
 
 .itemCell:hover {
