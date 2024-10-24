@@ -45,6 +45,11 @@ export const Answer = ({
     showFollowupQuestions,
     showSources
 }: Props) => {
+    // If the answer prop is not provided, return null (or a fallback message)
+    if (!answer || !answer.answer) {
+        return <div>No answer available</div>; // Or return null if you don't want to display anything
+    }
+
     const parsedAnswer = useMemo(() => parseAnswerToHtml(answer.answer, !!showSources, onCitationClicked), [answer]);
 
     const sanitizedAnswerHtml = DOMPurify.sanitize(parsedAnswer.answerHtml);
@@ -92,12 +97,9 @@ export const Answer = ({
             {!!parsedAnswer.citations.length && showSources && (
                 <Stack.Item>
                     <Stack horizontal wrap tokens={{ childrenGap: 5 }}>
-                        <span className={styles.citationLearnMore}>Fuentes:</span>
-
+                        <span className={styles.citationLearnMore}>Sources:</span>
                         {parsedAnswer.citations.map((x, i) => {
-                            // console.log(parsedAnswer.citations);
                             const path = getCitationFilePath(x);
-                            // console.log(x);
                             return (
                                 <a key={i} className={styles.citation} title={x} onClick={() => onCitationClicked(path)}>
                                     {`${++i}. ${truncateString(x, 15)}`}

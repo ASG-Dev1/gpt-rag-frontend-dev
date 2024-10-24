@@ -22,13 +22,25 @@ import { useBoolean } from '@fluentui/react-hooks'
 
 import { ChatHistoryLoadingState, historyDeleteAll } from '../../api'
 
-import  { ChatHistoryListItem } from './ChatHistoryListItem'
+import { ChatHistoryListItem } from './ChatHistoryListItem'
 import { get_ChatHistory } from '../../api'; // Fetch Chat History JAMR
-
+import { AskResponse } from '../../api'
 import styles from './ChatHistoryPanel.module.css'
 
-interface ChatHistoryPanelProps {
+
+// Define a type for the chat history items
+interface ChatHistoryItem {
+  id: string;
+  userId: string;
+  userAsk: string;
+  // answer: string;
+  answer: AskResponse;
 }
+interface ChatHistoryPanelProps {
+  onConversationSelected: (conversationId: string) => void;
+}
+
+
 
 export enum ChatHistoryPanelTabs {
   History = 'History'
@@ -44,12 +56,12 @@ const commandBarStyle: ICommandBarStyles = {
 
 const commandBarButtonStyle: Partial<IStackStyles> = { root: { height: '50px' } }
 
-export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
+export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelProps) {
   const [showContextualMenu, setShowContextualMenu] = React.useState(false)
   const [hideClearAllDialog, { toggle: toggleClearAllDialog }] = useBoolean(true)
   const [clearing, setClearing] = React.useState(false)
   const [clearingError, setClearingError] = React.useState(false)
-  const [chatHistory, setChatHistory] = useState([]); //JAMR
+  const [chatHistory, setChatHistory] = useState<ChatHistoryItem[]>([]);
 
   const clearAllDialogContentProps = {
     type: DialogType.close,
@@ -72,7 +84,7 @@ export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
   ]
 
   const handleHistoryClick = () => {
-      console.log("I got clicked ChatHistoryPanel")
+    console.log("I got clicked ChatHistoryPanel")
   }
 
   const onShowContextualMenu = React.useCallback((ev: React.MouseEvent<HTMLElement>) => {
@@ -100,21 +112,19 @@ export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
     }, 2000)
   }
 
-  // Fetch Chat History
   useEffect(() => {
     const fetchHistory = async () => {
       try {
         const data = await get_ChatHistory();
+        console.log("Fetched chat history:", data); // Check if chat history is fetched
         setChatHistory(data);
-        console.log("Test in Chat History Panel")
-        console.log(data)
       } catch (error) {
         console.error('Error loading chat history:', error);
       }
     };
-
     fetchHistory();
   }, []);
+
 
   return (
     <Stack className={styles.container} data-is-scrollable aria-label={'chat history panel'}>
@@ -196,12 +206,16 @@ export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
           </Stack>
 
           <Stack>
-            {chatHistory.map((item, index) => (
-              <div key={index}>
+            {chatHistory.map((item: ChatHistoryItem, index: number) => (
+              <div key={index} onClick={() => onConversationSelected(item.id)}>
                 <ChatHistoryListItem conversation={item} />
               </div>
             ))}
+
           </Stack>
+
+
+
 
         </Stack>
       </Stack>

@@ -1,3 +1,5 @@
+
+
 export const enum Approaches {
   RetrieveThenRead = "rtr",
   ReadRetrieveRead = "rrr",
@@ -46,10 +48,17 @@ export type AskResponseGpt = {
   error?: string;
 };
 
+// export type ChatTurn = {
+//   user: string;
+//   bot?: string;
+// };
+// models.ts
+
 export type ChatTurn = {
   user: string;
-  bot?: string;
+  bot?: AskResponse; // Update `bot` to the correct type
 };
+
 
 export type ChatRequest = {
   history: ChatTurn[];

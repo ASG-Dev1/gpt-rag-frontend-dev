@@ -18,6 +18,11 @@ import { ChatHistoryPanel } from "../../components/ChatHistory/ChatHistoryPanel"
 
 import { useMenu } from '../../context/MenuContext'; // Toggle Chat History JAMR
 
+interface HistoryItem {
+    userAsk: string;         // User's question
+    answer: AskResponse;     // The answer returned from the API
+}
+
 const userLanguage = navigator.language;
 let error_message_text = '';
 if (userLanguage.startsWith('pt')) {
@@ -28,7 +33,13 @@ if (userLanguage.startsWith('pt')) {
     error_message_text = "I'm sorry, I had a problem with the request. Please report the error to the support team. ";
 }
 
+
 const Chat = () => {
+    const [currentConversation, setCurrentConversation] = useState<ChatTurn[]>([]);
+    const [historyConversation, setHistoryConversation] = useState<ChatTurn[]>([]);
+    const [isViewingHistory, setIsViewingHistory] = useState<boolean>(false);
+
+
     // speech synthesis is disabled by default
     const speechSynthesisEnabled = false;
 
@@ -52,36 +63,32 @@ const Chat = () => {
     const [activeAnalysisPanelTab, setActiveAnalysisPanelTab] = useState<AnalysisPanelTabs | undefined>(undefined);
 
     const [selectedAnswer, setSelectedAnswer] = useState<number>(0);
-    const [answers, setAnswers] = useState<[user: string, response: AskResponse][]>([]);
-
+    // Update the `answers` state to be an array of `ChatTurn` objects
+    const [answers, setAnswers] = useState<ChatTurn[]>([]);
     const [userId, setUserId] = useState<string>("");
     const triggered = useRef(false);
 
     const { isMenuOpen } = useMenu(); // Toggle Chat History Panel JAMR
     console.log('Is menu open in Chat:', isMenuOpen);
 
+
     const makeApiRequestGpt = async (question: string) => {
         lastQuestionRef.current = question;
-        // console.log("question", question);
-        // console.log("userId", userId);
-
-        error && setError(undefined);
-        setIsLoading(true);
-        setActiveCitation(undefined);
-        setActiveAnalysisPanelTab(undefined);
+        setError(undefined); // Clear previous errors
+        setIsLoading(true); // Start the loading state
 
         try {
-            // console.log("JAMR Current userId:", userId);
+            // Use the updated ChatTurn interface that uses AskResponse
+            const history: ChatTurn[] = answers.map(a => ({ user: a.user, bot: a.bot }));
 
-            const history: ChatTurn[] = answers.map(a => ({ user: a[0], bot: a[1].answer }));
             const request: ChatRequestGpt = {
                 history: [...history, { user: question, bot: undefined }],
                 approach: Approaches.ReadRetrieveRead,
                 conversation_id: userId,
                 query: question,
                 overrides: {
-                    promptTemplate: promptTemplate.length === 0 ? undefined : promptTemplate,
-                    excludeCategory: excludeCategory.length === 0 ? undefined : excludeCategory,
+                    promptTemplate: promptTemplate || undefined,
+                    excludeCategory: excludeCategory || undefined,
                     top: retrieveCount,
                     semanticRanker: useSemanticRanker,
                     semanticCaptions: useSemanticCaptions,
@@ -89,56 +96,146 @@ const Chat = () => {
                 }
             };
 
-            // Debugging: Log the conversation_id within the request
-
-
             const result = await chatApiGpt(request);
 
-            // console.log("JAMR Request conversation_id:", request.history);
-            // console.log(result)
-            // console.log(result.answer)
-            setAnswers([...answers, [question, result]]);
-            setUserId(result.conversation_id);
-
-            // Voice Synthesis
-            if (speechSynthesisEnabled) {
-                const tokenObj = await getTokenOrRefresh();
-                const speechConfig = SpeechConfig.fromAuthorizationToken(tokenObj.authToken, tokenObj.region);
-                const audioConfig = AudioConfig.fromDefaultSpeakerOutput();
-                speechConfig.speechSynthesisLanguage = tokenObj.speechSynthesisLanguage;
-                speechConfig.speechSynthesisVoiceName = tokenObj.speechSynthesisVoiceName;
-                const synthesizer = new SpeechSynthesizer(speechConfig, audioConfig);
-
-                synthesizer.speakTextAsync(result.answer.replace(/ *\[[^)]*\] */g, ""),
-                    function (result) {
-                        if (result.reason === ResultReason.SynthesizingAudioCompleted) {
-                            console.log("synthesis finished.");
-                        } else {
-                            console.error("Speech synthesis canceled, " + result.errorDetails + "\nDid you update the subscription info?");
-                        }
-                        synthesizer.close();
-                    },
-                    function (err) {
-                        console.trace("err - " + err);
-                        synthesizer.close();
-                    });
+            // Ensure result.answer is present before adding to answers array
+            if (!result.answer) {
+                throw new Error("No answer received from API");
             }
 
-        } catch (e) {
-            setError(e);
+            // Add the question and result (AskResponse) to the answers array
+            setAnswers([...answers, { user: question, bot: result }]); // Correctly store result as AskResponse
+            setUserId(result.conversation_id); // Update the conversation ID
+
+        } catch (error) {
+            console.error('Error during API request:', error);
+            setError(error); // Handle errors
         } finally {
-            setIsLoading(false);
+            setIsLoading(false); // Stop the loading state
         }
     };
+
+
+
+
+    // const makeApiRequestGpt = async (question: string) => {
+    //     lastQuestionRef.current = question;
+    //     setError(undefined); // Clear any previous error
+    //     setIsLoading(true);
+    //     setActiveCitation(undefined);
+    //     setActiveAnalysisPanelTab(undefined);
+
+    //     try {
+    //         const history: ChatTurn[] = answers.map(a => ({ user: a[0], bot: a[1].answer })); // Ensure this is correct
+    //         const request: ChatRequestGpt = {
+    //             history: [...history, { user: question, bot: undefined }],
+    //             approach: Approaches.ReadRetrieveRead,
+    //             conversation_id: userId,
+    //             query: question,
+    //             overrides: {
+    //                 promptTemplate: promptTemplate || undefined,
+    //                 excludeCategory: excludeCategory || undefined,
+    //                 top: retrieveCount,
+    //                 semanticRanker: useSemanticRanker,
+    //                 semanticCaptions: useSemanticCaptions,
+    //                 suggestFollowupQuestions: useSuggestFollowupQuestions
+    //             }
+    //         };
+
+    //         const result = await chatApiGpt(request);
+
+    //         if (!result.answer) {
+    //             console.error('API response does not contain answer:', result);
+    //             throw new Error("No answer received from API");
+    //         }
+
+    //         setAnswers([...answers, [question, result]]);
+    //         setUserId(result.conversation_id);
+    //     } catch (e) {
+    //         console.error('Error during request:', e);
+    //         setError(e);
+
+    //         // Voice Synthesis
+    //         if (speechSynthesisEnabled) {
+    //             const tokenObj = await getTokenOrRefresh();
+    //             const speechConfig = SpeechConfig.fromAuthorizationToken(tokenObj.authToken, tokenObj.region);
+    //             const audioConfig = AudioConfig.fromDefaultSpeakerOutput();
+    //             speechConfig.speechSynthesisLanguage = tokenObj.speechSynthesisLanguage;
+    //             speechConfig.speechSynthesisVoiceName = tokenObj.speechSynthesisVoiceName;
+    //             const synthesizer = new SpeechSynthesizer(speechConfig, audioConfig);
+
+    //             synthesizer.speakTextAsync(result.answer.replace(/ *\[[^)]*\] */g, ""),
+    //                 function (result) {
+    //                     if (result.reason === ResultReason.SynthesizingAudioCompleted) {
+    //                         console.log("synthesis finished.");
+    //                     } else {
+    //                         console.error("Speech synthesis canceled, " + result.errorDetails + "\nDid you update the subscription info?");
+    //                     }
+    //                     synthesizer.close();
+    //                 },
+    //                 function (err) {
+    //                     console.trace("err - " + err);
+    //                     synthesizer.close();
+    //                 });
+    //         }
+
+
+    //     } finally {
+    //         setIsLoading(false);
+    //     }
+    // };
+    const onConversationSelected = async (conversationId: string) => {
+        console.log('Conversation selected with ID:', conversationId); // Log selected ID
+        setUserId(conversationId);
+        try {
+            const result = await fetchConversationById(conversationId);
+            console.log("OnConversationSelected result:", result); // Log the result to see the structure
+            if (result && result.history) {
+                const conversationHistory = result.history.map((item: HistoryItem) => ({
+                    user: item.userAsk,
+                    bot: item.answer
+                }));
+                setHistoryConversation(conversationHistory); // Set the history correctly
+                setIsViewingHistory(true); // Indicate that we're viewing a historical conversation
+            } else {
+                console.error("Invalid conversation structure");
+            }
+        } catch (error) {
+            console.error('Error fetching conversation:', error);
+        }
+    };
+
+
+
+
+    // 2. This function fetches the conversation details from the server
+    const fetchConversationById = async (conversationId: string) => {
+        try {
+            const response = await fetch(`/api/conversations/${conversationId}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch conversation');
+            }
+            const result = await response.json();
+            console.log("Conversation data:", result);
+            return result;
+        } catch (error) {
+            console.error('Error fetching conversation:', error);
+            throw error;
+        }
+    };
+
+
 
     const clearChat = () => {
         lastQuestionRef.current = "";
         error && setError(undefined);
         setActiveCitation(undefined);
         setActiveAnalysisPanelTab(undefined);
-        setAnswers([]);
+        setCurrentConversation([]); // Clear current conversation
         setUserId("");
+        setIsViewingHistory(false); // Reset to indicate we are starting a new conversation
     };
+
 
     useEffect(() => {
         chatMessageStreamEnd.current?.scrollIntoView({ behavior: "smooth" });
@@ -206,6 +303,11 @@ const Chat = () => {
         setSelectedAnswer(index);
     };
 
+
+
+
+
+
     return (
         <>
 
@@ -226,24 +328,51 @@ const Chat = () => {
                             </div>
                         ) : (
                             <div className={styles.chatMessageStream}>
-                                {answers.map((answer, index) => (
-                                    <div key={index}>
-                                        <UserChatMessage message={answer[0]} />
-                                        <div className={styles.chatMessageGpt}>
-                                            <Answer
-                                                key={index}
-                                                answer={answer[1]}
-                                                isSelected={selectedAnswer === index && activeAnalysisPanelTab !== undefined}
-                                                onCitationClicked={c => onShowCitation(c, index)}
-                                                onThoughtProcessClicked={() => onToggleTab(AnalysisPanelTabs.ThoughtProcessTab, index)}
-                                                onSupportingContentClicked={() => onToggleTab(AnalysisPanelTabs.SupportingContentTab, index)}
-                                                onFollowupQuestionClicked={q => makeApiRequestGpt(q)}
-                                                showFollowupQuestions={false}
-                                                showSources={true}
-                                            />
+                                {isViewingHistory
+                                    ? historyConversation.map((item: ChatTurn, index: number) => (
+                                        <div key={index}>
+                                            <UserChatMessage message={item.user} /> {/* Render the user's message */}
+                                            <div className={styles.chatMessageGpt}>
+                                                {item.bot ? (
+                                                    <Answer
+                                                        key={index}
+                                                        answer={item.bot}
+                                                        isSelected={selectedAnswer === index && activeAnalysisPanelTab !== undefined}
+                                                        onCitationClicked={c => onShowCitation(c, index)}
+                                                        onThoughtProcessClicked={() => onToggleTab(AnalysisPanelTabs.ThoughtProcessTab, index)}
+                                                        onSupportingContentClicked={() => onToggleTab(AnalysisPanelTabs.SupportingContentTab, index)}
+                                                        onFollowupQuestionClicked={q => makeApiRequestGpt(q)}
+                                                        showFollowupQuestions={false}
+                                                        showSources={true}
+                                                    />
+                                                ) : (
+                                                    <div>No answer available</div>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))
+                                    : currentConversation.map((item: ChatTurn, index: number) => (
+                                        <div key={index}>
+                                            <UserChatMessage message={item.user} /> {/* Render the user's message */}
+                                            <div className={styles.chatMessageGpt}>
+                                                {item.bot ? (
+                                                    <Answer
+                                                        key={index}
+                                                        answer={item.bot}
+                                                        isSelected={selectedAnswer === index && activeAnalysisPanelTab !== undefined}
+                                                        onCitationClicked={c => onShowCitation(c, index)}
+                                                        onThoughtProcessClicked={() => onToggleTab(AnalysisPanelTabs.ThoughtProcessTab, index)}
+                                                        onSupportingContentClicked={() => onToggleTab(AnalysisPanelTabs.SupportingContentTab, index)}
+                                                        onFollowupQuestionClicked={q => makeApiRequestGpt(q)}
+                                                        showFollowupQuestions={false}
+                                                        showSources={true}
+                                                    />
+                                                ) : (
+                                                    <div>No answer available</div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
                                 {isLoading && (
                                     <>
                                         <UserChatMessage message={lastQuestionRef.current} />
@@ -262,6 +391,7 @@ const Chat = () => {
                                 ) : null}
                                 <div ref={chatMessageStreamEnd} />
                             </div>
+
                         )}
 
                         <div className={styles.chatInput}>
@@ -280,13 +410,13 @@ const Chat = () => {
                         <AnalysisPanel
                             className={styles.chatAnalysisPanel}
                             activeCitation={activeCitation}
-                            // onActiveTabChanged={x => onToggleTab(x, selectedAnswer)}
                             onActiveTabChanged={x => onToggleTab(x as AnalysisPanelTabs, selectedAnswer)}
                             citationHeight="720px"
-                            answer={answers[selectedAnswer][1]}
+                            answer={answers[selectedAnswer].bot!} // Use non-null assertion if you're sure bot is defined, or use a fallback
                             activeTab={activeAnalysisPanelTab}
                         />
                     )}
+
 
                     <Panel
                         headerText="Configure answer generation"
@@ -337,7 +467,7 @@ const Chat = () => {
                     </Panel>
 
                     <Stack horizontal horizontalAlign="center">
-                        {isMenuOpen && <ChatHistoryPanel />}
+                        {isMenuOpen && <ChatHistoryPanel onConversationSelected={onConversationSelected} />}
                     </Stack>
                 </div>
             </div>
