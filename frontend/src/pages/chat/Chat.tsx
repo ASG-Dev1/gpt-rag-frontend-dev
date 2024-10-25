@@ -15,12 +15,11 @@ import { ClearChatButton } from "../../components/ClearChatButton";
 import { getTokenOrRefresh } from '../../components/QuestionInput/token_util';
 import { SpeechConfig, AudioConfig, SpeechSynthesizer, ResultReason } from 'microsoft-cognitiveservices-speech-sdk';
 import { ChatHistoryPanel } from "../../components/ChatHistory/ChatHistoryPanel";
-
-import { useMenu } from '../../context/MenuContext'; // Toggle Chat History JAMR
+import { useMenu } from '../../context/MenuContext';
 
 interface HistoryItem {
-    userAsk: string;         // User's question
-    answer: AskResponse;     // The answer returned from the API
+    userAsk: string;
+    answer: AskResponse;
 }
 
 const userLanguage = navigator.language;
@@ -38,7 +37,7 @@ const Chat = () => {
     const [currentConversation, setCurrentConversation] = useState<ChatTurn[]>([]);
     const [historyConversation, setHistoryConversation] = useState<ChatTurn[]>([]);
     const [isViewingHistory, setIsViewingHistory] = useState<boolean>(false);
-
+    const [isEmptyStateVisible, setIsEmptyStateVisible] = useState<boolean>(true);
 
     // speech synthesis is disabled by default
     const speechSynthesisEnabled = false;
@@ -52,6 +51,11 @@ const Chat = () => {
     const [excludeCategory, setExcludeCategory] = useState<string>("");
     const [useSuggestFollowupQuestions, setUseSuggestFollowupQuestions] = useState<boolean>(false);
 
+    const [hasStartedConversation, setHasStartedConversation] = useState<boolean>(false);
+
+    useEffect(() => {
+        setHasStartedConversation(false);
+    }, []);
 
     const lastQuestionRef = useRef<string>("");
     const chatMessageStreamEnd = useRef<HTMLDivElement | null>(null);
@@ -63,146 +67,54 @@ const Chat = () => {
     const [activeAnalysisPanelTab, setActiveAnalysisPanelTab] = useState<AnalysisPanelTabs | undefined>(undefined);
 
     const [selectedAnswer, setSelectedAnswer] = useState<number>(0);
-    // Update the `answers` state to be an array of `ChatTurn` objects
     const [answers, setAnswers] = useState<ChatTurn[]>([]);
     const [userId, setUserId] = useState<string>("");
     const triggered = useRef(false);
 
-    const { isMenuOpen } = useMenu(); // Toggle Chat History Panel JAMR
+    const { isMenuOpen } = useMenu();
     console.log('Is menu open in Chat:', isMenuOpen);
 
-
     const makeApiRequestGpt = async (question: string) => {
-        if (isViewingHistory) {
-            return;  // Prevent adding new messages when viewing history
-        }
-
-        lastQuestionRef.current = question;
+        if (isViewingHistory) return;
+        setIsEmptyStateVisible(false);
         setError(undefined);
         setIsLoading(true);
 
         try {
-            const history: ChatTurn[] = currentConversation.map(a => ({ user: a.user, bot: a.bot }));
             const request: ChatRequestGpt = {
-                history: [...history, { user: question, bot: undefined }],
-                approach: Approaches.ReadRetrieveRead,
+                history: currentConversation.map(c => ({ user: c.user, bot: c.bot })),
                 conversation_id: "",
                 query: question,
-                overrides: {
-                    promptTemplate: promptTemplate || undefined,
-                    excludeCategory: excludeCategory || undefined,
-                    top: retrieveCount,
-                    semanticRanker: useSemanticRanker,
-                    semanticCaptions: useSemanticCaptions,
-                    suggestFollowupQuestions: useSuggestFollowupQuestions
-                }
+                approach: Approaches.ReadRetrieveRead
             };
             const result = await chatApiGpt(request);
-
-            if (!result.answer) {
-                throw new Error("No answer received from API");
-            }
-
             setCurrentConversation([...currentConversation, { user: question, bot: result }]);
-
         } catch (error) {
-            console.error('Error during API request:', error);
             setError(error);
+
         } finally {
             setIsLoading(false);
         }
     };
 
-
-
-
-
-    // const makeApiRequestGpt = async (question: string) => {
-    //     lastQuestionRef.current = question;
-    //     setError(undefined); // Clear any previous error
-    //     setIsLoading(true);
-    //     setActiveCitation(undefined);
-    //     setActiveAnalysisPanelTab(undefined);
-
-    //     try {
-    //         const history: ChatTurn[] = answers.map(a => ({ user: a[0], bot: a[1].answer })); // Ensure this is correct
-    //         const request: ChatRequestGpt = {
-    //             history: [...history, { user: question, bot: undefined }],
-    //             approach: Approaches.ReadRetrieveRead,
-    //             conversation_id: userId,
-    //             query: question,
-    //             overrides: {
-    //                 promptTemplate: promptTemplate || undefined,
-    //                 excludeCategory: excludeCategory || undefined,
-    //                 top: retrieveCount,
-    //                 semanticRanker: useSemanticRanker,
-    //                 semanticCaptions: useSemanticCaptions,
-    //                 suggestFollowupQuestions: useSuggestFollowupQuestions
-    //             }
-    //         };
-
-    //         const result = await chatApiGpt(request);
-
-    //         if (!result.answer) {
-    //             console.error('API response does not contain answer:', result);
-    //             throw new Error("No answer received from API");
-    //         }
-
-    //         setAnswers([...answers, [question, result]]);
-    //         setUserId(result.conversation_id);
-    //     } catch (e) {
-    //         console.error('Error during request:', e);
-    //         setError(e);
-
-    //         // Voice Synthesis
-    //         if (speechSynthesisEnabled) {
-    //             const tokenObj = await getTokenOrRefresh();
-    //             const speechConfig = SpeechConfig.fromAuthorizationToken(tokenObj.authToken, tokenObj.region);
-    //             const audioConfig = AudioConfig.fromDefaultSpeakerOutput();
-    //             speechConfig.speechSynthesisLanguage = tokenObj.speechSynthesisLanguage;
-    //             speechConfig.speechSynthesisVoiceName = tokenObj.speechSynthesisVoiceName;
-    //             const synthesizer = new SpeechSynthesizer(speechConfig, audioConfig);
-
-    //             synthesizer.speakTextAsync(result.answer.replace(/ *\[[^)]*\] */g, ""),
-    //                 function (result) {
-    //                     if (result.reason === ResultReason.SynthesizingAudioCompleted) {
-    //                         console.log("synthesis finished.");
-    //                     } else {
-    //                         console.error("Speech synthesis canceled, " + result.errorDetails + "\nDid you update the subscription info?");
-    //                     }
-    //                     synthesizer.close();
-    //                 },
-    //                 function (err) {
-    //                     console.trace("err - " + err);
-    //                     synthesizer.close();
-    //                 });
-    //         }
-
-
-    //     } finally {
-    //         setIsLoading(false);
-    //     }
-    // };
     const onConversationSelected = async (conversationId: string) => {
-        console.log('Conversation selected with ID:', conversationId);
         setIsViewingHistory(true);
+        setIsEmptyStateVisible(false);
         try {
             const result = await fetchConversationById(conversationId);
-            console.log("OnConversationSelected result:", result);
-
             if (result && result.history) {
-                const conversationHistory = result.history.map((item: HistoryItem) => ({
+                const mappedConversation = result.history.map((item: HistoryItem) => ({
                     user: item.userAsk,
                     bot: item.answer
                 }));
-                setHistoryConversation(conversationHistory);
-            } else {
-                console.error("Invalid conversation structure");
+                setHistoryConversation(mappedConversation);
+                console.log(result.history);
             }
         } catch (error) {
             console.error('Error fetching conversation:', error);
         }
     };
+
 
 
     const fetchConversationById = async (conversationId: string) => {
@@ -220,14 +132,17 @@ const Chat = () => {
     };
 
     const clearChat = () => {
-        lastQuestionRef.current = "";
-        setError(undefined);
-        setActiveCitation(undefined);
-        setActiveAnalysisPanelTab(undefined);
         setCurrentConversation([]);
         setHistoryConversation([]);
+        setIsEmptyStateVisible(true);
         setIsViewingHistory(false);
     };
+
+    const goBackToCurrentConversation = () => {
+        setIsViewingHistory(false);
+        setHistoryConversation([]);
+    };
+
 
     useEffect(() => {
         chatMessageStreamEnd.current?.scrollIntoView({ behavior: "smooth" });
@@ -292,38 +207,28 @@ const Chat = () => {
     };
 
 
-
-
-
-
     return (
         <>
-
             <div className={styles.container}>
                 <div className={styles.chatRoot}>
                     <div className={styles.chatContainer}>
-                        {/* Conditional rendering: Show the "Back to Current Conversation" button only when viewing history */}
                         {isViewingHistory && (
-                            <DefaultButton onClick={() => setIsViewingHistory(false)}>
+                            <DefaultButton onClick={goBackToCurrentConversation}>
                                 Back to Current Conversation
                             </DefaultButton>
                         )}
-                        {!lastQuestionRef.current ? (
+                        {isEmptyStateVisible ? (
                             <div className={styles.chatEmptyState}>
                                 {
                                     <img height="120px" src="https://asgwebpageprodstorage.blob.core.windows.net/static/assets/images/Blue%20White%20Robot%20Technology%20Logo.png"></img>
-                                    /* <SparkleFilled fontSize={"120px"} primaryFill={"rgba(115, 118, 225, 1)"} aria-hidden="true" aria-label="Chat logo" /> */}
+                                }
                                 <h1 className={styles.chatEmptyStateTitle}>¡Adquisiciones en un click!</h1>
                                 <h2 className={styles.chatEmptyStateSubtitle}>Haz cualquier pregunta o utiliza uno de los siguientes ejemplos</h2>
                                 <ExampleList onExampleClicked={onExampleClicked} />
-                                {/*<SparkleFilled fontSize={"120px"} primaryFill={"rgba(115, 118, 225, 1)"} aria-hidden="true" aria-label="Chat logo" />
-                                <h1 className={styles.chatEmptyStateTitle}>Conversación con datos</h1>*/}
                             </div>
-
                         ) : (
-
                             <div className={styles.chatMessageStream}>
-                                {(isViewingHistory ? historyConversation : currentConversation).map((item: ChatTurn, index: number) => (
+                                {(isViewingHistory ? historyConversation : currentConversation).map((item, index) => (
                                     <div key={index}>
                                         <UserChatMessage message={item.user} />
                                         <div className={styles.chatMessageGpt}>
@@ -345,8 +250,6 @@ const Chat = () => {
                                         </div>
                                     </div>
                                 ))}
-
-
                                 {isLoading && (
                                     <>
                                         <UserChatMessage message={lastQuestionRef.current} />
@@ -365,23 +268,88 @@ const Chat = () => {
                                 ) : null}
                                 <div ref={chatMessageStreamEnd} />
                             </div>
-
-
                         )}
-
-                        <div className={styles.chatInput}>
-                            <ClearChatButton className={`${btnStyles.buttonStructure} ${btnStyles.deleteConversationBtn}`}
-                                onClick={clearChat} disabled={!lastQuestionRef.current || isLoading} />
-                            <QuestionInput
-                                clearOnSend
-                                placeholder={placeholderText}
-                                disabled={isLoading}
-                                onSend={question => makeApiRequestGpt(question)}
-                            />
-                        </div>
+                        {!isViewingHistory && (
+                            <div className={styles.chatInput}>
+                                <ClearChatButton className={`${btnStyles.buttonStructure} ${btnStyles.deleteConversationBtn}`}
+                                    onClick={clearChat} />
+                                <QuestionInput
+                                    clearOnSend
+                                    placeholder={placeholderText}
+                                    disabled={isLoading}
+                                    onSend={makeApiRequestGpt}
+                                />
+                            </div>
+                        )}
                     </div>
+                    {(isViewingHistory ? historyConversation : currentConversation).length > 0 && activeAnalysisPanelTab && (
+                        <AnalysisPanel
+                            className={styles.chatAnalysisPanel}
+                            activeCitation={activeCitation}
+                            onActiveTabChanged={x => onToggleTab(x as AnalysisPanelTabs, selectedAnswer)}
+                            citationHeight="720px"
+                            answer={(isViewingHistory ? historyConversation : currentConversation)[selectedAnswer]?.bot!} // Ensure the correct conversation is shown
+                            activeTab={activeAnalysisPanelTab}
+                        />
+                    )}
+                    <Panel
+                        headerText="Configure answer generation"
+                        isOpen={isConfigPanelOpen}
+                        isBlocking={false}
+                        onDismiss={() => setIsConfigPanelOpen(false)}
+                        closeButtonAriaLabel="Close"
+                        onRenderFooterContent={() => <DefaultButton onClick={() => setIsConfigPanelOpen(false)}>Close</DefaultButton>}
+                        isFooterAtBottom={true}
+                    >
+                        <TextField
+                            className={styles.chatSettingsSeparator}
+                            defaultValue={promptTemplate}
+                            label="Override prompt template"
+                            multiline
+                            autoAdjustHeight
+                            onChange={onPromptTemplateChange}
+                        />
+                        <SpinButton
+                            className={styles.chatSettingsSeparator}
+                            label="Retrieve this many documents from search:"
+                            min={1}
+                            max={50}
+                            defaultValue={retrieveCount.toString()}
+                            onChange={onRetrieveCountChange}
+                        />
+                        <TextField className={styles.chatSettingsSeparator} label="Exclude category" onChange={onExcludeCategoryChanged} />
+                        <Checkbox
+                            className={styles.chatSettingsSeparator}
+                            checked={useSemanticRanker}
+                            label="Use semantic ranker for retrieval"
+                            onChange={onUseSemanticRankerChange}
+                        />
+                        <Checkbox
+                            className={styles.chatSettingsSeparator}
+                            checked={useSemanticCaptions}
+                            label="Use query-contextual summaries instead of whole documents"
+                            onChange={onUseSemanticCaptionsChange}
+                            disabled={!useSemanticRanker}
+                        />
+                        <Checkbox
+                            className={styles.chatSettingsSeparator}
+                            checked={useSuggestFollowupQuestions}
+                            label="Suggest follow-up questions"
+                            onChange={onUseSuggestFollowupQuestionsChange}
+                        />
+                    </Panel>
+                    <Stack horizontal horizontalAlign="center">
+                        {isMenuOpen && <ChatHistoryPanel onConversationSelected={onConversationSelected} />}
+                    </Stack>
+                </div>
+            </div>
+        </>
+    );
+};
+export default Chat;
 
-                    {/* {answers.length > 0 && activeAnalysisPanelTab && (
+
+{/* {answers.length > 0 && activeAnalysisPanelTab && (
                         <AnalysisPanel
                             className={styles.chatAnalysisPanel}
                             activeCitation={activeCitation}
@@ -446,73 +414,3 @@ const Chat = () => {
                     </Stack>
                 </div>
             </div> */}
-
-                    {(isViewingHistory ? historyConversation : currentConversation).length > 0 && activeAnalysisPanelTab && (
-                        <AnalysisPanel
-                            className={styles.chatAnalysisPanel}
-                            activeCitation={activeCitation}
-                            onActiveTabChanged={x => onToggleTab(x as AnalysisPanelTabs, selectedAnswer)}
-                            citationHeight="720px"
-                            answer={(isViewingHistory ? historyConversation : currentConversation)[selectedAnswer]?.bot!} // Ensure the correct conversation is shown
-                            activeTab={activeAnalysisPanelTab}
-                        />
-                    )}
-                    <Panel
-                        headerText="Configure answer generation"
-                        isOpen={isConfigPanelOpen}
-                        isBlocking={false}
-                        onDismiss={() => setIsConfigPanelOpen(false)}
-                        closeButtonAriaLabel="Close"
-                        onRenderFooterContent={() => <DefaultButton onClick={() => setIsConfigPanelOpen(false)}>Close</DefaultButton>}
-                        isFooterAtBottom={true}
-                    >
-                        <TextField
-                            className={styles.chatSettingsSeparator}
-                            defaultValue={promptTemplate}
-                            label="Override prompt template"
-                            multiline
-                            autoAdjustHeight
-                            onChange={onPromptTemplateChange}
-                        />
-                        <SpinButton
-                            className={styles.chatSettingsSeparator}
-                            label="Retrieve this many documents from search:"
-                            min={1}
-                            max={50}
-                            defaultValue={retrieveCount.toString()}
-                            onChange={onRetrieveCountChange}
-                        />
-                        <TextField className={styles.chatSettingsSeparator} label="Exclude category" onChange={onExcludeCategoryChanged} />
-                        <Checkbox
-                            className={styles.chatSettingsSeparator}
-                            checked={useSemanticRanker}
-                            label="Use semantic ranker for retrieval"
-                            onChange={onUseSemanticRankerChange}
-                        />
-                        <Checkbox
-                            className={styles.chatSettingsSeparator}
-                            checked={useSemanticCaptions}
-                            label="Use query-contextual summaries instead of whole documents"
-                            onChange={onUseSemanticCaptionsChange}
-                            disabled={!useSemanticRanker}
-                        />
-                        <Checkbox
-                            className={styles.chatSettingsSeparator}
-                            checked={useSuggestFollowupQuestions}
-                            label="Suggest follow-up questions"
-                            onChange={onUseSuggestFollowupQuestionsChange}
-                        />
-                    </Panel>
-
-                    <Stack horizontal horizontalAlign="center">
-                        {isMenuOpen && <ChatHistoryPanel onConversationSelected={onConversationSelected} />}
-                    </Stack>
-                </div>
-            </div>
-
-
-        </>
-    );
-};
-
-export default Chat;
