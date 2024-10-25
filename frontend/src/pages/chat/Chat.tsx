@@ -18,9 +18,10 @@ import { ChatHistoryPanel } from "../../components/ChatHistory/ChatHistoryPanel"
 import { useMenu } from '../../context/MenuContext';
 
 interface HistoryItem {
-    userAsk: string;
+    user_ask: string;
     answer: AskResponse;
 }
+
 
 const userLanguage = navigator.language;
 let error_message_text = '';
@@ -102,19 +103,18 @@ const Chat = () => {
         setIsEmptyStateVisible(false);
         try {
             const result = await fetchConversationById(conversationId);
-            if (result && result.history) {
-                const mappedConversation = result.history.map((item: HistoryItem) => ({
-                    user: item.userAsk,
-                    bot: item.answer
+            console.log('Fetched conversation:', result);
+            if (result && result.conversation_data && result.conversation_data.interactions) {
+                const mappedConversation = result.conversation_data.interactions.map((interaction: any) => ({
+                    user: interaction.user_ask,
+                    bot: interaction.answer
                 }));
                 setHistoryConversation(mappedConversation);
-                console.log(result.history);
             }
         } catch (error) {
             console.error('Error fetching conversation:', error);
         }
     };
-
 
 
     const fetchConversationById = async (conversationId: string) => {
@@ -130,6 +130,7 @@ const Chat = () => {
             throw error;
         }
     };
+
 
     const clearChat = () => {
         setCurrentConversation([]);
