@@ -45,9 +45,9 @@ export const Answer = ({
     showFollowupQuestions,
     showSources
 }: Props) => {
-    // If the answer prop is not provided, return null (or a fallback message)
-    if (!answer || !answer.answer) {
-        return <div>No answer available</div>; // Or return null if you don't want to display anything
+
+    if (!answer || typeof answer.answer !== "string") {
+        return <div>No answer available</div>;
     }
 
     const parsedAnswer = useMemo(() => parseAnswerToHtml(answer.answer, !!showSources, onCitationClicked), [answer]);

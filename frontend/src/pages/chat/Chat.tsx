@@ -1,10 +1,9 @@
-import { useRef, useState, useEffect, useContext } from "react";
+import { useRef, useState, useEffect } from "react";
+import { useMenu } from "../../context/MenuContext";
 import { Checkbox, Panel, DefaultButton, TextField, SpinButton, Stack } from "@fluentui/react";
 import { SparkleFilled } from "@fluentui/react-icons";
-
 import styles from "./Chat.module.css";
 import btnStyles from '../../components/Common/Button.module.css'
-
 import { chatApiGpt, Approaches, AskResponse, ChatRequest, ChatRequestGpt, ChatTurn, CosmosDBStatus } from "../../api";
 import { Answer, AnswerError, AnswerLoading } from "../../components/Answer";
 import { QuestionInput } from "../../components/QuestionInput";
@@ -15,7 +14,7 @@ import { ClearChatButton } from "../../components/ClearChatButton";
 import { getTokenOrRefresh } from '../../components/QuestionInput/token_util';
 import { SpeechConfig, AudioConfig, SpeechSynthesizer, ResultReason } from 'microsoft-cognitiveservices-speech-sdk';
 import { ChatHistoryPanel } from "../../components/ChatHistory/ChatHistoryPanel";
-import { useMenu } from '../../context/MenuContext';
+import { v4 as uuidv4 } from 'uuid';
 
 interface HistoryItem {
     user_ask: string;
@@ -75,6 +74,8 @@ const Chat = () => {
     const { isMenuOpen } = useMenu();
     console.log('Is menu open in Chat:', isMenuOpen);
 
+    const [conversationId, setConversationId] = useState<string | null>(null);
+
     const makeApiRequestGpt = async (question: string) => {
         if (isViewingHistory) return;
         setIsEmptyStateVisible(false);
@@ -82,21 +83,29 @@ const Chat = () => {
         setIsLoading(true);
 
         try {
+            // Use the existing conversationId or create a new one
+            const currentConversationId = conversationId || uuidv4();
+            if (!conversationId) setConversationId(currentConversationId);
+
             const request: ChatRequestGpt = {
                 history: currentConversation.map(c => ({ user: c.user, bot: c.bot })),
-                conversation_id: "",
+                conversation_id: currentConversationId,
                 query: question,
                 approach: Approaches.ReadRetrieveRead
             };
+
             const result = await chatApiGpt(request);
             setCurrentConversation([...currentConversation, { user: question, bot: result }]);
         } catch (error) {
             setError(error);
-
         } finally {
             setIsLoading(false);
         }
     };
+
+
+
+
 
     const onConversationSelected = async (conversationId: string) => {
         setIsViewingHistory(true);
@@ -107,14 +116,19 @@ const Chat = () => {
             if (result && result.conversation_data && result.conversation_data.interactions) {
                 const mappedConversation = result.conversation_data.interactions.map((interaction: any) => ({
                     user: interaction.user_ask,
-                    bot: interaction.answer
+                    bot: { answer: interaction.answer || "No answer available" } // Ensure bot has an answer property
                 }));
+                console.log("Mapped conversation:", mappedConversation);  // Log to verify structure
                 setHistoryConversation(mappedConversation);
+                console.log("History conversation in Chat.tsx:", historyConversation);
+
             }
         } catch (error) {
             console.error('Error fetching conversation:', error);
         }
     };
+
+
 
 
     const fetchConversationById = async (conversationId: string) => {
@@ -137,6 +151,7 @@ const Chat = () => {
         setHistoryConversation([]);
         setIsEmptyStateVisible(true);
         setIsViewingHistory(false);
+        setConversationId(null);
     };
 
     const goBackToCurrentConversation = () => {

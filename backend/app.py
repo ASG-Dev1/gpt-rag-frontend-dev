@@ -178,6 +178,8 @@ async def fetch_chat_history():
     except Exception as e:
         logging.error("Error fetching chat history: %s", e)
         return jsonify([])
+    
+
 @app.route("/api/conversations/<conversation_id>", methods=["GET"])
 async def get_conversation(conversation_id):
     logging.info(f"Fetching conversation with ID: {conversation_id}")
@@ -186,18 +188,21 @@ async def get_conversation(conversation_id):
             database = client.get_database_client(AZURE_DB_NAME)
             container = database.get_container_client(COSMOSDB_CONTAINER)
 
-            # Modify the query as per your CosmosDB structure to fetch the relevant conversation by ID
             query = f"SELECT * FROM c WHERE c.id = '{conversation_id}'"
             items = container.query_items(query=query, partition_key=None)
 
             result = []
+            logging.info(f"Fetched conversation: {result}, Query: {query}, PartitionKey: {conversation_id}, Items of Query: {items}")
+
             async for item in items:
                 result.append(item)
+
+
 
             if len(result) == 0:
                 return jsonify({"error": "Conversation not found"}), 404
 
-            return jsonify(result[0])  # Assuming you want to return the first matching conversation
+            return jsonify(result[0])  # return the matching conversation
 
     except Exception as e:
         logging.error(f"Error fetching conversation with ID {conversation_id}: {e}")
