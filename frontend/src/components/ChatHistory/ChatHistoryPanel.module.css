@@ -1,9 +1,12 @@
 .container {
-  max-height: calc(100vh - 100px);
+  max-height: 87vh;
   width: 300px;
   color: black;
   background: #6353531f;
   border-radius: .5rem;
+  position: sticky;
+  top: 6.25rem;
+  overflow-y: auto;
 }
 
 .listContainer {
@@ -23,10 +26,14 @@
 }
 
 .itemText {
-  white-space: nowrap; /* Prevents wrapping */
-  overflow: hidden; /* Hides the overflow */
-  text-overflow: ellipsis; /* Adds the ellipsis */
-  width: 100%; /* Makes sure it takes the available width */
+  white-space: nowrap;
+  /* Prevents wrapping */
+  overflow: hidden;
+  /* Hides the overflow */
+  text-overflow: ellipsis;
+  /* Adds the ellipsis */
+  width: 100%;
+  /* Makes sure it takes the available width */
 }
 
 .itemCell:hover {

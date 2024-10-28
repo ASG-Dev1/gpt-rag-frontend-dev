@@ -118,6 +118,8 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
         const data = await get_ChatHistory();
         console.log("Fetched chat history:", data); // Check if chat history is fetched
         setChatHistory(data);
+        console.log("Test in Chat History Panel")
+        console.log(data)
       } catch (error) {
         console.error('Error loading chat history:', error);
       }

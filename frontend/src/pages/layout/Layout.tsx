@@ -7,12 +7,9 @@ import { BiShowAlt, BiHide } from "react-icons/bi";
 
 const Layout = () => {
     const { toggleMenu } = useMenu();
+    const { isMenuOpen } = useMenu(); // Toggle Chat History Panel JAMR
 
-    const historyClicked = () => {
-        console.log("Checkpoint in Layout");
-    };
-
-    console.log('Layout component rendered, toggleMenu:', toggleMenu); // Debugging
+    // console.log('Layout component rendered, toggleMenu:', toggleMenu); // Debugging
 
     return (
         <div className={styles.layout}>
@@ -26,10 +23,9 @@ const Layout = () => {
                         className={`${btnStyles.buttonStructure} ${btnStyles.commandBtn} ${btnStyles.btn}`}
                         onClick={() => {
                             toggleMenu();
-                            historyClicked();
                         }}
-                    >
-                        <BiHide color="#fff" size="25px" />
+                    > { }
+                        {isMenuOpen ? <BiHide color="#fff" size="25px" /> : <BiShowAlt color="#fff" size="25px" />}
                         <span className={styles.text}>History</span>
                     </button>
                 </div>

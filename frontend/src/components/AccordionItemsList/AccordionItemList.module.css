@@ -1,20 +1,21 @@
 .itemsHeader {
      margin: 0;
-     font-weight: 700;
-     text-align: center;
+     font-weight: 500;
+     text-align: left;
      width: 100%;
- }
-
-.itemsTitle{
-     display: inline-block;
-     color:black;
-     font-weight: 700;
-     margin: 3px 0;
+     font-size: 1.0625rem;
 }
 
-.itemsValue{
+.itemsTitle {
      display: inline-block;
-     color:black;
-     font-weight:500;
+     color: black;
+     font-weight: 600;
+     margin: 3px 0;
+     padding-right: .5rem;
+}
+
+.itemsValue {
+     display: inline-block;
+     color: black;
      margin: 0;
 }
