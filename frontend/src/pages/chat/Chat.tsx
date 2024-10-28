@@ -82,8 +82,13 @@ const Chat = () => {
         setError(undefined);
         setIsLoading(true);
 
+
+        const newConversationTurn: ChatTurn = { user: question, bot: undefined };
+        setCurrentConversation([...currentConversation, newConversationTurn]);
+        lastQuestionRef.current = question;
+
         try {
-            // Use the existing conversationId or create a new one
+
             const currentConversationId = conversationId || uuidv4();
             if (!conversationId) setConversationId(currentConversationId);
 
@@ -95,7 +100,12 @@ const Chat = () => {
             };
 
             const result = await chatApiGpt(request);
-            setCurrentConversation([...currentConversation, { user: question, bot: result }]);
+
+
+            setCurrentConversation(prev => prev.map((c, index) =>
+                index === prev.length - 1 ? { ...c, bot: result } : c
+            ));
+
         } catch (error) {
             setError(error);
         } finally {
@@ -116,9 +126,9 @@ const Chat = () => {
             if (result && result.conversation_data && result.conversation_data.interactions) {
                 const mappedConversation = result.conversation_data.interactions.map((interaction: any) => ({
                     user: interaction.user_ask,
-                    bot: { answer: interaction.answer || "No answer available" } // Ensure bot has an answer property
+                    bot: { answer: interaction.answer || "No answer available" }
                 }));
-                console.log("Mapped conversation:", mappedConversation);  // Log to verify structure
+                console.log("Mapped conversation:", mappedConversation);
                 setHistoryConversation(mappedConversation);
                 console.log("History conversation in Chat.tsx:", historyConversation);
 
@@ -157,6 +167,7 @@ const Chat = () => {
     const goBackToCurrentConversation = () => {
         setIsViewingHistory(false);
         setHistoryConversation([]);
+        setIsEmptyStateVisible(true); //SHOW MAIN PAGE
     };
 
 
@@ -261,19 +272,17 @@ const Chat = () => {
                                                     showSources={true}
                                                 />
                                             ) : (
-                                                <div>No answer available</div>
+
+                                                isLoading && index === currentConversation.length - 1 ? (
+                                                    <AnswerLoading />
+                                                ) : (
+                                                    <div>No answer available</div>
+                                                )
                                             )}
                                         </div>
                                     </div>
                                 ))}
-                                {isLoading && (
-                                    <>
-                                        <UserChatMessage message={lastQuestionRef.current} />
-                                        <div className={styles.chatMessageGptMinWidth}>
-                                            <AnswerLoading />
-                                        </div>
-                                    </>
-                                )}
+
                                 {error ? (
                                     <>
                                         <UserChatMessage message={lastQuestionRef.current} />
@@ -284,6 +293,7 @@ const Chat = () => {
                                 ) : null}
                                 <div ref={chatMessageStreamEnd} />
                             </div>
+
                         )}
                         {!isViewingHistory && (
                             <div className={styles.chatInput}>
@@ -304,7 +314,7 @@ const Chat = () => {
                             activeCitation={activeCitation}
                             onActiveTabChanged={x => onToggleTab(x as AnalysisPanelTabs, selectedAnswer)}
                             citationHeight="720px"
-                            answer={(isViewingHistory ? historyConversation : currentConversation)[selectedAnswer]?.bot!} // Ensure the correct conversation is shown
+                            answer={(isViewingHistory ? historyConversation : currentConversation)[selectedAnswer]?.bot!}
                             activeTab={activeAnalysisPanelTab}
                         />
                     )}
@@ -365,68 +375,4 @@ const Chat = () => {
 export default Chat;
 
 
-{/* {answers.length > 0 && activeAnalysisPanelTab && (
-                        <AnalysisPanel
-                            className={styles.chatAnalysisPanel}
-                            activeCitation={activeCitation}
-                            onActiveTabChanged={x => onToggleTab(x as AnalysisPanelTabs, selectedAnswer)}
-                            citationHeight="720px"
-                            answer={answers[selectedAnswer].bot!} // Use non-null assertion if you're sure bot is defined, or use a fallback
-                            activeTab={activeAnalysisPanelTab}
-                        />
-                    )}
 
-
-                    <Panel
-                        headerText="Configure answer generation"
-                        isOpen={isConfigPanelOpen}
-                        isBlocking={false}
-                        onDismiss={() => setIsConfigPanelOpen(false)}
-                        closeButtonAriaLabel="Close"
-                        onRenderFooterContent={() => <DefaultButton onClick={() => setIsConfigPanelOpen(false)}>Close</DefaultButton>}
-                        isFooterAtBottom={true}
-                    >
-                        <TextField
-                            className={styles.chatSettingsSeparator}
-                            defaultValue={promptTemplate}
-                            label="Override prompt template"
-                            multiline
-                            autoAdjustHeight
-                            onChange={onPromptTemplateChange}
-                        />
-
-                        <SpinButton
-                            className={styles.chatSettingsSeparator}
-                            label="Retrieve this many documents from search:"
-                            min={1}
-                            max={50}
-                            defaultValue={retrieveCount.toString()}
-                            onChange={onRetrieveCountChange}
-                        />
-                        <TextField className={styles.chatSettingsSeparator} label="Exclude category" onChange={onExcludeCategoryChanged} />
-                        <Checkbox
-                            className={styles.chatSettingsSeparator}
-                            checked={useSemanticRanker}
-                            label="Use semantic ranker for retrieval"
-                            onChange={onUseSemanticRankerChange}
-                        />
-                        <Checkbox
-                            className={styles.chatSettingsSeparator}
-                            checked={useSemanticCaptions}
-                            label="Use query-contextual summaries instead of whole documents"
-                            onChange={onUseSemanticCaptionsChange}
-                            disabled={!useSemanticRanker}
-                        />
-                        <Checkbox
-                            className={styles.chatSettingsSeparator}
-                            checked={useSuggestFollowupQuestions}
-                            label="Suggest follow-up questions"
-                            onChange={onUseSuggestFollowupQuestionsChange}
-                        />
-                    </Panel>
-
-                    <Stack horizontal horizontalAlign="center">
-                        {isMenuOpen && <ChatHistoryPanel onConversationSelected={onConversationSelected} />}
-                    </Stack>
-                </div>
-            </div> */}
