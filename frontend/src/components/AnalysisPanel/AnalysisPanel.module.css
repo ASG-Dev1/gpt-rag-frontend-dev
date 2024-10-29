@@ -28,6 +28,14 @@
 }
 
 .itemContainer:hover {
-    cursor:pointer;
+    cursor: pointer;
     background: #6c89a9;
+}
+
+.buttonCitation,
+.itemContainer,
+.pivotTab {
+    /* Check for any CSS that sets `opacity` or similar properties */
+    opacity: 0.5;
+    /* Example problematic rule */
 }

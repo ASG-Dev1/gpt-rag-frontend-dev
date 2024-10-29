@@ -9,11 +9,6 @@ import { AskResponse, getCitationFilePath } from "../../api";
 import { parseAnswerToHtml } from "./AnswerParser";
 import { AnswerIcon } from "./AnswerIcon";
 
-// const [isHovered, setIsHovered] = useState(false);
-
-// const hovered = (bool: boolean) => {
-//     setIsHovered(bool)
-// }
 
 interface Props {
     answer: AskResponse;
@@ -68,24 +63,7 @@ export const Answer = ({
                             onClick={() => onThoughtProcessClicked()}
                             disabled={!answer.thoughts}
                         />
-                        {/* // onMouseEnter={() => setIsHovered(true)}
-                            // onMouseLeave={() => setIsHovered(false)} */}
-                        {/* styles={{
-                                root: { // Apply styles directly to the root or button element
-                                    color: isHovered ? '#ffbf00' : 'red',
-                                },
-                            }}
-                        > */}
-                        {/* {isHovered ? <LightbulbFill /> : <Lightbulb />}
-                        </IconButton> */}
-                        {/* <IconButton
-                            style={{ color: "black" }}
-                            iconProps={{ iconName: "ClipboardList" }}
-                            title="Show supporting content"
-                            ariaLabel="Show supporting content"
-                            onClick={() => onSupportingContentClicked()}
-                            disabled={!answer.data_points.length}
-                        /> */}
+
                     </div>
                 </Stack>
             </Stack.Item>

@@ -38,6 +38,8 @@ const Chat = () => {
     const [historyConversation, setHistoryConversation] = useState<ChatTurn[]>([]);
     const [isViewingHistory, setIsViewingHistory] = useState<boolean>(false);
     const [isEmptyStateVisible, setIsEmptyStateVisible] = useState<boolean>(true);
+    const [activeConversation, setActiveConversation] = useState<ChatTurn[]>([]);
+
 
     // speech synthesis is disabled by default
     const speechSynthesisEnabled = false;
@@ -113,7 +115,11 @@ const Chat = () => {
         }
     };
 
-
+    useEffect(() => {
+        if (!isViewingHistory) {
+            setActiveConversation(currentConversation);
+        }
+    }, [currentConversation, isViewingHistory]);
 
 
 
@@ -122,21 +128,19 @@ const Chat = () => {
         setIsEmptyStateVisible(false);
         try {
             const result = await fetchConversationById(conversationId);
-            console.log('Fetched conversation:', result);
             if (result && result.conversation_data && result.conversation_data.interactions) {
                 const mappedConversation = result.conversation_data.interactions.map((interaction: any) => ({
                     user: interaction.user_ask,
                     bot: { answer: interaction.answer || "No answer available" }
                 }));
-                console.log("Mapped conversation:", mappedConversation);
                 setHistoryConversation(mappedConversation);
-                console.log("History conversation in Chat.tsx:", historyConversation);
-
+                setActiveConversation(mappedConversation); // Set active conversation for the panel
             }
         } catch (error) {
             console.error('Error fetching conversation:', error);
         }
     };
+
 
 
 
@@ -167,7 +171,8 @@ const Chat = () => {
     const goBackToCurrentConversation = () => {
         setIsViewingHistory(false);
         setHistoryConversation([]);
-        setIsEmptyStateVisible(true); //SHOW MAIN PAGE
+        setIsEmptyStateVisible(true);
+        setActiveConversation(currentConversation); // Reset to current conversation
     };
 
 
@@ -308,13 +313,13 @@ const Chat = () => {
                             </div>
                         )}
                     </div>
-                    {(isViewingHistory ? historyConversation : currentConversation).length > 0 && activeAnalysisPanelTab && (
+                    {(activeConversation.length > 0 && activeAnalysisPanelTab) && (
                         <AnalysisPanel
                             className={styles.chatAnalysisPanel}
                             activeCitation={activeCitation}
                             onActiveTabChanged={x => onToggleTab(x as AnalysisPanelTabs, selectedAnswer)}
                             citationHeight="720px"
-                            answer={(isViewingHistory ? historyConversation : currentConversation)[selectedAnswer]?.bot!}
+                            answer={activeConversation[selectedAnswer]?.bot!}
                             activeTab={activeAnalysisPanelTab}
                         />
                     )}

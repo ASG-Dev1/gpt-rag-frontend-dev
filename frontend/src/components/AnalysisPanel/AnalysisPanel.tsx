@@ -76,7 +76,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
 
 
     function extractDataFromResponse(response: AskResponse): { [key: string]: string } {
-        let input = response.thoughts!;
+        let input = response.thoughts ?? '';
         let tokens = input.split(' ');
         let result: { [key: string]: string } = {};
         let currentKey = '';
