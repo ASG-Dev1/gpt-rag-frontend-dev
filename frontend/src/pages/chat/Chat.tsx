@@ -245,7 +245,7 @@ const Chat = () => {
                 <div className={styles.chatRoot}>
                     <div className={styles.chatContainer}>
                         {isViewingHistory && (
-                            <DefaultButton onClick={goBackToCurrentConversation}>
+                            <DefaultButton className={`${btnStyles.backBtn} ${btnStyles.buttonStructure}`} onClick={goBackToCurrentConversation}>
                                 Back to Current Conversation
                             </DefaultButton>
                         )}

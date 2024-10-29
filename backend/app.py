@@ -27,7 +27,6 @@ COSMOSDB_KEY = os.environ.get("COSMOSDB_KEY")
 COSMOSDB_CONTAINER = os.environ.get("COSMOSDB_CONTAINER")
 COSMOSDB_URI = os.environ.get("COSMOSDB_URI")
 
-
 def get_secret(secretName):
     keyVaultName = os.environ["AZURE_KEY_VAULT_NAME"]
     KVUri = f"https://{keyVaultName}.vault.azure.net"
@@ -164,15 +163,17 @@ async def fetch_chat_history():
             print(database)
             print(container)
 
-            query = "SELECT c.id, i.user_id, i.user_ask, i.answer FROM c JOIN i IN c.conversation_data.interactions"
+            query = "SELECT c.id, i.user_id, i.user_ask, i.answer, (SELECT VALUE ARRAY( SELECT VALUE h.content FROM h IN c.history WHERE h.role = 'user')) AS content FROM c JOIN i IN c.conversation_data.interactions"
             items = container.query_items(query=query, partition_key=None)
 
             result = []
             async for item in items:
+                if 'title' in item and isinstance(item['title'], list) and len(item['title']) == 1:
+                    item['title'] = item['title'][0]
                 result.append(item)
 
             print("This is a jsonify test of result APP")
-            print(jsonify(result))
+            print(result)
             return jsonify(result)
 
     except Exception as e:
@@ -208,6 +209,26 @@ async def get_conversation(conversation_id):
         logging.error(f"Error fetching conversation with ID {conversation_id}: {e}")
         return jsonify({"error": str(e)}), 500
 
+
+# @app.route("/editOrDeleteConversation/<conversation_id>/<mode>")
+# async def editOrDeleteConversation(conversationID, newConversationID, mode):
+    
+#     if(mode == "edit"):
+#         try:
+#             item = container.read_item(item=conversation_id)
+#             item.update(newConversationID)
+#     elif(mode == "delete"):
+#         try: 
+#             async with CosmosClient(COSMOSDB_URI, COSMOSDB_KEY) as client:
+#                 database = client.get_database_client(AZURE_DB_NAME)
+#                 container = database.get_container_client(COSMOSDB_CONTAINER)
+#                 container.delete_item(item=conversation_id)
+#         except exceptions.CosmosResourceNotFoundError:
+#             print(f"Item with ID {id} not found.")
+#             return False
+#         except exceptions.CosmosHttpResponseError as e:
+#             print(f"An error occurred: {e}")
+#             return False      
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8000)

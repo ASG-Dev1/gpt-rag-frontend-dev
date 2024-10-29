@@ -16,7 +16,8 @@ import {
   Stack,
   List,
   StackItem,
-  Text
+  Text,
+  Separator
 } from '@fluentui/react'
 import { useBoolean } from '@fluentui/react-hooks'
 
@@ -31,16 +32,16 @@ import styles from './ChatHistoryPanel.module.css'
 // Define a type for the chat history items
 interface ChatHistoryItem {
   id: string;
+  content:string;
   userId: string;
   userAsk: string;
   // answer: string;
   answer: AskResponse;
 }
+
 interface ChatHistoryPanelProps {
   onConversationSelected: (conversationId: string) => void;
 }
-
-
 
 export enum ChatHistoryPanelTabs {
   History = 'History'
@@ -125,6 +126,7 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
       }
     };
     fetchHistory();
+    console.log("Chat History Panel data ln129: ", chatHistory)
   }, []);
 
 
@@ -139,87 +141,32 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
             Historial
           </Text>
         </StackItem>
-        <Stack verticalAlign="start">
-          {/* Chat History Control buttons  */}
-          <Stack horizontal styles={commandBarButtonStyle} >
 
-            <CommandBarButton
-              iconProps={{ iconName: 'More' }}
-              title={'Borrar todo el historia'}
-              onClick={onShowContextualMenu}
-              aria-label={'clear all chat history'}
-              styles={
-                {
-                  root: { backgroundColor: "transparent" },
-                  rootHovered: { backgroundColor: '#9ac4e3' },
-                  rootPressed: { backgroundColor: "#9ac4e3" },
-                  icon: { color: 'black' },
-                  iconHovered: { color: 'black' },
-                  iconPressed: { color: 'black' }
-                }}
-              role="button"
-              id="moreButton"
-            />
-
-            {/* Items in the more options button (...) drop down */}
-            <ContextualMenu
-              items={menuItems}
-              hidden={!showContextualMenu}
-              target={'#moreButton'}
-              onItemClick={toggleClearAllDialog}
-              onDismiss={onHideContextualMenu}
-              styles={{
-                subComponentStyles: {
-                  menuItem: {
-                    root: {
-                      backgroundColor: "#d6ecfb",
-                      color: "black",
-                      selectors: {
-                        ":hover": {
-                          backgroundColor: '#9ac4e3', color: "black",
-                          ".ms-ContextualMenu-icon": {
-                            color: "black",
-                          },
-                          ":active .ms-ContextualMenu-icon": {
-                            color: "black",
-                          }
-                        },
-                        ":active": {
-                          backgroundColor: "#9ac4e3"
-                        }
-                      }
-                    },
-                    rootPressed: { backgroundColor: "#9ac4e3" },
-                    icon: { color: "#000" },
+        <Separator
+                styles={{
+                  root: {
+                    width: '100%',
+                    position: 'relative',
+                    '::before': {
+                      backgroundColor: '#000'
+                    }
                   }
-                }
-              }}
-            />
-
-            {/* X button */}
-            <CommandBarButton
-              iconProps={{ iconName: 'Cancel' }}
-              title={'Esconder'}
-              onClick={handleHistoryClick}
-              aria-label={'hide button'}
-              styles={{ root: { backgroundColor: "transparent" }, rootHovered: { backgroundColor: '#9ac4e3' }, rootPressed: { backgroundColor: "#9ac4e3" }, icon: { color: 'black' }, iconHovered: { color: 'black' }, iconPressed: { color: 'black' } }}
-              role="button"
-            />
-          </Stack>
-
+                }}
+              />
+        
+        <Stack verticalAlign="start">
           <Stack>
             {chatHistory.map((item: ChatHistoryItem, index: number) => (
-              <div key={index} onClick={() => onConversationSelected(item.id)}>
+              <div key={index} onClick={() => {onConversationSelected(item.id);
+                console.log("Chat History Panel logs:");
+                console.log(item);
+              }}>
                 <ChatHistoryListItem conversation={item} />
               </div>
             ))}
-
           </Stack>
-
-
-
-
         </Stack>
+        
       </Stack>
       <Stack
         aria-label="chat history panel content"

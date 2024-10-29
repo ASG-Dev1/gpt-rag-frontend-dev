@@ -2,6 +2,7 @@ import css from '../../components/Common/Button.module.css';
 import styles from "./AccordionItemList.module.css";
 import { useState } from 'react';
 import PdfModal from "../PdfModal/PdfModal";
+import { Separator } from '@fluentui/react'
 
 // Define the AccordionItemListProps interface, including the onUrlClick function
 type AccordionItemListProps = {
@@ -13,13 +14,6 @@ type AccordionItemListProps = {
 
 export const AccordionItemList = ({ header, content, url, onUrlClick }: AccordionItemListProps) => {
      const [itemContent, setItemContent] = useState(false);
-     // const [isModalOpen, setIsModalOpen] = useState(false); // State to manage the modal visibility
-     // const [pdfData, setPdfData] = useState<{ name: string; url: string } | null>(null); // State to hold PDF data
-
-     // Function to extract the filename from a URL for modal pdfbutton
-     // const extractFilename = (url: string) => {
-     //      return url.split('/').pop()?.split('#')[0]?.split('?')[0] || "Unknown Filename"; // Extract file name from the URL
-     // };
 
      // Handle the accordion dropdown when clicked
      const handleAccordionClick = () => {
@@ -42,7 +36,6 @@ export const AccordionItemList = ({ header, content, url, onUrlClick }: Accordio
           return parseFloat(money) > 999.99
                ? `$${money.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
                : `$${money}`
-
      }
 
      // Renders Each Item List Modal
@@ -55,7 +48,10 @@ export const AccordionItemList = ({ header, content, url, onUrlClick }: Accordio
                     <div className="accordion-content" style={{ display: itemContent === true ? 'block' : 'none' }}>
                          {Object.entries(content).map(([key, value], index) => (
                               <div key={index}>
-                                   <p className={styles.itemsTitle}>{key}</p>
+                                   {index === 8 || index === 18 || index === 20 || index === 20
+                                        ? <><Separator styles={{root: {width: '100%', position: 'relative', '::before': { backgroundColor: '#000'}}}}/>
+                                            <p className={styles.itemsTitle}>{key}</p> </>
+                                        : <p className={styles.itemsTitle}>{key}</p>}
                                    {index >= 14 && index < 17
                                         ? <p className={styles.itemsValue}>{structuredQuantitys(value.toString())}</p>
                                         : <p className={styles.itemsValue}>{StructuredText(value.toString())}</p>}
