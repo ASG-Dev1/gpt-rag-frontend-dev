@@ -115,11 +115,11 @@ const Chat = () => {
         }
     };
 
-    useEffect(() => {
-        if (!isViewingHistory) {
-            setActiveConversation(currentConversation);
-        }
-    }, [currentConversation, isViewingHistory]);
+    // useEffect(() => {
+    //     if (!isViewingHistory) {
+    //         setActiveConversation(currentConversation);
+    //     }
+    // }, [currentConversation, isViewingHistory]);
 
 
 
@@ -134,7 +134,7 @@ const Chat = () => {
                     bot: { answer: interaction.answer || "No answer available" }
                 }));
                 setHistoryConversation(mappedConversation);
-                setActiveConversation(mappedConversation); // Set active conversation for the panel
+                // setActiveConversation(mappedConversation); // Set active conversation for the panel
             }
         } catch (error) {
             console.error('Error fetching conversation:', error);
@@ -172,7 +172,7 @@ const Chat = () => {
         setIsViewingHistory(false);
         setHistoryConversation([]);
         setIsEmptyStateVisible(true);
-        setActiveConversation(currentConversation); // Reset to current conversation
+        // setActiveConversation(currentConversation); // Reset to current conversation
     };
 
 
@@ -313,13 +313,15 @@ const Chat = () => {
                             </div>
                         )}
                     </div>
-                    {(activeConversation.length > 0 && activeAnalysisPanelTab) && (
+                    {/* {(activeConversation.length > 0 && activeAnalysisPanelTab) && ( */}
+                    {(isViewingHistory ? historyConversation : currentConversation).length > 0 && activeAnalysisPanelTab && (
                         <AnalysisPanel
                             className={styles.chatAnalysisPanel}
                             activeCitation={activeCitation}
                             onActiveTabChanged={x => onToggleTab(x as AnalysisPanelTabs, selectedAnswer)}
                             citationHeight="720px"
-                            answer={activeConversation[selectedAnswer]?.bot!}
+                            // answer={activeConversation[selectedAnswer]?.bot!}
+                            answer={(isViewingHistory ? historyConversation : currentConversation)[selectedAnswer]?.bot!}
                             activeTab={activeAnalysisPanelTab}
                         />
                     )}
