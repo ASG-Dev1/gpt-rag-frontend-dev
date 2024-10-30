@@ -1,7 +1,7 @@
 import { AskRequest, AskResponse, AskResponseGpt, ChatRequest, ChatRequestGpt, ChatMessage, Conversation, CosmosDBHealth, CosmosDBStatus } from "./models";
 
 
-
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export async function chatApiGpt(options: ChatRequestGpt): Promise<AskResponseGpt> {
   const response = await fetch("/chatgpt", {
     method: "POST",
@@ -34,6 +34,7 @@ export async function chatApiGpt(options: ChatRequestGpt): Promise<AskResponseGp
 
   return parsedResponse;
 }
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 export function getCitationFilePath(citation: string): string {
   var storage_account = "please_check_if_storage_account_is_in_frontend_app_settings";
@@ -53,6 +54,7 @@ export function getCitationFilePath(citation: string): string {
 
   return `https://${storage_account}.blob.core.windows.net/attachments/${citation}`;
 }
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 export const frontendSettings = async (): Promise<Response | null> => {
   const response = await fetch('/frontend_settings', {
@@ -68,6 +70,7 @@ export const frontendSettings = async (): Promise<Response | null> => {
 
   return response
 }
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 export const historyEnsure = async (): Promise<CosmosDBHealth> => {
   const response = await fetch('/history/ensure', {
@@ -110,6 +113,7 @@ export const historyEnsure = async (): Promise<CosmosDBHealth> => {
     })
   return response
 }
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 export const historyRead = async (convId: string): Promise<ChatMessage[]> => {
   const response = await fetch('/history/read', {
@@ -147,6 +151,7 @@ export const historyRead = async (convId: string): Promise<ChatMessage[]> => {
     })
   return response
 }
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 export const historyList = async (offset = 0): Promise<Conversation[] | null> => {
   const response = await fetch(`/history/list?offset=${offset}`, {
@@ -187,6 +192,8 @@ export const historyList = async (offset = 0): Promise<Conversation[] | null> =>
 
   return response
 }
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 export const historyDeleteAll = async (): Promise<Response> => {
   const response = await fetch('/history/delete_all', {
     method: 'DELETE',
@@ -209,6 +216,7 @@ export const historyDeleteAll = async (): Promise<Response> => {
     })
   return response
 }
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 export const historyDelete = async (convId: string): Promise<Response> => {
   const response = await fetch('/history/delete', {
@@ -234,6 +242,7 @@ export const historyDelete = async (convId: string): Promise<Response> => {
     })
   return response
 }
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 export const historyRename = async (convId: string, title: string): Promise<Response> => {
   const response = await fetch('/history/rename', {
@@ -262,6 +271,7 @@ export const historyRename = async (convId: string, title: string): Promise<Resp
 }
 
 
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 export const get_ChatHistory = async () => {
   try {

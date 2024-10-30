@@ -45,12 +45,16 @@ SPEECH_SYNTHESIS_VOICE_NAME = os.getenv('SPEECH_SYNTHESIS_VOICE_NAME')
 
 app = cors(Quart(__name__))
 
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 @app.route("/", defaults={"path": "index.html"})
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 @app.route("/<path:path>")
 async def static_file(path):
     return await app.send_static_file(path)
 
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 @app.route("/chatgpt", methods=["POST"])
 async def chatgpt():
@@ -85,6 +89,8 @@ async def chatgpt():
         }
 
         # Async HTTP POST request
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
         async with aiohttp.ClientSession() as session:
             async with session.post(url, json=payload, headers=headers) as response:
                 response_text = await response.text()
@@ -117,6 +123,7 @@ async def chatgpt():
 
 
 # Async methods to provide access to speech services and blob storage account blobs
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 @app.route("/api/get-speech-token", methods=["GET"])
 async def getGptSpeechToken():
@@ -140,6 +147,7 @@ async def getGptSpeechToken():
         logging.exception("[webbackend] exception in /api/get-speech-token")
         return jsonify({"error": str(e)}), 500
 
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 @app.route("/api/get-storage-account", methods=["GET"])
 async def getStorageAccount():
@@ -151,6 +159,7 @@ async def getStorageAccount():
         logging.exception("[webbackend] exception in /api/get-storage-account")
         return jsonify({"error": str(e)}), 500
 
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 @app.route("/get_ChatHistory", methods=["GET"])
 async def fetch_chat_history():
@@ -180,6 +189,7 @@ async def fetch_chat_history():
         logging.error("Error fetching chat history: %s", e)
         return jsonify([])
     
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 @app.route("/api/conversations/<conversation_id>", methods=["GET"])
 async def get_conversation(conversation_id):
@@ -198,8 +208,6 @@ async def get_conversation(conversation_id):
             async for item in items:
                 result.append(item)
 
-
-
             if len(result) == 0:
                 return jsonify({"error": "Conversation not found"}), 404
 
@@ -209,7 +217,7 @@ async def get_conversation(conversation_id):
         logging.error(f"Error fetching conversation with ID {conversation_id}: {e}")
         return jsonify({"error": str(e)}), 500
 
-
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # @app.route("/editOrDeleteConversation/<conversation_id>/<mode>")
 # async def editOrDeleteConversation(conversationID, newConversationID, mode):
     

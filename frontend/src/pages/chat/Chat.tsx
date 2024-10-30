@@ -80,24 +80,66 @@ const Chat = () => {
 
     const [conversationId, setConversationId] = useState<string | null>(null);
 
+    // const makeApiRequestGpt = async (question: string) => {
+    //     if (isViewingHistory) return;
+    //     setIsEmptyStateVisible(false);
+    //     setError(undefined);
+    //     setIsLoading(true);
+
+
+    //     const newConversationTurn: ChatTurn = { user: question, bot: undefined };
+    //     // setCurrentConversation([...currentConversation, newConversationTurn]);
+    //     lastQuestionRef.current = question;
+
+    //     try {
+
+    //         const currentConversationId = conversationId || uuidv4();
+    //         if (!conversationId) setConversationId(currentConversationId);
+
+    //         const request: ChatRequestGpt = {
+    //             history: currentConversation.map(c => ({ user: c.user, bot: c.bot })),
+    //             conversation_id: currentConversationId,
+    //             query: question,
+    //             approach: Approaches.ReadRetrieveRead
+    //         };
+
+    //         const result = await chatApiGpt(request);
+
+
+    //         setCurrentConversation(prev => prev.map((c, index) =>
+    //             index === prev.length - 1 ? { ...c, bot: result } : c
+    //         ));
+
+    //     } catch (error) {
+    //         setError(error);
+    //     } finally {
+    //         setIsLoading(false);
+    //     }
+    // };
     const makeApiRequestGpt = async (question: string) => {
-        if (isViewingHistory) return;
+
+
         setIsEmptyStateVisible(false);
         setError(undefined);
         setIsLoading(true);
 
-
         const newConversationTurn: ChatTurn = { user: question, bot: undefined };
-        setCurrentConversation([...currentConversation, newConversationTurn]);
+
+        if (isViewingHistory) {
+            setHistoryConversation([...historyConversation, newConversationTurn]);
+        } else {
+            setCurrentConversation([...currentConversation, newConversationTurn]);
+        }
         lastQuestionRef.current = question;
 
         try {
-
             const currentConversationId = conversationId || uuidv4();
             if (!conversationId) setConversationId(currentConversationId);
 
+            const conversation = isViewingHistory ? historyConversation : currentConversation;
+
             const request: ChatRequestGpt = {
-                history: currentConversation.map(c => ({ user: c.user, bot: c.bot })),
+                history: conversation.map(c => ({ user: c.user, bot: c.bot })),
                 conversation_id: currentConversationId,
                 query: question,
                 approach: Approaches.ReadRetrieveRead
@@ -105,11 +147,19 @@ const Chat = () => {
 
             const result = await chatApiGpt(request);
 
-
-            setCurrentConversation(prev => prev.map((c, index) =>
-                index === prev.length - 1 ? { ...c, bot: result } : c
-            ));
-
+            if (isViewingHistory) {
+                setHistoryConversation(prev =>
+                    prev.map((c, index) =>
+                        index === prev.length - 1 ? { ...c, bot: result } : c
+                    )
+                );
+            } else {
+                setCurrentConversation(prev =>
+                    prev.map((c, index) =>
+                        index === prev.length - 1 ? { ...c, bot: result } : c
+                    )
+                );
+            }
         } catch (error) {
             setError(error);
         } finally {
@@ -117,11 +167,6 @@ const Chat = () => {
         }
     };
 
-    // useEffect(() => {
-    //     if (!isViewingHistory) {
-    //         setActiveConversation(currentConversation);
-    //     }
-    // }, [currentConversation, isViewingHistory]);
 
 
 
@@ -136,15 +181,11 @@ const Chat = () => {
                     bot: { answer: interaction.answer || "No answer available" }
                 }));
                 setHistoryConversation(mappedConversation);
-                // setActiveConversation(mappedConversation); // Set active conversation for the panel
             }
         } catch (error) {
             console.error('Error fetching conversation:', error);
         }
     };
-
-
-
 
 
     const fetchConversationById = async (conversationId: string) => {
@@ -174,7 +215,10 @@ const Chat = () => {
         setIsViewingHistory(false);
         setHistoryConversation([]);
         setIsEmptyStateVisible(true);
-        // setActiveConversation(currentConversation); // Reset to current conversation
+        setActiveConversation(currentConversation); // Reset to current conversation
+        // navigateToMainPage();
+        setIsChatInputVisible(true);
+
     };
 
 
@@ -240,7 +284,13 @@ const Chat = () => {
         setSelectedAnswer(index);
     };
 
+    const [isChatInputVisible, setIsChatInputVisible] = useState(false);
 
+
+
+    useEffect(() => {
+        setIsChatInputVisible(false);
+    }, []);
     return (
         <>
             <div className={styles.container}>
@@ -297,11 +347,13 @@ const Chat = () => {
                             </div>
 
                         )}
-                        {!isViewingHistory && (
 
+                        {/* This is for viewing the ChatInput Section wether you are in a Current State or History */}
+                        {(isViewingHistory ? historyConversation : currentConversation) && (
                             <div className={styles.chatInput}>
 
                                 <div className={btnStyles.chatButtons}>
+                                    {/* Create a New Conversations  */}
                                     <NewChatButton className={`${btnStyles.buttonStructure} ${btnStyles.backBtn}`} onClick={goBackToCurrentConversation} />
                                     <ClearChatButton className={`${btnStyles.buttonStructure} ${btnStyles.deleteConversationBtn}`} onClick={clearChat} />
                                 </div>
@@ -313,20 +365,22 @@ const Chat = () => {
                                     onSend={makeApiRequestGpt}
                                 />
                             </div>
+
                         )}
                     </div>
-                    {/* {(activeConversation.length > 0 && activeAnalysisPanelTab) && ( */}
+
+                    {/* This Opens AnalysisPanel when Sources is clicked in History State  */}
                     {(isViewingHistory ? historyConversation : currentConversation).length > 0 && activeAnalysisPanelTab && (
                         <AnalysisPanel
                             className={styles.chatAnalysisPanel}
                             activeCitation={activeCitation}
                             onActiveTabChanged={x => onToggleTab(x as AnalysisPanelTabs, selectedAnswer)}
                             citationHeight="720px"
-                            // answer={activeConversation[selectedAnswer]?.bot!}
                             answer={(isViewingHistory ? historyConversation : currentConversation)[selectedAnswer]?.bot!}
                             activeTab={activeAnalysisPanelTab}
                         />
                     )}
+
                     <Panel
                         headerText="Configure answer generation"
                         isOpen={isConfigPanelOpen}
