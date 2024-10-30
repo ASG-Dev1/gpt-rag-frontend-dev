@@ -51,9 +51,9 @@
   margin-right: 3rem;
 }
 
-.deleteConversationBtn {
+.deleteConversationBtn,
+.backBtn {
   height: 3rem;
-  margin-right: 1rem;
 }
 
 .buttonCitation {
@@ -70,6 +70,9 @@
   margin-bottom: 0.625rem;
 }
 
-.backBtn {
-  height: 2.5rem
+.chatButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-right: 1rem;
 }

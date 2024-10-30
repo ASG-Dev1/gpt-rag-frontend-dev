@@ -1,0 +1,21 @@
+.container {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    border-radius: 29px;
+    padding: 11px;
+    color: white;
+}
+
+.disabled {
+    opacity: 0.4;
+}
+
+.icon {
+    color: white;
+    width: 28px;
+    /* Desired width */
+    height: 28px;
+    /* Desired height */
+}

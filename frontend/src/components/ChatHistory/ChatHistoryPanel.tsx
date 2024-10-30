@@ -32,7 +32,7 @@ import styles from './ChatHistoryPanel.module.css'
 // Define a type for the chat history items
 interface ChatHistoryItem {
   id: string;
-  content:string;
+  content: string;
   userId: string;
   userAsk: string;
   // answer: string;
@@ -132,7 +132,7 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
 
   return (
     <Stack className={styles.container} data-is-scrollable aria-label={'chat history panel'}>
-      <Stack horizontal horizontalAlign="space-between" verticalAlign="center" wrap aria-label="chat history header">
+      <Stack verticalAlign="start" wrap aria-label="chat history header">
         <StackItem style={{ paddingTop: '1rem' }}> {/* Aqui es donde vas a editar el padding Joshua!!!!  */}
           <Text
             className={styles.headingText}
@@ -141,32 +141,34 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
             Historial
           </Text>
         </StackItem>
+      </Stack>
 
+      <Stack className={styles.separatorDiv}>
         <Separator
-                styles={{
-                  root: {
-                    width: '100%',
-                    position: 'relative',
-                    '::before': {
-                      backgroundColor: '#000'
-                    }
-                  }
-                }}
-              />
-        
-        <Stack verticalAlign="start">
-          <Stack>
-            {chatHistory.map((item: ChatHistoryItem, index: number) => (
-              <div key={index} onClick={() => {onConversationSelected(item.id);
-                console.log("Chat History Panel logs:");
-                console.log(item);
-              }}>
-                <ChatHistoryListItem conversation={item} />
-              </div>
-            ))}
-          </Stack>
+          styles={{
+            root: {
+              width: '90%',
+              position: 'relative',
+              '::before': {
+                backgroundColor: '#000'
+              }
+            }
+          }}
+        />
+      </Stack>
+
+      <Stack >
+        <Stack>
+          {chatHistory.map((item: ChatHistoryItem, index: number) => (
+            <div key={index} onClick={() => {
+              onConversationSelected(item.id);
+              console.log("Chat History Panel logs:");
+              console.log(item);
+            }}>
+              <ChatHistoryListItem conversation={item} />
+            </div>
+          ))}
         </Stack>
-        
       </Stack>
       <Stack
         aria-label="chat history panel content"
@@ -204,55 +206,3 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
     </Stack>
   )
 }
-
-// Esta parte necesita la conexion con la base de datos para funcionar
-
-{/* <Stack className={styles.chatHistoryListContainer}>
-          {appStateContext?.state.chatHistoryLoadingState === ChatHistoryLoadingState.Success &&
-            appStateContext?.state.isCosmosDBAvailable.cosmosDB && <ChatHistoryList />}
-          {appStateContext?.state.chatHistoryLoadingState === ChatHistoryLoadingState.Fail &&
-            appStateContext?.state.isCosmosDBAvailable && (
-              <>
-                <Stack>
-                  <Stack horizontalAlign="center" verticalAlign="center" style={{ width: '100%', marginTop: 10 }}>
-                    <StackItem>
-                      <Text style={{ alignSelf: 'center', fontWeight: '400', fontSize: 16, color: 'white' }}>
-                        {appStateContext?.state.isCosmosDBAvailable?.status && (
-                          <span>{appStateContext?.state.isCosmosDBAvailable?.status}</span>
-                        )}
-                        {!appStateContext?.state.isCosmosDBAvailable?.status && <span>Error al cargar el historial de chat</span>}
-                      </Text>
-                    </StackItem>
-                    <StackItem>
-                      <Text style={{ alignSelf: 'center', fontWeight: '400', fontSize: 14, color: 'white' }}>
-                        <span>El historial de chat no se puede guardar en este momento</span>
-                      </Text>
-                    </StackItem>
-                  </Stack>
-                </Stack>
-              </>
-            )}
-          {appStateContext?.state.chatHistoryLoadingState === ChatHistoryLoadingState.Loading && (
-            <>
-              <Stack>
-                <Stack
-                  horizontal
-                  horizontalAlign="center"
-                  verticalAlign="center"
-                  style={{ width: '100%', marginTop: 10 }}>
-                  <StackItem style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <Spinner
-                      style={{ alignSelf: 'flex-start', height: '100%', marginRight: '5px' }}
-                      size={SpinnerSize.medium}
-                    />
-                  </StackItem>
-                  <StackItem>
-                    <Text style={{ alignSelf: 'center', fontWeight: '400', fontSize: 14, color: 'white' }}>
-                      <span style={{ whiteSpace: 'pre-wrap' }}>Cargando historial de chat</span>
-                    </Text>
-                  </StackItem>
-                </Stack>
-              </Stack>
-            </>
-          )}
-        </Stack> */}

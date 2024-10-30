@@ -15,6 +15,8 @@ import { getTokenOrRefresh } from '../../components/QuestionInput/token_util';
 import { SpeechConfig, AudioConfig, SpeechSynthesizer, ResultReason } from 'microsoft-cognitiveservices-speech-sdk';
 import { ChatHistoryPanel } from "../../components/ChatHistory/ChatHistoryPanel";
 import { v4 as uuidv4 } from 'uuid';
+import { NewChatButton } from "../../components/NewChatButton/NewChatButton";
+
 
 interface HistoryItem {
     user_ask: string;
@@ -244,11 +246,6 @@ const Chat = () => {
             <div className={styles.container}>
                 <div className={styles.chatRoot}>
                     <div className={styles.chatContainer}>
-                        {isViewingHistory && (
-                            <DefaultButton className={`${btnStyles.backBtn} ${btnStyles.buttonStructure}`} onClick={goBackToCurrentConversation}>
-                                Back to Current Conversation
-                            </DefaultButton>
-                        )}
                         {isEmptyStateVisible ? (
                             <div className={styles.chatEmptyState}>
                                 {
@@ -301,9 +298,14 @@ const Chat = () => {
 
                         )}
                         {!isViewingHistory && (
+
                             <div className={styles.chatInput}>
-                                <ClearChatButton className={`${btnStyles.buttonStructure} ${btnStyles.deleteConversationBtn}`}
-                                    onClick={clearChat} />
+
+                                <div className={btnStyles.chatButtons}>
+                                    <NewChatButton className={`${btnStyles.buttonStructure} ${btnStyles.backBtn}`} onClick={goBackToCurrentConversation} />
+                                    <ClearChatButton className={`${btnStyles.buttonStructure} ${btnStyles.deleteConversationBtn}`} onClick={clearChat} />
+                                </div>
+
                                 <QuestionInput
                                     clearOnSend
                                     placeholder={placeholderText}
