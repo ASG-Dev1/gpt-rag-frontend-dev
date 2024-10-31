@@ -116,7 +116,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                 <PivotItem
                     itemKey={AnalysisPanelTabs.Items}
                     headerText="Items"
-                    headerButtonProps={dataPoints.length === 0 ? { disabled: true, style: { color: "grey" } } : undefined}
+                    headerButtonProps={dataPoints.length === 0 ? { disabled: false, style: { color: "grey" } } : undefined}
                 >
                     <div>
                         {Items1.data_points && Items1.data_points.length > 0 ? (
