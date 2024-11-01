@@ -33,8 +33,8 @@ import styles from './ChatHistoryPanel.module.css'
 interface ChatHistoryItem {
   id: string;
   content: string;
-  userId: string;
-  userAsk: string;
+  user_id: string;
+  user_ask: string;
   // answer: string;
   answer: AskResponse;
 }
@@ -131,45 +131,51 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
 
 
   return (
-    <Stack className={styles.container} data-is-scrollable aria-label={'chat history panel'}>
-      <Stack verticalAlign="start" wrap aria-label="chat history header">
-        <StackItem style={{ paddingTop: '1rem' }}> {/* Aqui es donde vas a editar el padding Joshua!!!!  */}
-          <Text
-            className={styles.headingText}
-            role="heading"
-            aria-level={2}>
+    <Stack className={styles.container} data-is-scrollable aria-label="chat history panel">
+
+      {/* Header */}
+      <Stack verticalAlign="start" wrap aria-label="chat history header" style={{ height: '3rem' }}>
+        <StackItem style={{ paddingTop: '1rem' }}>
+          {/* Aqui es donde vas a editar el padding Joshua!!!! */}
+          <Text className={styles.headingText} role="heading" aria-level={2}>
             Historial
           </Text>
         </StackItem>
       </Stack>
 
-      <Stack className={styles.separatorDiv}>
+      {/* Separator below Historial heading */}
+      <div className={styles.separatorDiv}>
         <Separator
           styles={{
             root: {
-              width: '90%',
-              position: 'relative',
+              width: '95%',
               '::before': {
                 backgroundColor: '#000'
               }
             }
           }}
         />
-      </Stack>
+      </div>
 
-      <Stack >
+      {/* Chat history list */}
+      <Stack>
         <Stack>
           {chatHistory.map((item: ChatHistoryItem, index: number) => (
-            <div key={index} onClick={() => {
-              onConversationSelected(item.id);
-              console.log("Chat History Panel logs:");
-              console.log(item);
-            }}>
+            <div
+              key={index}
+              onClick={() => {
+                onConversationSelected(item.id);
+                console.log("Chat History Panel logs:");
+                console.log(item);
+              }}
+            >
               <ChatHistoryListItem conversation={item} />
             </div>
           ))}
         </Stack>
       </Stack>
+
+      {/* Content Stack */}
       <Stack
         aria-label="chat history panel content"
         styles={{
@@ -187,15 +193,20 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
           flexDirection: 'column',
           flexWrap: 'wrap',
           padding: '1px'
-        }}>
-      </Stack>
+        }}
+      />
+
+      {/* Dialog */}
       <Dialog
         hidden={hideClearAllDialog}
         onDismiss={clearing ? () => { } : onHideClearAllDialog}
         dialogContentProps={clearAllDialogContentProps}
-        modalProps={modalProps}>
+        modalProps={modalProps}
+      >
         <DialogFooter>
-          {!clearingError && <PrimaryButton onClick={onClearAllChatHistory} disabled={clearing} text="Borrar todo" />}
+          {!clearingError && (
+            <PrimaryButton onClick={onClearAllChatHistory} disabled={clearing} text="Borrar todo" />
+          )}
           <DefaultButton
             onClick={onHideClearAllDialog}
             disabled={clearing}
@@ -204,5 +215,6 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
         </DialogFooter>
       </Dialog>
     </Stack>
+
   )
 }

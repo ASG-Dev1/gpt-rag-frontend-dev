@@ -6,8 +6,8 @@ type ChatHistoryListProps = {
   conversation: {
     id: string;
     content:string;
-    userId: string;
-    userAsk: string;
+    user_id: string;
+    user_ask: string;
     answer: AskResponse
   };
 };

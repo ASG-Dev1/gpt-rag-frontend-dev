@@ -48,9 +48,9 @@ export const AccordionItemList = ({ header, content, url, onUrlClick }: Accordio
                     <div className="accordion-content" style={{ display: itemContent === true ? 'block' : 'none' }}>
                          {Object.entries(content).map(([key, value], index) => (
                               <div key={index}>
-                                   {index === 8 || index === 18 || index === 20 || index === 20
-                                        ? <><Separator styles={{root: {width: '100%', position: 'relative', '::before': { backgroundColor: '#000'}}}}/>
-                                            <p className={styles.itemsTitle}>{key}</p> </>
+                                   {index === 9 || index === 19 || index === 23
+                                        ? <><div className={styles.separatorDiv}><Separator styles={{root: {width: '95%', '::before':{ backgroundColor: '#000'}}}}/></div>
+                                            <p className={styles.itemsTitle}>{key}</p></>
                                         : <p className={styles.itemsTitle}>{key}</p>}
                                    {index >= 14 && index < 17
                                         ? <p className={styles.itemsValue}>{structuredQuantitys(value.toString())}</p>

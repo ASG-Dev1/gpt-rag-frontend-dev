@@ -79,9 +79,11 @@ export const Answer = ({
                         {parsedAnswer.citations.map((x, i) => {
                             const path = getCitationFilePath(x);
                             return (
-                                <a key={i} className={styles.citation} title={x} onClick={() => onCitationClicked(path)}>
-                                    {`${++i}. ${truncateString(x, 15)}`}
-                                </a>
+                                <div>
+                                    <a key={i} className={styles.citation} title={x} onClick={() => onCitationClicked(path)}>
+                                        {`${++i}. ${truncateString(x, 15)}`}
+                                    </a>
+                                </div>
                             );
                         })}
                     </Stack>
