@@ -116,17 +116,20 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const data = await get_ChatHistory();
-        console.log("Fetched chat history:", data); // Check if chat history is fetched
-        setChatHistory(data);
-        console.log("Test in Chat History Panel")
-        console.log(data)
+        const data: ChatHistoryItem[] = await get_ChatHistory(); // Explicitly type the fetched data
+        console.log("Fetched chat history:", data);
+
+        // Filter for unique conversation_ids
+        const uniqueHistory: ChatHistoryItem[] = Array.from(
+          new Map(data.map((item: ChatHistoryItem) => [item.id, item])).values()
+        );
+
+        setChatHistory(uniqueHistory); // Now TypeScript knows this is ChatHistoryItem[]
       } catch (error) {
         console.error('Error loading chat history:', error);
       }
     };
     fetchHistory();
-    console.log("Chat History Panel data ln129: ", chatHistory)
   }, []);
 
 
@@ -160,19 +163,13 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
       {/* Chat history list */}
       <Stack>
         <Stack>
-          {chatHistory.map((item: ChatHistoryItem, index: number) => (
-            <div
-              key={index}
-              onClick={() => {
-                onConversationSelected(item.id);
-                console.log("Chat History Panel logs:");
-                console.log(item);
-              }}
-            >
+          {chatHistory.map((item: ChatHistoryItem) => (
+            <div key={item.id} onClick={() => onConversationSelected(item.id)}>
               <ChatHistoryListItem conversation={item} />
             </div>
           ))}
         </Stack>
+
       </Stack>
 
       {/* Content Stack */}

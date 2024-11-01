@@ -5,7 +5,7 @@ import { AskResponse } from '../../api';
 type ChatHistoryListProps = {
   conversation: {
     id: string;
-    content:string;
+    content: string;
     user_id: string;
     user_ask: string;
     answer: AskResponse

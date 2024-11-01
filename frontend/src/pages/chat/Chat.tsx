@@ -82,42 +82,7 @@ const Chat = () => {
 
     const [conversationId, setConversationId] = useState<string | null>(null);
 
-    // const makeApiRequestGpt = async (question: string) => {
-    //     if (isViewingHistory) return;
-    //     setIsEmptyStateVisible(false);
-    //     setError(undefined);
-    //     setIsLoading(true);
 
-
-    //     const newConversationTurn: ChatTurn = { user: question, bot: undefined };
-    //     // setCurrentConversation([...currentConversation, newConversationTurn]);
-    //     lastQuestionRef.current = question;
-
-    //     try {
-
-    //         const currentConversationId = conversationId || uuidv4();
-    //         if (!conversationId) setConversationId(currentConversationId);
-
-    //         const request: ChatRequestGpt = {
-    //             history: currentConversation.map(c => ({ user: c.user, bot: c.bot })),
-    //             conversation_id: currentConversationId,
-    //             query: question,
-    //             approach: Approaches.ReadRetrieveRead
-    //         };
-
-    //         const result = await chatApiGpt(request);
-
-
-    //         setCurrentConversation(prev => prev.map((c, index) =>
-    //             index === prev.length - 1 ? { ...c, bot: result } : c
-    //         ));
-
-    //     } catch (error) {
-    //         setError(error);
-    //     } finally {
-    //         setIsLoading(false);
-    //     }
-    // };
     const makeApiRequestGpt = async (question: string) => {
 
 
