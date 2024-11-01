@@ -55,20 +55,24 @@
         color: #000;
         padding: 20px;
         margin-top: -4rem;
-        position: fixed;   /* Fixed position */
-        top: 50%;         /* Half the height of the viewport */
-        left: 50%;        /* Half the width of the viewport */
-        transform: translate(-52%, -46%); /* Shift the element back by its own half width and height */
+        position: fixed;
+        /* Fixed position */
+        top: 50%;
+        /* Half the height of the viewport */
+        left: 50%;
+        /* Half the width of the viewport */
+        transform: translate(-52%, -46%);
+        /* Shift the element back by its own half width and height */
         width: 90%;
         max-width: 1024px;
         box-shadow: 1px 5px 15px black;
-       
+
     }
 }
 
 @media only screen and (max-height: 780px) {
 
-    
+
 
     .chatEmptyState {
         padding-top: 0;
@@ -134,14 +138,29 @@
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
     padding: 20px;
-    position:sticky;
+    position: sticky;
     top: 6.25rem;
-    color:black;
+    color: black;
 }
 
 .chatSettingsSeparator {
     margin-top: 15px;
 }
+
+.historyBanner {
+    background-color: #fff3cd;
+    /* Light yellow */
+    color: #856404;
+    /* Darker yellow/brown for contrast */
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #ffeeba;
+    /* Border to help it stand out */
+}
+
 
 .loadingLogo {
     font-size: 28px;
@@ -156,7 +175,7 @@
 
 /* New CSS */
 
-.myDIV{
+.myDIV {
 
     height: 100%;
     width: 100%;

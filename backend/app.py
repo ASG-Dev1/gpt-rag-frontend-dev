@@ -200,12 +200,13 @@ async def get_conversation(conversation_id):
             container = database.get_container_client(COSMOSDB_CONTAINER)
 
             query = f"SELECT * FROM c WHERE c.id = '{conversation_id}'"
-            items = container.query_items(query=query, partition_key=None)
+            items = container.query_items(query=query, partition_key=conversation_id)
 
             result = []
             logging.info(f"Fetched conversation: {result}, Query: {query}, PartitionKey: {conversation_id}, Items of Query: {items}")
 
             async for item in items:
+                logging.info(f"Item fetched: {item}")
                 result.append(item)
 
             if len(result) == 0:

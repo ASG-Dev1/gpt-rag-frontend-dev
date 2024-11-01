@@ -143,10 +143,20 @@ const Chat = () => {
         try {
             const result = await fetchConversationById(conversationId);
             if (result && result.conversation_data && result.conversation_data.interactions) {
+                // const mappedConversation = result.conversation_data.interactions.map((interaction: any) => ({
+                //     user: interaction.user_ask,
+                //     bot: { answer: interaction.answer || "No answer available" }
+                // }));
                 const mappedConversation = result.conversation_data.interactions.map((interaction: any) => ({
                     user: interaction.user_ask,
-                    bot: { answer: interaction.answer || "No answer available" }
+                    bot: {
+                        answer: interaction.answer || "No answer available",
+                        thoughts: interaction.thoughts || interaction.conversation_history_summary || "",
+                        data_points: interaction.sources || [],
+                        error: interaction.error || undefined
+                    }
                 }));
+
                 setHistoryConversation(mappedConversation);
                 setConversationId(conversationId);
             }
@@ -282,8 +292,14 @@ const Chat = () => {
                                 <ExampleList onExampleClicked={onExampleClicked} />
                             </div>
                         ) : (
+
                             <div className={styles.chatMessageStream}>
-                                {/* {(isViewingHistory ? historyConversation : currentConversation).map((item, index) => ( */}
+                                {isViewingHistory && (
+                                    <div className={styles.historyBanner}>
+                                        Esta es una conversación del Historial de Conversaciones
+                                    </div>
+                                )}
+
                                 {conversation.map((item, index) => (
                                     <div key={index}>
                                         <UserChatMessage message={item.user} />
@@ -328,7 +344,8 @@ const Chat = () => {
                         )}
 
                         {/* This is for viewing the ChatInput Section wether you are in a Current State or History */}
-                        {(isViewingHistory ? historyConversation : currentConversation) && (
+                        {/* {(isViewingHistory ? historyConversation : currentConversation) && ( */}
+                        {(!isViewingHistory || historyConversation.length > 0) && (
                             <div className={styles.chatInput}>
 
                                 <div className={btnStyles.chatButtons}>

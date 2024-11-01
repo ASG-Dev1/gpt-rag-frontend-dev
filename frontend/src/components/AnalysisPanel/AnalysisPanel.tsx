@@ -29,7 +29,9 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
     const isDisabledItemsTab: boolean = !answer.thoughts;
     const sanitizedThoughts = DOMPurify.sanitize(answer.thoughts!);
     const Items1: AskResponse = answer
-    const dataPoints = Items1?.data_points ?? [];
+    // const dataPoints = Items1?.data_points ?? [];
+    const dataPoints = answer?.data_points ?? [];
+
     console.log('Items1.data_points:', Items1.data_points)
 
     const iframeSrc = `https://docs.google.com/gview?url=${activeCitation}&embedded=true`;
@@ -154,7 +156,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                                             "Nombre de Archivo de Orden de Compra:   ": item.Nombre_de_Archivo_de_Orden_de_Compra,
                                             "Número de Contrato:   ": item.Numero_de_Contrato,
                                             "Número de Orden de Compra:   ": item.Numero_de_Orden_de_Compra,
-                                            
+
                                             // Supplier Information
                                             "Información de Suplidor": "",
                                             "Nombre de Suplidor:   ": item.Nombre_de_Suplidor,
