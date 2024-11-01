@@ -24,6 +24,7 @@ interface HistoryItem {
 }
 
 
+
 const userLanguage = navigator.language;
 let error_message_text = '';
 if (userLanguage.startsWith('pt')) {
@@ -41,6 +42,7 @@ const Chat = () => {
     const [isViewingHistory, setIsViewingHistory] = useState<boolean>(false);
     const [isEmptyStateVisible, setIsEmptyStateVisible] = useState<boolean>(true);
     const [activeConversation, setActiveConversation] = useState<ChatTurn[]>([]);
+    const conversation = isViewingHistory ? historyConversation : currentConversation;
 
 
     // speech synthesis is disabled by default
@@ -181,6 +183,7 @@ const Chat = () => {
                     bot: { answer: interaction.answer || "No answer available" }
                 }));
                 setHistoryConversation(mappedConversation);
+                setConversationId(conversationId);
             }
         } catch (error) {
             console.error('Error fetching conversation:', error);
@@ -216,6 +219,8 @@ const Chat = () => {
         setHistoryConversation([]);
         setIsEmptyStateVisible(true);
         setActiveConversation(currentConversation); // Reset to current conversation
+        setConversationId(null); //Reset conversationId
+
         // navigateToMainPage();
         setIsChatInputVisible(true);
 
@@ -291,6 +296,12 @@ const Chat = () => {
     useEffect(() => {
         setIsChatInputVisible(false);
     }, []);
+
+
+
+
+
+
     return (
         <>
             <div className={styles.container}>
@@ -307,7 +318,8 @@ const Chat = () => {
                             </div>
                         ) : (
                             <div className={styles.chatMessageStream}>
-                                {(isViewingHistory ? historyConversation : currentConversation).map((item, index) => (
+                                {/* {(isViewingHistory ? historyConversation : currentConversation).map((item, index) => ( */}
+                                {conversation.map((item, index) => (
                                     <div key={index}>
                                         <UserChatMessage message={item.user} />
                                         <div className={styles.chatMessageGpt}>
@@ -325,7 +337,9 @@ const Chat = () => {
                                                 />
                                             ) : (
 
-                                                isLoading && index === currentConversation.length - 1 ? (
+                                                // CHANGED currentConversation.length - 1 ? (     TO      conversation.length - 1 ? (
+                                                // This Generates the response of an answer
+                                                isLoading && index === conversation.length - 1 ? (
                                                     <AnswerLoading />
                                                 ) : (
                                                     <div>No answer available</div>
