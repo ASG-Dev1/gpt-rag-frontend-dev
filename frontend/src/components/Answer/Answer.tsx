@@ -76,17 +76,23 @@ export const Answer = ({
                 <Stack.Item>
                     <Stack horizontal wrap tokens={{ childrenGap: 5 }}>
                         <span className={styles.citationLearnMore}>Sources:</span>
-                        {parsedAnswer.citations.map((x, i) => {
-                            const path = getCitationFilePath(x);
-                            return (
-                                <div>
-                                    <a key={i} className={styles.citation} title={x} onClick={() => onCitationClicked(path)}>
-                                        {`${++i}. ${truncateString(x, 15)}`}
+                        <div className={styles.sourcesColumns}>
+                            {parsedAnswer.citations.map((x, i) => {
+                                const path = getCitationFilePath(x);
+                                return (
+                                    <a
+                                        key={i}
+                                        className={styles.citation}
+                                        title={x}
+                                        onClick={() => onCitationClicked(path)}
+                                    >
+                                        {`${i + 1}. ${truncateString(x, 15)}`}
                                     </a>
-                                </div>
-                            );
-                        })}
+                                );
+                            })}
+                        </div>
                     </Stack>
+
                 </Stack.Item>
             )}
 

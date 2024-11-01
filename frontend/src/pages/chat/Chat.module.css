@@ -94,8 +94,8 @@
 }
 
 .chatMessageGpt {
-    margin-bottom: 20px;
-    max-width: 80%;
+    margin-bottom: 1.5rem;
+    max-width: 90%;
     display: flex;
     /* min-width: 500px; */
 }

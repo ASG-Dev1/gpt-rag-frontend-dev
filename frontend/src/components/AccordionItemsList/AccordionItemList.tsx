@@ -49,7 +49,7 @@ export const AccordionItemList = ({ header, content, url, onUrlClick }: Accordio
                          {Object.entries(content).map(([key, value], index) => (
                               <div key={index}>
                                    {index === 9 || index === 19 || index === 23
-                                        ? <><div className={styles.separatorDiv}><Separator styles={{root: {width: '95%', '::before':{ backgroundColor: '#000'}}}}/></div>
+                                        ? <><div className={styles.separatorDiv}><Separator styles={{root: {'::before':{ backgroundColor: '#000'}}}}/></div>
                                             <p className={styles.itemsTitle}>{key}</p></>
                                         : <p className={styles.itemsTitle}>{key}</p>}
                                    {index >= 14 && index < 17
