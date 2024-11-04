@@ -181,8 +181,9 @@ async def fetch_chat_history():
                     item['title'] = item['title'][0]
                 result.append(item)
 
-            print("This is a jsonify test of result APP")
+            print("Prueba en APP del result")
             print(result)
+            print("Este es en json", jsonify(result))
             return jsonify(result)
 
     except Exception as e:
