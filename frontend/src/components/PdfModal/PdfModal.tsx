@@ -37,9 +37,14 @@ const modalStyle: Styles = {
 
 
 const PdfModal: FC<PdfModalProps> = ({ isOpen, closeModal, data }) => {
+  // const pdfURL = data?.url
+  //   ? `https://docs.google.com/gview?url=${data.url}&embedded=true`
+  //   : '';
+  //Test
   const pdfURL = data?.url
-    ? `https://docs.google.com/gview?url=${data.url}&embedded=true`
+    ? `https://docs.google.com/gview?url=${encodeURIComponent(data.url)}&embedded=true`
     : '';
+
 
   return (
     <BaseModal isOpen={isOpen} style={modalStyle} onRequestClose={() => closeModal()}>

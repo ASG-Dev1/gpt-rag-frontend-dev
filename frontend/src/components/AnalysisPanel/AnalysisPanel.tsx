@@ -39,6 +39,9 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
     const [isModalOpenForCitation, setIsModalOpenForCitation] = useState(false); // Citation modal
     const [isModalOpenForItems, setIsModalOpenForItems] = useState(false); // Items modal
     const [pdfData, setPdfData] = useState<{ name: string; url: string } | null>(null); // State to hold PDF data
+    console.log("PDF Data:", pdfData);
+    console.log("Modal State for Citation:", isModalOpenForCitation);
+    console.log("Modal State for Items:", isModalOpenForItems);
 
     const isDisabledCitationTab: boolean = !activeCitation;
 
@@ -193,22 +196,42 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
             </Pivot>
 
             {/* Modal for displaying the PDF for citations */}
-            {pdfData && (
+            {/* {pdfData && (
                 <PdfModal
                     isOpen={isModalOpenForCitation}
                     closeModal={() => setIsModalOpenForCitation(false)} // Close the citation modal
                     data={pdfData}
                 />
-            )}
+            )} */}
 
             {/* Modal for displaying the PDF for data points (items) */}
-            {pdfData && (
+            {/* {pdfData && (
                 <PdfModal
                     isOpen={isModalOpenForItems}
                     closeModal={() => setIsModalOpenForItems(false)} // Close the items modal
                     data={pdfData}
                 />
+            )} */}
+
+            {/* Test  */}
+            {isModalOpenForCitation && pdfData && (
+                <PdfModal
+                    isOpen={isModalOpenForCitation}
+                    closeModal={() => setIsModalOpenForCitation(false)}
+                    data={pdfData}
+                />
             )}
+
+            {isModalOpenForItems && pdfData && (
+                <PdfModal
+                    isOpen={isModalOpenForItems}
+                    closeModal={() => setIsModalOpenForItems(false)}
+                    data={pdfData}
+                />
+            )}
+
+
         </>
+
     );
 }
