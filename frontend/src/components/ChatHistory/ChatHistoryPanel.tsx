@@ -35,8 +35,8 @@ interface ChatHistoryItem {
   content: string;
   user_id: string;
   user_ask: string;
-  // answer: string;
   answer: AskResponse;
+  start_date: string;
 }
 
 interface ChatHistoryPanelProps {
@@ -63,6 +63,7 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
   const [clearing, setClearing] = React.useState(false)
   const [clearingError, setClearingError] = React.useState(false)
   const [chatHistory, setChatHistory] = useState<ChatHistoryItem[]>([]);
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
 
   const clearAllDialogContentProps = {
     type: DialogType.close,
@@ -117,7 +118,7 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
     const fetchHistory = async () => {
       try {
         const data: ChatHistoryItem[] = await get_ChatHistory(); // Explicitly type the fetched data
-        console.log("Fetched chat history:", data);
+        // f
 
         // Filter for unique conversation_ids
         const uniqueHistory: ChatHistoryItem[] = Array.from(
@@ -132,16 +133,29 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
     fetchHistory();
   }, []);
 
+  // useEffect(() => {
+  //   console.log("Updated chatHistory:", chatHistory, "and quantity: ", chatHistory.length);
+  // }, [chatHistory]);
+  
+  const handleConversationSelected = (conversationId: string) => {
+    setActiveConversationId(prevId => (prevId === conversationId ? null : conversationId))
+    onConversationSelected(conversationId)
+  }
+
 
   return (
     <Stack className={styles.container} data-is-scrollable aria-label="chat history panel">
 
       {/* Header */}
       <Stack verticalAlign="start" wrap aria-label="chat history header" style={{ height: '3rem' }}>
-        <StackItem style={{ paddingTop: '1rem' }}>
+        <StackItem style={{ paddingTop: '1rem' }} className={styles.headerPanel}>
           {/* Aqui es donde vas a editar el padding Joshua!!!! */}
           <Text className={styles.headingText} role="heading" aria-level={2}>
             Historial
+          </Text>
+
+          <Text className={styles.headingQuantity}>
+          conversaciones: {chatHistory.length} 
           </Text>
         </StackItem>
       </Stack>
@@ -164,9 +178,11 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
       <Stack>
         <Stack>
           {chatHistory.map((item: ChatHistoryItem) => (
-            <div key={item.id} onClick={() => onConversationSelected(item.id)}>
-              <ChatHistoryListItem conversation={item} />
-            </div>
+              <ChatHistoryListItem 
+              conversation={item}
+              isActive={item.id === activeConversationId}
+              onClick={() => handleConversationSelected(item.id)}
+              />
           ))}
         </Stack>
 

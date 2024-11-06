@@ -89,12 +89,28 @@
   color: rgb(0, 0, 0) !important;
 }
 
-.headingText {
-  align-self: 'center';
-  font-weight: 600;
+.headerPanel {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto;
+  align-items: center;
+  color: black;
   font-size: 18px;
+}
+
+.headingText {
+  justify-self: start;
+  font-weight: 600;
   margin-right: auto;
-  padding: 1rem 0 1rem 1rem;
+  padding: 1rem 0 1rem 1.5rem;
+  font-size: 18px;
+  color: black;
+}
+
+.headingQuantity {
+  justify-self: end;
+  padding: 1rem 1.5rem 1rem 0rem;
+  font-size: 14px;
   color: black;
 }
 

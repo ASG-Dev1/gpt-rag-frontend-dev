@@ -294,11 +294,6 @@ const Chat = () => {
                         ) : (
 
                             <div className={styles.chatMessageStream}>
-                                {isViewingHistory && (
-                                    <div className={styles.historyBanner}>
-                                        Esta es una conversación del Historial de Conversaciones
-                                    </div>
-                                )}
 
                                 {conversation.map((item, index) => (
                                     <div key={index}>
@@ -424,7 +419,7 @@ const Chat = () => {
                         />
                     </Panel>
                     <Stack horizontal horizontalAlign="center">
-                        {isMenuOpen && <ChatHistoryPanel onConversationSelected={onConversationSelected} />}
+                        {isMenuOpen && <ChatHistoryPanel onConversationSelected={onConversationSelected}/>}
                     </Stack>
                 </div>
             </div>

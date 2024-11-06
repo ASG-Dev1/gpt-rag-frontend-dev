@@ -52,7 +52,7 @@ export const AccordionItemList = ({ header, content, url, onUrlClick }: Accordio
                                         ? <><div className={styles.separatorDiv}><Separator styles={{ root:{width:'100%', '::before':{ backgroundColor: '#000'}}}}/></div>
                                             <p className={styles.itemsTitle}>{key}</p></>
                                         : <p className={styles.itemsTitle}>{key}</p>}
-                                   {index >= 14 && index < 17
+                                   {index >= 16 && index < 19
                                         ? <p className={styles.itemsValue}>{structuredQuantitys(value.toString())}</p>
                                         : <p className={styles.itemsValue}>{StructuredText(value.toString())}</p>}
                               </div>

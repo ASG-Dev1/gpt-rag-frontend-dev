@@ -172,7 +172,7 @@ async def fetch_chat_history():
             print(database)
             print(container)
 
-            query = "SELECT c.id, i.user_id, i.user_ask, i.answer, (SELECT VALUE ARRAY( SELECT VALUE h.content FROM h IN c.history WHERE h.role = 'user')) AS content FROM c JOIN i IN c.conversation_data.interactions"
+            query = "SELECT c.id, i.user_id, i.user_ask, i.answer, c.history[0].content AS content, c.conversation_data.start_date FROM c JOIN i IN c.conversation_data.interactions"
             items = container.query_items(query=query, partition_key=None)
 
             result = []
