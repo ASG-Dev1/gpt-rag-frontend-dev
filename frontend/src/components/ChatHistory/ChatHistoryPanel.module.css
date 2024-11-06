@@ -16,14 +16,18 @@
 }
 
 .itemCell {
-  height: 3.5rem;
+  height: 3rem;
   width: 100%;
   cursor: pointer;
   padding: .6rem 1rem;
   box-sizing: border-box;
-  border-radius: 25px;
+  border-radius: 15px;
   display: flex;
   align-items: center;
+}
+
+.itemCell:hover {
+  background: #9ac4e3;
 }
 
 .itemText {
@@ -35,10 +39,6 @@
   /* Adds the ellipsis */
   width: 100%;
   /* Makes sure it takes the available width */
-}
-
-.itemCell:hover {
-  background: #9ac4e3;
 }
 
 .itemButton {

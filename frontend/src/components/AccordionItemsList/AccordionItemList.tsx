@@ -32,10 +32,14 @@ export const AccordionItemList = ({ header, content, url, onUrlClick }: Accordio
           return text.toLowerCase().replace(/(^\w{1})/g, (letter) => letter.toUpperCase());
      }
 
-     const structuredQuantitys = (money: string) => {
+     const structuredQuantities = (money: string) => {
           return parseFloat(money) > 999.99
                ? `$${money.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
                : `$${money}`
+     }
+
+     const structuredQuantity = (text: string) => {
+          return text.replace(/\.\d+$|\.$/, "");
      }
 
      // Renders Each Item List Modal
@@ -48,13 +52,17 @@ export const AccordionItemList = ({ header, content, url, onUrlClick }: Accordio
                     <div className="accordion-content" style={{ display: itemContent === true ? 'block' : 'none' }}>
                          {Object.entries(content).map(([key, value], index) => (
                               <div key={index}> 
+                                  
                                    {index === 9 || index === 19 || index === 23
-                                        ? <><div className={styles.separatorDiv}><Separator styles={{ root:{width:'100%', '::before':{ backgroundColor: '#000'}}}}/></div>
+                                        ?   <><div className={styles.separatorDiv}><Separator styles={{ root:{width:'100%', '::before':{ backgroundColor: '#000'}}}}/></div>
                                             <p className={styles.itemsTitle}>{key}</p></>
-                                        : <p className={styles.itemsTitle}>{key}</p>}
+                                        :   <p className={styles.itemsTitle}>{key}</p>}
+                                   {index === 15
+                                        ? <p className={styles.itemsValue}>{structuredQuantity(value.toString())}</p>
+                                        : <>
                                    {index >= 16 && index < 19
-                                        ? <p className={styles.itemsValue}>{structuredQuantitys(value.toString())}</p>
-                                        : <p className={styles.itemsValue}>{StructuredText(value.toString())}</p>}
+                                        ? <p className={styles.itemsValue}>{structuredQuantities(value.toString())}</p>
+                                        : <p className={styles.itemsValue}>{StructuredText(value.toString())}</p>}</>}
                               </div>
                          ))}
                          <p className={styles.itemsTitle}>Url de Archivo de Orden de Compra:</p>

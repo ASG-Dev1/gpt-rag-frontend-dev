@@ -138,7 +138,8 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
   // }, [chatHistory]);
   
   const handleConversationSelected = (conversationId: string) => {
-    setActiveConversationId(prevId => (prevId === conversationId ? null : conversationId))
+
+    setActiveConversationId(prevId => (prevId === conversationId ? prevId : conversationId))
     onConversationSelected(conversationId)
   }
 

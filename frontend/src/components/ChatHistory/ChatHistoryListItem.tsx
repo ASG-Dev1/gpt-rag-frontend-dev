@@ -22,7 +22,7 @@ export const ChatHistoryListItem: React.FC<ChatHistoryListProps> = ({ conversati
     return (
       <div
       className={styles.itemCell}
-      style={{ background: isActive ? "#9ac4e3" : "#6353531f" }}
+      style={{ background: isActive ? "#9ac4e3" : "" }}
       onClick={onClick}
       // 
       role="button"
