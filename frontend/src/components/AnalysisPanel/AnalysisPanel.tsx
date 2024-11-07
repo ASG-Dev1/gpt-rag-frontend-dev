@@ -133,7 +133,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                                         header={item.Marca_de_Articulo + " " + item.Modelo_de_Articulo + " (" + item.Numero_de_Caso + ")"}
                                         content={{
                                             // Requisition Details
-                                            "Detalles de Requisición": "",
+                                            "I.  Detalles de Requisición": "title",
                                             "Número de Requisición:   ": item.Numero_de_Requisicion,
                                             "Título de Requisición:   ": item.Titulo_de_Requisicion,
                                             "Fecha Recibo de Requisición:   ": item.Fecha_Recibo_de_Requisicion,
@@ -144,7 +144,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                                             "Método de Adquisición:   ": item.Metodo_de_Adquisicion,
 
                                             // Item Details
-                                            "Detalles de Artículo": "",
+                                            "II.  Detalles de Artículo": "title",
                                             "Descripción de Artículo:   ": item.Descripcion_de_Articulo,
                                             "Marca de Artículo:   ": item.Marca_de_Articulo,
                                             "Modelo de Artículo:   ": item.Modelo_de_Articulo,
@@ -156,13 +156,13 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                                             "Costo Final de Orden de Artículo:": item.Costo_Final_de_Orden_de_Articulo,
 
                                             // Contract & Order Information
-                                            "Información de Orden y Contrato": "",
+                                            "III.  Información de Orden y Contrato": "title",
                                             "Nombre de Archivo de Orden de Compra:   ": item.Nombre_de_Archivo_de_Orden_de_Compra,
                                             "Número de Contrato:   ": item.Numero_de_Contrato,
                                             "Número de Orden de Compra:   ": item.Numero_de_Orden_de_Compra,
 
                                             // Supplier Information
-                                            "Información de Suplidor": "",
+                                            "IV.  Información de Suplidor": "title",
                                             "Nombre de Suplidor:   ": item.Nombre_de_Suplidor,
                                             "Teléfono de Contacto de Suplidor:   ": item.Telefono_de_Contacto_de_Suplidor,
                                             "Email de Suplidor:   ": item.Email_de_Suplidor,
