@@ -8,7 +8,7 @@
 
 .itemsTitle {
      display: inline-block;
-     color: black;
+     color: white;
      font-weight: 600;
      margin: 3px 0;
      padding-right: .5rem;
@@ -24,4 +24,4 @@
      display: flex;
      justify-content: center;
      width: 100%;
-   }
+}

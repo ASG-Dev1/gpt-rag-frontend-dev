@@ -122,6 +122,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                     itemKey={AnalysisPanelTabs.Items}
                     headerText="Items"
                     headerButtonProps={dataPoints.length === 0 ? { disabled: false, style: { color: "grey" } } : undefined}
+                    style={{ color: 'white' }}
                 >
                     <div>
                         {Items1.data_points && Items1.data_points.length > 0 ? (
@@ -182,6 +183,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                     itemKey={AnalysisPanelTabs.CitationTab}
                     headerText="Citation"
                     headerButtonProps={isDisabledCitationTab ? pivotItemDisabledStyle : undefined}
+                    style={{ color: 'white' }}
                 >
                     <div className={styles.thoughtProcess}>
                         {activeCitation ? (
