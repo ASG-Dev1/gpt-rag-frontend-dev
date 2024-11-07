@@ -4,7 +4,7 @@
 
 html,
 body {
-    height: 0%;
+    height: 100%;
     margin: 0;
     padding: 0;
 }
@@ -16,9 +16,9 @@ html {
     -moz-osx-font-smoothing: grayscale;
     color: white;
     background-image:
-        linear-gradient(to bottom right, #98daf7, #a2c5e0, #92c4e7, #96bcdf, #886bc8),
-        linear-gradient(to bottom left, #907ecf, #af71d0 10%, #c26cd1 10%),
-        linear-gradient(to top right, #c26cd1 20%, #ab79cf 20%, #8a8dc9 20%);
+        linear-gradient(to bottom right, #49dfbb, #2084d1, #10649f, #96bcdf),
+        linear-gradient(to bottom left, #96bcdf, #10649f 10%, #96bcdf 5%),
+        linear-gradient(to top right, #10649f 20%, #96bcdf 20%, #49dfbb 20%);
     background-size: 200% 400%;
     animation: waveAnimation 15s ease-in-out infinite;
     background-position: center;

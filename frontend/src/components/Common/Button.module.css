@@ -4,19 +4,19 @@
 
 .buttonStructure {
   border-radius: 0.6875rem !important;
-  background-image: linear-gradient(to bottom right, #47396a, #6b509e, #d19bd6) !important;
+  background: #0e307c !important;
   color: white;
   border: none;
   font-weight: 600;
 }
 
 .buttonStructure:hover {
-  background-image: linear-gradient(to top left, #47396a, #6b509e, #d19bd6) !important;
+  background-image: #CAE5FF !important;
 }
 
 .faqOptions {
   word-break: break-word;
-  background: linear-gradient(to right, #F9E4F0, #CAE5FF);
+  background: #CAE5FF;
   transition: background-color 0.3s ease;
   backdrop-filter: blur(10px);
   border-radius: 1.875rem;
@@ -29,7 +29,6 @@
 }
 
 .faqOptions:hover {
-  background: linear-gradient(to left, #F9E4F0, #CAE5FF);
   transition: background-color 0.3s ease;
 }
 

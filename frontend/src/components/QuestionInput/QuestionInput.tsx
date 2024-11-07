@@ -31,18 +31,18 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend }: Pr
         const tokenObj = await getTokenOrRefresh();
         const speechConfig = SpeechConfig.fromAuthorizationToken(tokenObj.authToken, tokenObj.region);
         speechConfig.speechRecognitionLanguage = tokenObj.speechRecognitionLanguage;
-        
+
         const audioConfig = AudioConfig.fromDefaultMicrophoneInput();
         const recognizer = new SpeechRecognizer(speechConfig, audioConfig);
 
         const userLanguage = navigator.language;
         let reiniciar_text = '';
         if (userLanguage.startsWith('pt')) {
-          reiniciar_text = 'Pode falar usando seu microfone...';
+            reiniciar_text = 'Pode falar usando seu microfone...';
         } else if (userLanguage.startsWith('es')) {
-          reiniciar_text = 'Puedes hablar usando su micrófono...';
+            reiniciar_text = 'Puedes hablar usando su micrófono...';
         } else {
-          reiniciar_text = 'You can talk using your microphone...';
+            reiniciar_text = 'You can talk using your microphone...';
         }
 
         setQuestion(reiniciar_text);
@@ -98,13 +98,13 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend }: Pr
                 >
                     <Send28Filled primaryFill="rgba(115, 118, 225, 1)" />
                 </div>
-                <div
+                {/* <div
                     className={`${styles.questionInputSendButton}}`}
                     aria-label="Boton hablar"
                     onClick={sttFromMic}
                 >
                     <SlideMicrophone32Filled primaryFill="rgba(115, 118, 225, 1)" />
-                </div>
+                </div> */}
             </div>
         </Stack>
     );

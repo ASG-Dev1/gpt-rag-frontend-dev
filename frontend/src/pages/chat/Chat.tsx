@@ -201,18 +201,43 @@ const Chat = () => {
 
     };
 
-
     useEffect(() => {
         chatMessageStreamEnd.current?.scrollIntoView({ behavior: "smooth" });
+
         const language = navigator.language;
-        if (language.startsWith('pt')) {
-            setPlaceholderText('Escreva aqui sua pergunta');
-        } else if (language.startsWith('es')) {
-            setPlaceholderText('Escribe tu pregunta aqui');
+        const currentHour = new Date().getHours();
+        let greetingPlaceholder = "";
+
+        if (language.startsWith('es')) {
+            // Set greeting based on time for Spanish
+            if (currentHour < 12) {
+                greetingPlaceholder = 'Buenos días, escribe tu pregunta aquí...';
+            } else if (currentHour < 18) {
+                greetingPlaceholder = 'Buenas tardes, escribe tu pregunta aquí...';
+            } else {
+                greetingPlaceholder = 'Buenas noches, escribe tu pregunta aquí...';
+            }
+        } else if (language.startsWith('pt')) {
+            greetingPlaceholder = 'Escreva aqui sua pergunta';
         } else {
-            setPlaceholderText('Write your question here');
+            greetingPlaceholder = 'Write your question here';
         }
+
+        setPlaceholderText(greetingPlaceholder);
     }, [isLoading]);
+
+
+    // useEffect(() => {
+    //     chatMessageStreamEnd.current?.scrollIntoView({ behavior: "smooth" });
+    //     const language = navigator.language;
+    //     if (language.startsWith('pt')) {
+    //         setPlaceholderText('Escreva aqui sua pergunta');
+    //     } else if (language.startsWith('es')) {
+    //         setPlaceholderText('Escribe tu pregunta aqui');
+    //     } else {
+    //         setPlaceholderText('Write your question here');
+    //     }
+    // }, [isLoading]);
 
     const onPromptTemplateChange = (_ev?: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
         setPromptTemplate(newValue || "");
@@ -419,7 +444,7 @@ const Chat = () => {
                         />
                     </Panel>
                     <Stack horizontal horizontalAlign="center">
-                        {isMenuOpen && <ChatHistoryPanel onConversationSelected={onConversationSelected}/>}
+                        {isMenuOpen && <ChatHistoryPanel onConversationSelected={onConversationSelected} />}
                     </Stack>
                 </div>
             </div>
