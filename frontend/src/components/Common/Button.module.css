@@ -26,6 +26,8 @@
   margin-bottom: 5px;
   cursor: pointer;
   color: black;
+  border: inset;
+  border-color: azure;
 }
 
 .faqOptions:hover {
