@@ -6,12 +6,12 @@
      margin: -1px 0;
      font-weight: 400;
      border: 2px solid #00000045;
- }
- 
- .itemContainer:hover {
+}
+
+.itemContainer:hover {
      cursor: pointer;
      background: #9cc4f0;
- }
+}
 
 .itemsHeader {
      margin: 0;
@@ -22,8 +22,16 @@
 }
 
 .itemsTitle {
-     display: inline-block;
+     font-size: 1.5rem;
      color: black;
+     font-family: "Libre Caslon Text", serif;
+     font-weight: 400;
+     font-style: normal;
+}
+
+.itemsKeysTitle {
+     display: inline-block;
+     color: rgb(83, 83, 83);
      font-weight: 600;
      margin: 3px 0;
      padding-right: .5rem;

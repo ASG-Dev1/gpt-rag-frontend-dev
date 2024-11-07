@@ -45,37 +45,44 @@ export const AccordionItemList = ({ header, content, url, onUrlClick, index }: A
 
      // Renders Each Item List Modal
      return (
-          <> <div key={index} className={styles.itemContainer} style={{background: itemContent === true ? "#c0d6f1" : 'transparent'}}>
+          <> <div key={index} className={styles.itemContainer} style={{ background: itemContent === true ? "#c0d6f1" : 'transparent' }}>
                <div className={"accordion"} onClick={handleAccordionClick} >
                     <p className={styles.itemsHeader} style={{ marginBottom: itemContent === true ? '1.5rem' : '0' }}>
                          {StructuredText(header)}
                     </p>
                     <div className="accordion-content" style={{
                          display: itemContent === true ? 'block' : 'none',
-                         
+
                     }}>
                          {Object.entries(content).map(([key, value], index) => (
                               <div key={index}>
-
-                                   {index === 9 || index === 19 || index === 23
-                                        ? <><div className={styles.separatorDiv}><Separator styles={{ root: { width: '100%', '::before': { backgroundColor: '#000' } } }} /></div>
-                                             <p className={styles.itemsTitle}>{key}</p></>
-                                        : <p className={styles.itemsTitle}>{key}</p>}
-                                   {index === 15
-                                        ? <p className={styles.itemsValue}>{structuredQuantity(value.toString())}</p>
-                                        : <>
-                                             {index >= 16 && index < 19
-                                                  ? <p className={styles.itemsValue}>{structuredQuantities(value.toString())}</p>
-                                                  : <p className={styles.itemsValue}>{StructuredText(value.toString())}</p>}</>}
+                                   {value === "title" ? (
+                                        <> <div className={styles.separatorDiv}>
+                                             <Separator styles={{ root: { width: '100%', '::before': { backgroundColor: '#000' } } }} />
+                                        </div>
+                                             <p className={styles.itemsTitle}>{key}</p> {/* Use specific title class */}
+                                        </>
+                                   ) : (
+                                        <>
+                                             <p className={styles.itemsKeysTitle}>{key}</p>
+                                             <p className={styles.itemsValue}>
+                                                  {index === 15
+                                                       ? structuredQuantity(value.toString())
+                                                       : index >= 16 && index < 19
+                                                            ? structuredQuantities(value.toString())
+                                                            : StructuredText(value.toString())}
+                                             </p>
+                                        </>
+                                   )}
                               </div>
                          ))}
-                         <p className={styles.itemsTitle}>Url de Archivo de Orden de Compra:</p>
+                         <p className={styles.itemsKeysTitle}>Url de Archivo de Orden de Compra:</p>
                          <button className={`${css.buttonStructure} ${css.urlItemPdf}`} onClick={() => handleDataPointUrlClick(url)}>
                               {url}
                          </button>
                     </div>
                </div>
-               </div>
+          </div>
           </>
      );
 };
