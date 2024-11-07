@@ -76,3 +76,29 @@
   gap: 1rem;
   margin-right: 1rem;
 }
+
+/* Copy Button  */
+.copyButtonContainer {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 12px;
+  gap: 4px;
+  border: 1px solid #d1d1d1;
+}
+
+.copyButtonContainer:hover {
+  cursor: pointer;
+}
+
+.copyButtonText {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  display: flex;
+  align-items: center;
+  color: #fff;
+}

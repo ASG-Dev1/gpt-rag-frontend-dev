@@ -8,6 +8,7 @@ import styles from "./Answer.module.css";
 import { AskResponse, getCitationFilePath } from "../../api";
 import { parseAnswerToHtml } from "./AnswerParser";
 import { AnswerIcon } from "./AnswerIcon";
+import { Copy20Regular, Copy20Filled } from '@fluentui/react-icons'
 
 
 interface Props {
@@ -49,6 +50,17 @@ export const Answer = ({
 
     const sanitizedAnswerHtml = DOMPurify.sanitize(parsedAnswer.answerHtml);
 
+    const [isCopied, setIsCopied] = useState(false);
+
+    function copyButton() {
+        navigator.clipboard.writeText(answer.answer)
+        // Set the copied state to true
+        setIsCopied(true);
+        // Reset the copied state after 2 seconds
+        setTimeout(() => {
+            setIsCopied(false);
+        }, 1000);
+    }
     return (
         <Stack className={`${styles.answerContainer} ${isSelected && styles.selected}`} verticalAlign="space-between">
             <Stack.Item>
@@ -63,7 +75,27 @@ export const Answer = ({
                             onClick={() => onThoughtProcessClicked()}
                             disabled={!answer.thoughts}
                         />
-
+                        {isCopied ? (
+                            <Copy20Filled
+                                aria-hidden="false"
+                                aria-label="Text copied"
+                                onClick={copyButton}
+                                style={{
+                                    color: '#664c96', // Color for when the text is copied
+                                    cursor: 'pointer'
+                                }}
+                            />
+                        ) : (
+                            <Copy20Regular
+                                aria-hidden="false"
+                                aria-label="Copy this response"
+                                onClick={copyButton}
+                                style={{
+                                    color: '#664c96', // Default color
+                                    cursor: 'pointer'
+                                }}
+                            />
+                        )}
                     </div>
                 </Stack>
             </Stack.Item>
