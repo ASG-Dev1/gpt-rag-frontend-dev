@@ -5,7 +5,7 @@
      padding: 10px 20px;
      margin: -1px 0;
      font-weight: 400;
-     border: 1px solid black;
+     border: 2px solid #00000045;
  }
  
  .itemContainer:hover {
