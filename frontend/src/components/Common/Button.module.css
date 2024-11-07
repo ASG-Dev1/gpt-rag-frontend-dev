@@ -63,10 +63,14 @@
 }
 
 .urlItemPdf {
-  width: 65%;
+  width: 55%;
   height: 25px;
   margin-left: 15px;
   margin-bottom: 0.625rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 1rem;
 }
 
 .chatButtons {

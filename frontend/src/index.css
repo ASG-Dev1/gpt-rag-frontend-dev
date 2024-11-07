@@ -14,13 +14,9 @@ html {
         sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    color: white;
-    background-image:
-        linear-gradient(to bottom right, #49dfbb, #2084d1, #10649f, #96bcdf),
-        linear-gradient(to bottom left, #96bcdf, #10649f 10%, #96bcdf 5%),
-        linear-gradient(to top right, #10649f 20%, #96bcdf 20%, #49dfbb 20%);
+    color: #000;
+    background: linear-gradient(135deg, #0d3a6a, #1a5a9a 40%, #c8dcf5 70%, #a8d0f0);
     background-size: 200% 400%;
-    animation: waveAnimation 15s ease-in-out infinite;
     background-position: center;
     background-attachment: fixed;
     color: white;
@@ -29,20 +25,6 @@ html {
         0px 0px 2px rgba(0, 0, 0, 0.12);
     border-radius: 8px;
     overflow-y: auto;
-}
-
-@keyframes waveAnimation {
-    0% {
-        background-position: 0% 50%;
-    }
-
-    50% {
-        background-position: 100% 100%;
-    }
-
-    to {
-        background-position: 0%;
-    }
 }
 
 #root {

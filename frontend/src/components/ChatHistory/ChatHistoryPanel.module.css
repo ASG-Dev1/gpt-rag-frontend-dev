@@ -1,7 +1,7 @@
 .container {
   max-height: 87vh;
   width: 360px;
-  color: white;
+  color: black;
   background: #cae5ff29;
   border-radius: .5rem;
   position: sticky;
@@ -104,14 +104,14 @@
   margin-right: auto;
   padding: 1rem 0 1rem 1.5rem;
   font-size: 18px;
-  color: white;
+  color: black;
 }
 
 .headingQuantity {
   justify-self: end;
   padding: 1rem 1.5rem 1rem 0rem;
   font-size: 14px;
-  color: white;
+  color: black;
 }
 
 .separatorDiv {

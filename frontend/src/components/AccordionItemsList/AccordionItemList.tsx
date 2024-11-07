@@ -10,9 +10,10 @@ type AccordionItemListProps = {
      content: { [key: string]: string | number };
      url: string;
      onUrlClick: (url: string) => void; // Add onUrlClick to the props
+     index: string;
 };
 
-export const AccordionItemList = ({ header, content, url, onUrlClick }: AccordionItemListProps) => {
+export const AccordionItemList = ({ header, content, url, onUrlClick, index }: AccordionItemListProps) => {
      const [itemContent, setItemContent] = useState(false);
 
      // Handle the accordion dropdown when clicked
@@ -44,25 +45,28 @@ export const AccordionItemList = ({ header, content, url, onUrlClick }: Accordio
 
      // Renders Each Item List Modal
      return (
-          <>
-               <div className="accordion" onClick={handleAccordionClick}>
+          <> <div key={index} className={styles.itemContainer} style={{background: itemContent === true ? "#c0d6f1" : 'transparent'}}>
+               <div className={"accordion"} onClick={handleAccordionClick} >
                     <p className={styles.itemsHeader} style={{ marginBottom: itemContent === true ? '1.5rem' : '0' }}>
                          {StructuredText(header)}
                     </p>
-                    <div className="accordion-content" style={{ display: itemContent === true ? 'block' : 'none' }}>
+                    <div className="accordion-content" style={{
+                         display: itemContent === true ? 'block' : 'none',
+                         
+                    }}>
                          {Object.entries(content).map(([key, value], index) => (
-                              <div key={index}> 
-                                  
+                              <div key={index}>
+
                                    {index === 9 || index === 19 || index === 23
-                                        ?   <><div className={styles.separatorDiv}><Separator styles={{ root:{width:'100%', '::before':{ backgroundColor: '#000'}}}}/></div>
-                                            <p className={styles.itemsTitle}>{key}</p></>
-                                        :   <p className={styles.itemsTitle}>{key}</p>}
+                                        ? <><div className={styles.separatorDiv}><Separator styles={{ root: { width: '100%', '::before': { backgroundColor: '#000' } } }} /></div>
+                                             <p className={styles.itemsTitle}>{key}</p></>
+                                        : <p className={styles.itemsTitle}>{key}</p>}
                                    {index === 15
                                         ? <p className={styles.itemsValue}>{structuredQuantity(value.toString())}</p>
                                         : <>
-                                   {index >= 16 && index < 19
-                                        ? <p className={styles.itemsValue}>{structuredQuantities(value.toString())}</p>
-                                        : <p className={styles.itemsValue}>{StructuredText(value.toString())}</p>}</>}
+                                             {index >= 16 && index < 19
+                                                  ? <p className={styles.itemsValue}>{structuredQuantities(value.toString())}</p>
+                                                  : <p className={styles.itemsValue}>{StructuredText(value.toString())}</p>}</>}
                               </div>
                          ))}
                          <p className={styles.itemsTitle}>Url de Archivo de Orden de Compra:</p>
@@ -70,6 +74,7 @@ export const AccordionItemList = ({ header, content, url, onUrlClick }: Accordio
                               {url}
                          </button>
                     </div>
+               </div>
                </div>
           </>
      );

@@ -127,7 +127,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                     <div>
                         {Items1.data_points && Items1.data_points.length > 0 ? (
                             Items1.data_points.map((item, index) => (
-                                <div key={index} className={styles.itemContainer}>
+                                <>
                                     {/* Display the fields you need in an accordion */}
                                     <AccordionItemList
                                         header={item.Marca_de_Articulo + " " + item.Modelo_de_Articulo + " (" + item.Numero_de_Caso + ")"}
@@ -170,8 +170,9 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
 
                                         url={item.Url_de_Archivo_de_Orden_de_Compra}
                                         onUrlClick={handleDataPointUrlClick} // Use this for URL click in data points
+                                        index={index.toString()}
                                     />
-                                </div>
+                                </>
                             ))
                         ) : (
                             <p>No items available.</p>
