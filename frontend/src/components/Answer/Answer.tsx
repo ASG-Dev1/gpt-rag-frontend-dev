@@ -81,7 +81,7 @@ export const Answer = ({
                                 aria-label="Text copied"
                                 onClick={copyButton}
                                 style={{
-                                    color: '#664c96', // Color for when the text is copied
+                                    color: '#0d3a6a', // Color for when the text is copied
                                     cursor: 'pointer'
                                 }}
                             />
@@ -91,7 +91,7 @@ export const Answer = ({
                                 aria-label="Copy this response"
                                 onClick={copyButton}
                                 style={{
-                                    color: '#664c96', // Default color
+                                    color: '#0d3a6a', // Default color
                                     cursor: 'pointer'
                                 }}
                             />
