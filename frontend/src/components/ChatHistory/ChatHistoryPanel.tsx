@@ -148,16 +148,16 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
     <Stack className={styles.container} data-is-scrollable aria-label="chat history panel">
 
       {/* Header */}
-      <Stack verticalAlign="start" wrap aria-label="chat history header" style={{ height: '3rem' }}>
-        <StackItem style={{ paddingTop: '1rem' }} className={styles.headerPanel}>
+      <Stack verticalAlign="start" wrap aria-label="chat history header" style={{ height: '4rem' }}>
+        <StackItem className={styles.headerPanel}>
           {/* Aqui es donde vas a editar el padding Joshua!!!! */}
-          <Text className={styles.headingText} role="heading" aria-level={2}>
+          <h2 className={styles.headingText} role="heading" aria-level={2}>
             Historial
-          </Text>
+          </h2>
 
-          <Text className={styles.headingQuantity}>
+          <h2 className={styles.headingQuantity}>
           conversaciones: {chatHistory.length} 
-          </Text>
+          </h2>
         </StackItem>
       </Stack>
 

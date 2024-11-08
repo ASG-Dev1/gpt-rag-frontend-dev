@@ -47,9 +47,9 @@ export const AccordionItemList = ({ header, content, url, onUrlClick, index }: A
      return (
           <> <div key={index} className={styles.itemContainer} style={{ background: itemContent === true ? "#c0d6f1" : 'transparent' }}>
                <div className={"accordion"} onClick={handleAccordionClick} >
-                    <p className={styles.itemsHeader} style={{ marginBottom: itemContent === true ? '1.5rem' : '0' }}>
+                    <h2 className={styles.itemsHeader} style={{ marginBottom: itemContent === true ? '1.5rem' : '0' }}>
                          {StructuredText(header)}
-                    </p>
+                    </h2>
                     <div className="accordion-content" style={{
                          display: itemContent === true ? 'block' : 'none',
 
@@ -60,7 +60,7 @@ export const AccordionItemList = ({ header, content, url, onUrlClick, index }: A
                                         <> <div className={styles.separatorDiv}>
                                              <Separator styles={{ root: { width: '100%', '::before': { backgroundColor: '#000' } } }} />
                                         </div>
-                                             <p className={styles.itemsTitle}>{key}</p> {/* Use specific title class */}
+                                             <h3 className={styles.itemsTitle}>{key}</h3> {/* Use specific title class */}
                                         </>
                                    ) : (
                                         <>

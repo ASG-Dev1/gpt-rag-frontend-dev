@@ -134,13 +134,13 @@
     margin-right: 20px;
     background-color: #fff;
     border-radius: 12px;
-    background-color: #cccccc5e;
+    background-color: #ffffff5e;
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
     padding: 20px;
     position: sticky;
     top: 6.25rem;
-    color: black;
+    color: rgb(0, 0, 0);
 }
 
 .chatSettingsSeparator {

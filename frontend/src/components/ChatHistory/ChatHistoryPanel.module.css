@@ -112,12 +112,12 @@
   padding: 1rem 1.5rem 1rem 0rem;
   font-size: 14px;
   color: black;
+  font-weight: 400;
 }
 
 .separatorDiv {
   display: flex;
   justify-content: center;
-  padding: 0 .8rem;
 }
 
 @media (max-width: 480px) {

@@ -10,8 +10,10 @@ body {
 }
 
 html {
-    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-        sans-serif;
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: #000;
@@ -42,4 +44,8 @@ html {
     /* For Firefox */
     -ms-overflow-style: none;
     /* For Internet Explorer and Edge */
+}
+
+h1, h2, h3, h4 , h5, h6 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }

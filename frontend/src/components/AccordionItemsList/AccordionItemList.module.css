@@ -24,9 +24,9 @@
 .itemsTitle {
      font-size: 1.5rem;
      color: black;
-     font-family: "Libre Caslon Text", serif;
-     font-weight: 400;
+     font-weight: 500;
      font-style: normal;
+     margin: .5rem 0;
 }
 
 .itemsKeysTitle {
@@ -39,7 +39,7 @@
 
 .itemsValue {
      display: inline-block;
-     color: black;
+     color: rgb(83, 83, 83);
      margin: 0;
 }
 
