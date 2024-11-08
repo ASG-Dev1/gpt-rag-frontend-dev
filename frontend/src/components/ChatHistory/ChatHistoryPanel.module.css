@@ -102,17 +102,19 @@
   justify-self: start;
   font-weight: 600;
   margin-right: auto;
-  padding: 1rem 0 1rem 1.5rem;
+  padding: 1rem 0 0rem 1.5rem;
   font-size: 18px;
   color: black;
+  margin-bottom: 0;
 }
 
 .headingQuantity {
   justify-self: end;
-  padding: 1rem 1.5rem 1rem 0rem;
+  padding: 1rem 1.5rem 0rem 0rem;
   font-size: 14px;
   color: black;
   font-weight: 400;
+  margin-bottom: 0;
 }
 
 .separatorDiv {

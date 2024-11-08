@@ -16,6 +16,12 @@ type AccordionItemListProps = {
 export const AccordionItemList = ({ header, content, url, onUrlClick, index }: AccordionItemListProps) => {
      const [itemContent, setItemContent] = useState(false);
 
+     const months = [
+          "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+          "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        ];
+        
+
      // Handle the accordion dropdown when clicked
      const handleAccordionClick = () => {
           setItemContent(!itemContent);
@@ -43,11 +49,16 @@ export const AccordionItemList = ({ header, content, url, onUrlClick, index }: A
           return text.replace(/\.\d+$|\.$/, "");
      }
 
+     const structuredDate = (dateString: string) => {
+         const date = new Date(dateString);
+           return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+     }
+
      // Renders Each Item List Modal
      return (
           <> <div key={index}  className={`${styles.itemContainer} ${itemContent === true ? styles.itemContainerActive : ''}`}>
                <div className={`accordion `} onClick={handleAccordionClick} >
-                    <h2 className={styles.itemsHeader} style={{ marginBottom: itemContent === true ? '1.5rem' : '0' }}>
+                    <h2 className={styles.itemsHeader}>
                          {StructuredText(header)}
                     </h2>
                     <div className="accordion-content" style={{
@@ -66,7 +77,9 @@ export const AccordionItemList = ({ header, content, url, onUrlClick, index }: A
                                         <>
                                              <p className={styles.itemsKeysTitle}>{key}</p>
                                              <p className={styles.itemsValue}>
-                                                  {index === 15
+                                                  {index === 3
+                                                  ? structuredDate(value.toString())
+                                                  : index === 15
                                                        ? structuredQuantity(value.toString())
                                                        : index >= 16 && index < 19
                                                             ? structuredQuantities(value.toString())
