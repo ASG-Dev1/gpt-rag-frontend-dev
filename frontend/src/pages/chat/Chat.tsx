@@ -201,43 +201,18 @@ const Chat = () => {
 
     };
 
+
     useEffect(() => {
         chatMessageStreamEnd.current?.scrollIntoView({ behavior: "smooth" });
-
         const language = navigator.language;
-        const currentHour = new Date().getHours();
-        let greetingPlaceholder = "";
-
-        if (language.startsWith('es')) {
-            // Set greeting based on time for Spanish
-            if (currentHour < 12) {
-                greetingPlaceholder = 'Buenos días, escribe tu pregunta aquí...';
-            } else if (currentHour < 18) {
-                greetingPlaceholder = 'Buenas tardes, escribe tu pregunta aquí...';
-            } else {
-                greetingPlaceholder = 'Buenas noches, escribe tu pregunta aquí...';
-            }
-        } else if (language.startsWith('pt')) {
-            greetingPlaceholder = 'Escreva aqui sua pergunta';
+        if (language.startsWith('pt')) {
+            setPlaceholderText('Escreva aqui sua pergunta');
+        } else if (language.startsWith('es')) {
+            setPlaceholderText('Escribe tu pregunta aqui');
         } else {
-            greetingPlaceholder = 'Write your question here';
+            setPlaceholderText('Write your question here');
         }
-
-        setPlaceholderText(greetingPlaceholder);
     }, [isLoading]);
-
-
-    // useEffect(() => {
-    //     chatMessageStreamEnd.current?.scrollIntoView({ behavior: "smooth" });
-    //     const language = navigator.language;
-    //     if (language.startsWith('pt')) {
-    //         setPlaceholderText('Escreva aqui sua pergunta');
-    //     } else if (language.startsWith('es')) {
-    //         setPlaceholderText('Escribe tu pregunta aqui');
-    //     } else {
-    //         setPlaceholderText('Write your question here');
-    //     }
-    // }, [isLoading]);
 
     const onPromptTemplateChange = (_ev?: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
         setPromptTemplate(newValue || "");

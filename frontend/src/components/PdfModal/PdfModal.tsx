@@ -25,7 +25,8 @@ const modalStyle: Styles = {
     borderRadius: '8px',
     borderColor: 'transparent',
     backgroundColor: '#FFFFFF',
-    overflow: 'hidden',
+    overflow: 'auto',
+    // overflow: 'hidden',
     resize: 'both',
   },
   overlay: {
@@ -37,13 +38,13 @@ const modalStyle: Styles = {
 
 
 const PdfModal: FC<PdfModalProps> = ({ isOpen, closeModal, data }) => {
-  // const pdfURL = data?.url
-  //   ? `https://docs.google.com/gview?url=${data.url}&embedded=true`
-  //   : '';
-  //Test
   const pdfURL = data?.url
-    ? `https://docs.google.com/gview?url=${encodeURIComponent(data.url)}&embedded=true`
+    ? `https://docs.google.com/gview?url=${data.url}&embedded=true`
     : '';
+  //Test
+  // const pdfURL = data?.url
+  //   ? `https://docs.google.com/gview?url=${encodeURIComponent(data.url)}&embedded=true`
+  //   : '';
 
 
   return (
@@ -54,7 +55,7 @@ const PdfModal: FC<PdfModalProps> = ({ isOpen, closeModal, data }) => {
       </div>
       <div className={styles.body}>
         {data?.url ? (
-          <iframe src={pdfURL} width="700" height="600" className={styles.pdf}></iframe>
+          <iframe src={pdfURL} width="700" height="600" className={styles.pdf} onError={() => console.log("Failed to load PDF.")}></iframe>
         ) : (
           <div className={styles.error}>
             <FileEarmarkExcel color="#334768" size={40} />
