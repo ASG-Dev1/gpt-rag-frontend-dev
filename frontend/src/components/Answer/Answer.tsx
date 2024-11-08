@@ -67,15 +67,15 @@ export const Answer = ({
                 <Stack horizontal horizontalAlign="space-between">
                     <AnswerIcon />
                     <div>
-                        {/* <IconButton
+                        <IconButton
                             style={{ color: "black" }}
-                             iconProps={{ iconName: "Lightbulb" }}
+                            iconProps={{ iconName: "Lightbulb" }}
                             title="Show thought process"
                             ariaLabel="Show thought process"
                             onClick={() => onThoughtProcessClicked()}
                             disabled={!answer.thoughts}
-                        /> */}
-                        <div
+                        />
+                        {/* <div
                             style={{
                                 display: 'inline-flex',
                                 alignItems: 'center',
@@ -101,7 +101,7 @@ export const Answer = ({
                             }}
                         >
                             <TagsFill />
-                        </div>
+                        </div> */}
 
 
                         {isCopied ? (

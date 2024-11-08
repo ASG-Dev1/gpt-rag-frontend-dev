@@ -189,17 +189,24 @@ const Chat = () => {
         setConversationId(null);
     };
 
+
     const goBackToCurrentConversation = () => {
         setIsViewingHistory(false);
         setHistoryConversation([]);
         setIsEmptyStateVisible(true);
-        setActiveConversation(currentConversation); // Reset to current conversation
-        setConversationId(null); //Reset conversationId
-
-        // navigateToMainPage();
+        setActiveConversation([]); // Clear the active conversation
+        setConversationId(uuidv4()); // Generate a new conversationId
+        setCurrentConversation([]); // Start a fresh conversation for the current session
+        setActiveAnalysisPanelTab(undefined);
+        setActiveCitation(undefined);
         setIsChatInputVisible(true);
-
     };
+
+    useEffect(() => {
+        if (!isViewingHistory && currentConversation.length === 0) {
+            setConversationId(uuidv4());
+        }
+    }, [isViewingHistory, currentConversation.length]);
 
 
     useEffect(() => {
