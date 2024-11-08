@@ -45,8 +45,8 @@ export const AccordionItemList = ({ header, content, url, onUrlClick, index }: A
 
      // Renders Each Item List Modal
      return (
-          <> <div key={index} className={styles.itemContainer} style={{ background: itemContent === true ? "#c0d6f1" : 'transparent' }}>
-               <div className={"accordion"} onClick={handleAccordionClick} >
+          <> <div key={index}  className={`${styles.itemContainer} ${itemContent === true ? styles.itemContainerActive : ''}`}>
+               <div className={`accordion `} onClick={handleAccordionClick} >
                     <h2 className={styles.itemsHeader} style={{ marginBottom: itemContent === true ? '1.5rem' : '0' }}>
                          {StructuredText(header)}
                     </h2>

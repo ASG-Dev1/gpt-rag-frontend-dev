@@ -1,17 +1,22 @@
 .itemContainer {
-     background: #ffffff24;
      width: 100%;
      border-radius: 6px;
      padding: 10px 20px;
      margin: -1px 0;
      font-weight: 400;
      border: 2px solid #00000045;
+     background: transparent;
+     transition: background 2s ease;
 }
 
 .itemContainer:hover {
-     cursor: pointer;
-     background: #9cc4f0;
-}
+     cursor:pointer
+   }
+
+.itemContainerActive {
+     background: #c0d6f1;
+   }
+
 
 .itemsHeader {
      margin: 0;
@@ -19,6 +24,12 @@
      text-align: left;
      width: 100%;
      font-size: 1.0625rem;
+     white-space: nowrap;
+     overflow: hidden;
+}
+
+.itemsHeader:hover {
+     text-decoration: underline;
 }
 
 .itemsTitle {
