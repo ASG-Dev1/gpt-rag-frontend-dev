@@ -17,14 +17,11 @@
     color: white;
 }
 
-/* Force white text color on selected and unselected Pivot tabs */
-.ms-Pivot .ms-Button {
-    color: white !important;
-    /* Applies white color to all tabs */
-}
-
-/* Additionally, you can style only the selected tab */
 .ms-Pivot .ms-Button--selected {
-    color: white !important;
-    /* Ensures selected tab is also white */
+    color: black !important;
+
+}
+ 
+.ms-Button:hover {
+    background: transparent !important;
 }

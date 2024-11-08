@@ -125,7 +125,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                     headerButtonProps={
                         dataPoints.length === 0
                             ? { disabled: false, style: { color: "grey" } } // Keep grey when no data points
-                            : { style: { color: "white" }, className: styles.pivotHeaderWhite } // White styling with custom class otherwise
+                            : { style: { color: "black", fontSize: '1rem' }, className: styles.pivotHeaderWhite } // White styling with custom class otherwise
                     }
 
                 >
@@ -192,7 +192,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                     headerButtonProps={
                         isDisabledCitationTab
                             ? pivotItemDisabledStyle // Keep the disabled style if citation is disabled
-                            : { style: { color: "white" }, className: styles.pivotHeaderWhite } // White styling with custom class otherwise
+                            : { style: { color: "black", fontSize: '1rem' }, className: styles.pivotHeaderWhite } // White styling with custom class otherwise
                     }
                 >
                     <div className={styles.thoughtProcess}>

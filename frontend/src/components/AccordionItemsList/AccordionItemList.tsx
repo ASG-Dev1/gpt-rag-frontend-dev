@@ -51,7 +51,7 @@ export const AccordionItemList = ({ header, content, url, onUrlClick, index }: A
 
      const structuredDate = (dateString: string) => {
          const date = new Date(dateString);
-           return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+           return `${date.getDate()} de ${months[date.getMonth()]} de ${date.getFullYear()}`;
      }
 
      // Renders Each Item List Modal
