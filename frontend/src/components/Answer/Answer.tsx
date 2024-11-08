@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Stack, IconButton } from "@fluentui/react";
-// import { Lightbulb, LightbulbFill } from 'react-bootstrap-icons';
+import { Tags, TagsFill } from 'react-bootstrap-icons';
 import DOMPurify from "dompurify";
 
 import styles from "./Answer.module.css";
@@ -67,14 +67,43 @@ export const Answer = ({
                 <Stack horizontal horizontalAlign="space-between">
                     <AnswerIcon />
                     <div>
-                        <IconButton
+                        {/* <IconButton
                             style={{ color: "black" }}
-                            iconProps={{ iconName: "Lightbulb" }}
+                             iconProps={{ iconName: "Lightbulb" }}
                             title="Show thought process"
                             ariaLabel="Show thought process"
                             onClick={() => onThoughtProcessClicked()}
                             disabled={!answer.thoughts}
-                        />
+                        /> */}
+                        <div
+                            style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: 'navy',
+                                cursor: !answer.thoughts ? 'not-allowed' : 'pointer',
+                                opacity: !answer.thoughts ? 0.5 : 1,
+                                fontSize: '18px'
+                            }}
+                            title="Show thought process"
+                            aria-label="Show thought process"
+                            onClick={() => {
+                                if (answer.thoughts) {
+                                    onThoughtProcessClicked();
+                                }
+                            }}
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' && answer.thoughts) {
+                                    onThoughtProcessClicked();
+                                }
+                            }}
+                        >
+                            <TagsFill />
+                        </div>
+
+
                         {isCopied ? (
                             <Copy20Filled
                                 aria-hidden="false"
