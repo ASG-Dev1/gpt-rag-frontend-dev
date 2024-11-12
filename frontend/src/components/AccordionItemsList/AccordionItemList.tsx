@@ -33,7 +33,7 @@ export const AccordionItemList = ({ header, content, url, onUrlClick, index }: A
           onUrlClick(url); // Call the passed onUrlClick function
      };
 
-     const StructuredText = (text: string) => {
+     const structuredText = (text: string) => {
 
           text = text.replace(/n\/a/gi, "")
           return text.toLowerCase().replace(/(^\w{1})/g, (letter) => letter.toUpperCase());
@@ -59,7 +59,7 @@ export const AccordionItemList = ({ header, content, url, onUrlClick, index }: A
           <> <div key={index}  className={`${styles.itemContainer} ${itemContent === true ? styles.itemContainerActive : ''}`}>
                <div className={`accordion `} onClick={handleAccordionClick} >
                     <h2 className={styles.itemsHeader}>
-                         {StructuredText(header)}
+                         {structuredText(header)}
                     </h2>
                     <div className="accordion-content" style={{
                          display: itemContent === true ? 'block' : 'none',
@@ -83,7 +83,7 @@ export const AccordionItemList = ({ header, content, url, onUrlClick, index }: A
                                                        ? structuredQuantity(value.toString())
                                                        : index >= 16 && index < 19
                                                             ? structuredQuantities(value.toString())
-                                                            : StructuredText(value.toString())}
+                                                            : structuredText(value.toString())}
                                              </p>
                                         </>
                                    )}

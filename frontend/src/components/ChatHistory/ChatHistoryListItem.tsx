@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import styles from './ChatHistoryPanel.module.css'
-import { AskResponse } from '../../api';
+import { AskResponse, delete_Conversation } from '../../api';
+import { Delete24Regular } from "@fluentui/react-icons";
 
 type ChatHistoryListProps = {
   conversation: {
@@ -19,23 +19,22 @@ export const ChatHistoryListItem: React.FC<ChatHistoryListProps> = ({ conversati
 
   console.log("Is History Active? Panel List: ", isActive);   
 
+  // const handleDeleteConversation = (conversation_Id: string) => {
+    
+  //   delete_Conversation(conversation_Id)
+
+  // }
+
     return (
       <div
       className={styles.itemCell}
       style={{ background: isActive ? "#9ac4e3" : "" }}
       onClick={onClick}
-      // 
       role="button"
       aria-pressed={isActive}
     >
       <div className={styles.itemText}>{conversation.content}</div>
+      {/* <div className={styles.itemDelete} onClick={() => {handleDeleteConversation(conversation.id)}}><Delete24Regular /></div> */}
     </div>
   );
 };
-
-// tabIndex={0} // Make the div focusable
-//       // onKeyDown={(e) => {
-//       //   if (e.key === 'Enter' || e.key === ' ') {
-//       //     onClick();
-//       //   }
-//       // }}

@@ -28,6 +28,7 @@
 
 .itemCell:hover {
   background: #9ac4e3;
+  transition: background .5s ease;
 }
 
 .itemText {
@@ -55,6 +56,17 @@
 
 .itemButton:hover {
   color: white
+}
+
+.itemDelete {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .5s ease, visibility .5s ease;
+}
+
+.itemCell:hover .itemDelete{
+  opacity: 1;
+  visibility: visible;
 }
 
 .chatGroup {

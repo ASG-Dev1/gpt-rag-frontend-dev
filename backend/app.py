@@ -10,6 +10,8 @@ from dotenv import load_dotenv
 from azure.keyvault.secrets import SecretClient
 from azure.identity import DefaultAzureCredential
 from azure.cosmos.aio import CosmosClient
+from azure.cosmos.aio import CosmosClient
+from azure.cosmos.exceptions import CosmosResourceNotFoundError, CosmosHttpResponseError
 import aiohttp  # Async HTTP client
 
 load_dotenv()
@@ -220,25 +222,25 @@ async def get_conversation(conversation_id):
         return jsonify({"error": str(e)}), 500
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# @app.route("/editOrDeleteConversation/<conversation_id>/<mode>")
-# async def editOrDeleteConversation(conversationID, newConversationID, mode):
-    
-#     if(mode == "edit"):
-#         try:
-#             item = container.read_item(item=conversation_id)
-#             item.update(newConversationID)
-#     elif(mode == "delete"):
-#         try: 
-#             async with CosmosClient(COSMOSDB_URI, COSMOSDB_KEY) as client:
-#                 database = client.get_database_client(AZURE_DB_NAME)
-#                 container = database.get_container_client(COSMOSDB_CONTAINER)
-#                 container.delete_item(item=conversation_id)
-#         except exceptions.CosmosResourceNotFoundError:
-#             print(f"Item with ID {id} not found.")
-#             return False
-#         except exceptions.CosmosHttpResponseError as e:
-#             print(f"An error occurred: {e}")
-#             return False      
+@app.route("/deleteConversation/<conversation_id>/<mode>")
+async def deleteConversation(conversation_id):
+    try:
+       async with CosmosClient(COSMOSDB_URI, COSMOSDB_KEY) as client:
+                database = client.get_database_client(AZURE_DB_NAME)
+                container = database.get_container_client(COSMOSDB_CONTAINER)
+                
+                partition_key=conversation_id
+                container.delete_item(item=conversation_id, partition_key=partition_key)
+
+                return "Item deleted successfully", 200
+            
+    except CosmosResourceNotFoundError:
+        print(f"Item with ID {conversation_id} not found.")
+        return "Item not found", 404
+
+    except CosmosHttpResponseError as e:
+        print(f"An error occurred: {e}")
+        return "An error occurred", 500
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8000)
