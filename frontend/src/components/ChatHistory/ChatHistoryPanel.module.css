@@ -31,6 +31,10 @@
   transition: background .5s ease;
 }
 
+.itemContent {
+  width: 87%;
+}
+
 .itemText {
   white-space: nowrap;
   /* Prevents wrapping */
@@ -62,9 +66,14 @@
   opacity: 0;
   visibility: hidden;
   transition: opacity .5s ease, visibility .5s ease;
+  background: #0e307c;
+  padding: .3rem;
+  display: flex;
+  align-items: center;
+  border-radius: 12px;
 }
 
-.itemCell:hover .itemDelete{
+.itemCell:hover .itemDelete {
   opacity: 1;
   visibility: visible;
 }

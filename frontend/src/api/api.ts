@@ -298,25 +298,26 @@ export const get_ChatHistory = async () => {
 };
 
 // Deletes a single conversation using the conversation ID
-export const delete_Conversation = async (conversation_id: string): Promise<boolean> => {
+export const delete_Conversation = async (conversation_id: string): Promise<{ success: boolean; message?: string }> => {
   try {
     const response = await fetch(`/deleteConversation/${conversation_id}`, {
-      method: 'DELETE', // Use the DELETE HTTP method
+      method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
       }
     });
 
+    const data = await response.json();
+
     if (response.ok) {
-      alert("Item deleted successfully.");
-      return true;
+      return { success: true, message: data.message };
     } else {
-      console.error("Failed to delete item.");
-      return false;
+      return { success: false, message: data.error };
     }
   } catch (error) {
-    console.error("An error occurred while deleting the item:", error);
-    return false;
+    console.error("An error occurred while deleting the conversation:", error);
+    return { success: false, message: "An unexpected error occurred." };
   }
 };
+
 

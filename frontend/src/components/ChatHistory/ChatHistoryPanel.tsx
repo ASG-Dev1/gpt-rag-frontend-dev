@@ -143,6 +143,10 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
     onConversationSelected(conversationId)
   }
 
+   // New handler to remove a conversation from the state
+   const handleDeleteConversation = (conversationId: string) => {
+    setChatHistory(prevHistory => prevHistory.filter(conv => conv.id !== conversationId));
+  };
 
   return (
     <Stack className={styles.container} data-is-scrollable aria-label="chat history panel">
@@ -180,10 +184,12 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
         <Stack>
           {chatHistory.map((item: ChatHistoryItem) => (
               <ChatHistoryListItem 
+              key={item.id} // Add a unique key prop
               conversation={item}
               isActive={item.id === activeConversationId}
               onClick={() => handleConversationSelected(item.id)}
-              />
+              onDelete={handleDeleteConversation} // Pass the onDelete prop
+            />
           ))}
         </Stack>
 
