@@ -47,10 +47,9 @@ export const Answer = ({
     }
 
     const parsedAnswer = useMemo(() => parseAnswerToHtml(answer.answer, !!showSources, onCitationClicked), [answer]);
-
     const sanitizedAnswerHtml = DOMPurify.sanitize(parsedAnswer.answerHtml);
-
     const [isCopied, setIsCopied] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
 
     function copyButton() {
         navigator.clipboard.writeText(answer.answer)
@@ -66,15 +65,22 @@ export const Answer = ({
             <Stack.Item>
                 <Stack horizontal horizontalAlign="space-between">
                     <AnswerIcon />
-                    <div>
-                        <IconButton
+                    <div className={styles.answerBtns}>
+                        {/* <IconButton
                             style={{ color: "black" }}
                             iconProps={{ iconName: "Lightbulb" }}
                             title="Show thought process"
                             ariaLabel="Show thought process"
                             onClick={() => onThoughtProcessClicked()}
                             disabled={!answer.thoughts}
-                        />
+                        /> */}
+                        <div onMouseEnter={() => setIsHovered(true) } onMouseLeave={() => setIsHovered(false) } >
+                            {isHovered
+                                ? <i className={`bi bi-lightbulb-fill ${styles.itemsInfo}`} style={{ color: "yellow" }} onClick={() => answer.thoughts && onThoughtProcessClicked()}></i>
+                                : <i className={`bi bi-lightbulb ${styles.itemsInfo}`} style={{ color: "#0e307c" }} onClick={() => answer.thoughts && onThoughtProcessClicked()}></i>
+                            }
+                        </div>
+
                         {/* <div
                             style={{
                                 display: 'inline-flex',
@@ -111,7 +117,8 @@ export const Answer = ({
                                 onClick={copyButton}
                                 style={{
                                     color: '#0d3a6a', // Color for when the text is copied
-                                    cursor: 'pointer'
+                                    cursor: 'pointer',
+                                    fontSize: '1.4rem'
                                 }}
                             />
                         ) : (
@@ -121,7 +128,8 @@ export const Answer = ({
                                 onClick={copyButton}
                                 style={{
                                     color: '#0d3a6a', // Default color
-                                    cursor: 'pointer'
+                                    cursor: 'pointer',
+                                    fontSize: '1.4rem'
                                 }}
                             />
                         )}

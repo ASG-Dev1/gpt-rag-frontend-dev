@@ -15,6 +15,12 @@
     font-size: 28px;
 }
 
+.answerBtns {
+    display: flex;
+    align-items: start;
+    gap: .5rem;
+}
+
 .answerText {
     font-family: "Inter", sans-serif;
     font-size: 16px;
@@ -182,3 +188,14 @@ sup {
     overflow: hidden;
     white-space: nowrap;
 }
+
+.itemsInfo {
+    font-size: 1.4rem;
+}
+
+.disabledInfo {
+    color: gray; /* Grayed-out color */
+    cursor: not-allowed; /* Changes cursor to indicate it’s disabled */
+    opacity: 0.5; /* Make it appear faded */
+  }
+  
