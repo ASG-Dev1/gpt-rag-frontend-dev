@@ -190,12 +190,21 @@ sup {
 }
 
 .itemsInfo {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
 }
 
 .disabledInfo {
-    color: gray; /* Grayed-out color */
-    cursor: not-allowed; /* Changes cursor to indicate it’s disabled */
-    opacity: 0.5; /* Make it appear faded */
-  }
-  
+    color: gray;
+    /* Grayed-out color */
+    cursor: not-allowed;
+    /* Changes cursor to indicate it’s disabled */
+    opacity: 0.5;
+    /* Make it appear faded */
+}
+
+.copyIcon {
+    color: #0e307c;
+    cursor: pointer;
+    height: 1.875rem !important;
+    width: 1.4rem !important;
+}

@@ -66,6 +66,19 @@ export const Answer = ({
                 <Stack horizontal horizontalAlign="space-between">
                     <AnswerIcon />
                     <div className={styles.answerBtns}>
+
+                        <div onMouseEnter={() => setIsHovered(true) } onMouseLeave={() => setIsHovered(false) } >
+                            {isHovered
+                                ? <i className={`bi bi-lightbulb-fill ${styles.itemsInfo}`} 
+                                     style={{ color: "#f3ea64", transition: "color .5s ease"}} 
+                                     onClick={() => answer.thoughts && onThoughtProcessClicked()}>
+                                  </i>
+                                : <i className={`bi bi-lightbulb ${styles.itemsInfo}`} 
+                                     style={{ color: "#0e307c"}} 
+                                     onClick={() => answer.thoughts && onThoughtProcessClicked()}>
+                                  </i>}
+                        </div>
+                        
                         {/* <IconButton
                             style={{ color: "black" }}
                             iconProps={{ iconName: "Lightbulb" }}
@@ -74,13 +87,6 @@ export const Answer = ({
                             onClick={() => onThoughtProcessClicked()}
                             disabled={!answer.thoughts}
                         /> */}
-                        <div onMouseEnter={() => setIsHovered(true) } onMouseLeave={() => setIsHovered(false) } >
-                            {isHovered
-                                ? <i className={`bi bi-lightbulb-fill ${styles.itemsInfo}`} style={{ color: "yellow" }} onClick={() => answer.thoughts && onThoughtProcessClicked()}></i>
-                                : <i className={`bi bi-lightbulb ${styles.itemsInfo}`} style={{ color: "#0e307c" }} onClick={() => answer.thoughts && onThoughtProcessClicked()}></i>
-                            }
-                        </div>
-
                         {/* <div
                             style={{
                                 display: 'inline-flex',
@@ -109,28 +115,19 @@ export const Answer = ({
                             <TagsFill />
                         </div> */}
 
-
                         {isCopied ? (
                             <Copy20Filled
                                 aria-hidden="false"
                                 aria-label="Text copied"
                                 onClick={copyButton}
-                                style={{
-                                    color: '#0d3a6a', // Color for when the text is copied
-                                    cursor: 'pointer',
-                                    fontSize: '1.4rem'
-                                }}
+                                className={styles.copyIcon}
                             />
                         ) : (
                             <Copy20Regular
                                 aria-hidden="false"
                                 aria-label="Copy this response"
                                 onClick={copyButton}
-                                style={{
-                                    color: '#0d3a6a', // Default color
-                                    cursor: 'pointer',
-                                    fontSize: '1.4rem'
-                                }}
+                                className={styles.copyIcon}
                             />
                         )}
                     </div>
