@@ -5,6 +5,7 @@ import logging
 import json
 import uuid
 import asyncio
+import flask
 from quart import Quart, request, jsonify
 from quart_cors import cors
 from dotenv import load_dotenv
@@ -29,6 +30,11 @@ AZURE_DB_NAME = os.environ.get("AZURE_DB_NAME")
 COSMOSDB_KEY = os.environ.get("COSMOSDB_KEY")
 COSMOSDB_CONTAINER = os.environ.get("COSMOSDB_CONTAINER")
 COSMOSDB_URI = os.environ.get("COSMOSDB_URI")
+
+logging.info(f"AZURE_DB_NAME: {AZURE_DB_NAME}")
+logging.info(f"COSMOSDB_KEY: {COSMOSDB_KEY}")
+logging.info(f"COSMOSDB_CONTAINER: {COSMOSDB_CONTAINER}")
+logging.info(f"COSMOSDB_URI: {COSMOSDB_URI}")
 
 def get_secret(secretName):
     keyVaultName = os.environ["AZURE_KEY_VAULT_NAME"]
@@ -174,16 +180,20 @@ async def fetch_chat_history():
             container = database.get_container_client(COSMOSDB_CONTAINER)
             print(database)
             print(container)
+            logging.info(f"Database: {database}")
+            logging.info(f"Container: {container}")
 
             query = "SELECT c.id, i.user_id, i.user_ask, i.answer, c.history[0].content AS content, c.conversation_data.start_date FROM c JOIN i IN c.conversation_data.interactions"
             items = container.query_items(query=query, partition_key=None)
 
             result = []
             async for item in items:
+                logging.info(f"Fetched item: {item}")
                 if 'title' in item and isinstance(item['title'], list) and len(item['title']) == 1:
                     item['title'] = item['title'][0]
                 result.append(item)
-
+            logging.info("Final Result in fetch_chat_history")
+            logging.info(result)
             print("Prueba en APP del result")
             print(result)
             print("Este es en json", jsonify(result))
