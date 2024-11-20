@@ -26,7 +26,7 @@ const Layout = () => {
                         }}
                     > { }
                         {isMenuOpen ? <BiHide color="#fff" size="25px" /> : <BiShowAlt color="#fff" size="25px" />}
-                        <span className={styles.text}>History</span>
+                        <span className={styles.text}>Historial</span>
                     </button>
                 </div>
             </header>
