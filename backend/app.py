@@ -189,6 +189,7 @@ async def fetch_chat_history():
             result = []
             async for item in items:
                 logging.info(f"Fetched item: {item}")
+                logging.info(f"Fetched item: {item}")
                 if 'title' in item and isinstance(item['title'], list) and len(item['title']) == 1:
                     item['title'] = item['title'][0]
                 result.append(item)
@@ -239,7 +240,8 @@ async def delete_conversation(conversation_id):
     try:
         logging.info(f"Received request to delete conversation ID: {conversation_id}")
         # Run the blocking CosmosClient operations in a separate thread
-        result = await loop.run_in_executor(None, delete_item_sync, conversation_id)
+        # result = await loop.run_in_executor(None, delete_item_sync, conversation_id)
+        result = await delete_item_sync(conversation_id)
         logging.info(f"Deletion successful for conversation ID: {conversation_id}")
         return jsonify({"message": result}), 200
     except CosmosResourceNotFoundError:
@@ -252,22 +254,26 @@ async def delete_conversation(conversation_id):
         logging.error(f"Unexpected error: {e}")
         return jsonify({"error": "An unexpected error occurred"}), 500
 
-def delete_item_sync(conversation_id):
+async def delete_item_sync(conversation_id):
     client = CosmosClient(COSMOSDB_URI, COSMOSDB_KEY)
     try:
         database = client.get_database_client(AZURE_DB_NAME)
         container = database.get_container_client(COSMOSDB_CONTAINER)
         
+        logging.info(f"Attempting to delete item with ID: {conversation_id}")
         # Assuming conversation_id is both the ID and partition key
-        container.delete_item(item=conversation_id, partition_key=conversation_id)
-        return "Item deleted successfully"
+        await container.delete_item(item=conversation_id, partition_key=conversation_id)
+        logging.info(f"Item deleted: {conversation_id}")
+        return "La conversación fue eliminada."
     except CosmosResourceNotFoundError:
+        logging.warning(f"Item not found for ID: {conversation_id}")
         raise  # Re-raise the exception to be caught in the calling function
     except Exception as e:
         logging.error(f"An error occurred in delete_item_sync: {e}")
         raise
     finally:
         client.close()  # Ensure the client is properly closed
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8000)

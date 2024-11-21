@@ -136,15 +136,15 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
   // useEffect(() => {
   //   console.log("Updated chatHistory:", chatHistory, "and quantity: ", chatHistory.length);
   // }, [chatHistory]);
-  
+
   const handleConversationSelected = (conversationId: string) => {
 
     setActiveConversationId(prevId => (prevId === conversationId ? prevId : conversationId))
     onConversationSelected(conversationId)
   }
 
-   // New handler to remove a conversation from the state
-   const handleDeleteConversation = (conversationId: string) => {
+  // New handler to remove a conversation from the state
+  const handleDeleteConversation = (conversationId: string) => {
     setChatHistory(prevHistory => prevHistory.filter(conv => conv.id !== conversationId));
   };
 
@@ -160,7 +160,7 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
           </h2>
 
           <h2 className={styles.headingQuantity}>
-          conversaciones: {chatHistory.length} 
+            conversaciones: {chatHistory.length}
           </h2>
         </StackItem>
       </Stack>
@@ -183,7 +183,7 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
       <Stack>
         <Stack>
           {chatHistory.map((item: ChatHistoryItem) => (
-              <ChatHistoryListItem 
+            <ChatHistoryListItem
               key={item.id} // Add a unique key prop
               conversation={item}
               isActive={item.id === activeConversationId}
