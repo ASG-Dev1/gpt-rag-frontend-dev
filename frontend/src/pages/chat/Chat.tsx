@@ -134,6 +134,14 @@ const Chat = () => {
         }
     };
 
+    const handleDeleteActiveConversation = (id: string) => {
+        if (id === conversationId) {
+            setConversationId(null); // Clear active conversation ID
+            setHistoryConversation([]);   // Clear the history conversation view
+            setCurrentConversation([]);   // Clear the current conversation view
+            setIsEmptyStateVisible(true); // Show the empty state
+        }
+    };
 
 
 
@@ -347,24 +355,24 @@ const Chat = () => {
 
                         {/* This is for viewing the ChatInput Section wether you are in a Current State or History */}
                         {/* {(isViewingHistory ? historyConversation : currentConversation) && ( */}
-                        {(!isViewingHistory || historyConversation.length > 0) && (
-                            <div className={styles.chatInput}>
+                        {/* {(!isViewingHistory || historyConversation.length > 0) && ( */}
+                        <div className={styles.chatInput}>
 
-                                <div className={btnStyles.chatButtons}>
-                                    {/* Create a New Conversations  */}
-                                    <NewChatButton className={`${btnStyles.buttonStructure} ${btnStyles.backBtn}`} onClick={goBackToCurrentConversation} />
-                                    <ClearChatButton className={`${btnStyles.buttonStructure} ${btnStyles.deleteConversationBtn}`} onClick={clearChat} />
-                                </div>
-
-                                <QuestionInput
-                                    clearOnSend
-                                    placeholder={placeholderText}
-                                    disabled={isLoading}
-                                    onSend={makeApiRequestGpt}
-                                />
+                            <div className={btnStyles.chatButtons}>
+                                {/* Create a New Conversations  */}
+                                <NewChatButton className={`${btnStyles.buttonStructure} ${btnStyles.backBtn}`} onClick={goBackToCurrentConversation} />
+                                <ClearChatButton className={`${btnStyles.buttonStructure} ${btnStyles.deleteConversationBtn}`} onClick={clearChat} />
                             </div>
 
-                        )}
+                            <QuestionInput
+                                clearOnSend
+                                placeholder={placeholderText}
+                                disabled={isLoading}
+                                onSend={makeApiRequestGpt}
+                            />
+                        </div>
+
+
                     </div>
 
                     {/* This Opens AnalysisPanel when Sources is clicked in History State  */}
@@ -426,7 +434,7 @@ const Chat = () => {
                         />
                     </Panel>
                     <Stack horizontal horizontalAlign="center">
-                        {isMenuOpen && <ChatHistoryPanel onConversationSelected={onConversationSelected} />}
+                        {isMenuOpen && <ChatHistoryPanel onConversationSelected={onConversationSelected} onDelete={handleDeleteActiveConversation} />}
                     </Stack>
                 </div>
             </div>

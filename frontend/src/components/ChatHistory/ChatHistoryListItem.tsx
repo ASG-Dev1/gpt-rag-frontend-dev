@@ -27,6 +27,18 @@ export const ChatHistoryListItem: React.FC<ChatHistoryListProps> = ({ conversati
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
+  // const handleConfirmDelete = async () => {
+  //   setIsDeleting(true);
+  //   const result = await delete_Conversation(conversation.id);
+  //   setIsDeleting(false);
+
+  //   if (result.success) {
+  //     closeModal();
+  //     setIsSuccessModalOpen(true); // Show success modal
+  //   } else {
+  //     alert(result.message || "Failed to delete the conversation.");
+  //   }
+  // };
   const handleConfirmDelete = async () => {
     setIsDeleting(true);
     const result = await delete_Conversation(conversation.id);
@@ -35,10 +47,14 @@ export const ChatHistoryListItem: React.FC<ChatHistoryListProps> = ({ conversati
     if (result.success) {
       closeModal();
       setIsSuccessModalOpen(true); // Show success modal
+
+      // Notify parent component about the deletion
+      onDelete(conversation.id);
     } else {
       alert(result.message || "Failed to delete the conversation.");
     }
   };
+
 
   useEffect(() => {
     if (isSuccessModalOpen) {
