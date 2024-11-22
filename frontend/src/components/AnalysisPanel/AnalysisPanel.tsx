@@ -185,7 +185,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                     </div>
                 </PivotItem>
 
-                <PivotItem
+                {/* <PivotItem
                     itemKey={AnalysisPanelTabs.CitationTab}
                     headerText="Citation"
                     // headerButtonProps={isDisabledCitationTab ? pivotItemDisabledStyle : undefined}
@@ -204,10 +204,13 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                             <p>No citation available</p>
                         )}
                     </div>
-                </PivotItem>
+                </PivotItem> */}
+                <div className={styles.closeAnalysisTab}>
+                <i className="bi bi-x-lg"></i>
+                </div>
             </Pivot>
 
-            {/* Modal for displaying the PDF for citations */}
+            {/* Modal for displaying the PDF for  */}
             {/* {pdfData && (
                 <PdfModal
                     isOpen={isModalOpenForCitation}
