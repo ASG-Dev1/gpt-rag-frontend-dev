@@ -11,3 +11,10 @@
 .disabled {
     opacity: 0.4;
 }
+
+
+.icon {
+    color:#0e307c;
+    width: 28px;
+    height: 28px;
+}

@@ -10,7 +10,6 @@ import { QuestionInput } from "../../components/QuestionInput";
 import { ExampleList } from "../../components/Example";
 import { UserChatMessage } from "../../components/UserChatMessage";
 import { AnalysisPanel, AnalysisPanelTabs } from "../../components/AnalysisPanel";
-import { ClearChatButton } from "../../components/ClearChatButton";
 import { getTokenOrRefresh } from '../../components/QuestionInput/token_util';
 import { SpeechConfig, AudioConfig, SpeechSynthesizer, ResultReason } from 'microsoft-cognitiveservices-speech-sdk';
 import { ChatHistoryPanel } from "../../components/ChatHistory/ChatHistoryPanel";
@@ -279,11 +278,6 @@ const Chat = () => {
         setIsChatInputVisible(false);
     }, []);
 
-
-
-
-
-
     return (
         <>
             <div className={styles.container}>
@@ -353,7 +347,7 @@ const Chat = () => {
                                 <div className={btnStyles.chatButtons}>
                                     {/* Create a New Conversations  */}
                                     <NewChatButton className={`${btnStyles.buttonStructure} ${btnStyles.backBtn}`} onClick={goBackToCurrentConversation} />
-                                    <ClearChatButton className={`${btnStyles.buttonStructure} ${btnStyles.deleteConversationBtn}`} onClick={clearChat} />
+                                    
                                 </div>
 
                                 <QuestionInput
@@ -361,6 +355,7 @@ const Chat = () => {
                                     placeholder={placeholderText}
                                     disabled={isLoading}
                                     onSend={makeApiRequestGpt}
+
                                 />
                             </div>
 

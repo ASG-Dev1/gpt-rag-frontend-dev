@@ -15,8 +15,8 @@
 
 .icon {
     color: white;
-    width: 28px;
+    width: 28px !important;
     /* Desired width */
-    height: 28px;
+    height: 28px !important;
     /* Desired height */
 }
