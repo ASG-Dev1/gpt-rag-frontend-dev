@@ -23,7 +23,7 @@ if (userLanguage.startsWith('pt')) {
 export const ClearChatButton = ({ className, disabled, onClick }: Props) => {
     return (
         <a className={`${styles.container} ${className ?? ""} ${disabled && styles.disabled}`} onClick={onClick}>
-            <Delete24Regular />
+            <Delete24Regular color="#0e307c" className={styles.icon}/>
             {/* <Text className={btnStyles.btnText}>{reiniciar_text}</Text> */}
         </a>
     );

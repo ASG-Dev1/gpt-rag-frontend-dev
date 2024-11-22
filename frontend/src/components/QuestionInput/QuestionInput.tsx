@@ -3,6 +3,8 @@ import { Stack, TextField } from "@fluentui/react";
 import { getTokenOrRefresh } from './token_util';
 import { Send28Filled, BookOpenMicrophone28Filled, SlideMicrophone32Filled } from "@fluentui/react-icons";
 import { ResultReason, SpeechConfig, AudioConfig, SpeechRecognizer } from 'microsoft-cognitiveservices-speech-sdk';
+import { ClearChatButton } from "../../components/ClearChatButton";
+import btnStyles from '../../components/Common/Button.module.css'
 
 import styles from "./QuestionInput.module.css";
 interface Props {
@@ -14,6 +16,7 @@ interface Props {
 
 export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend }: Props) => {
     const [question, setQuestion] = useState<string>("");
+    const [clearText, setClearText] = useState(false);
 
     const sendQuestion = () => {
         if (disabled || !question.trim()) {
@@ -74,7 +77,17 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend }: Pr
         } else if (newValue.length <= 1000) {
             setQuestion(newValue);
         }
+        else if (newValue.length > 1 && clearText === true){
+            setQuestion("")
+            console.log(newValue)
+            console.log(clearText)
+        }
     };
+
+    const onDeletePress = () => {
+        setQuestion("")
+    }
+
 
     const sendQuestionDisabled = disabled || !question.trim();
 
@@ -90,14 +103,24 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend }: Pr
                 onChange={onQuestionChange}
                 onKeyDown={onEnterPress}
             />
+
             <div className={styles.questionInputButtonsContainer}>
                 <div
                     className={`${styles.questionInputSendButton} ${sendQuestionDisabled ? styles.questionInputSendButtonDisabled : ""}`}
                     aria-label="Boton hacer preguntas"
                     onClick={sendQuestion}
                 >
-                    <Send28Filled primaryFill="rgba(115, 118, 225, 1)" />
+                    <Send28Filled primaryFill="#0e307c" />
+                    
                 </div>
+                <ClearChatButton className={`${btnStyles.deleteConversationBtn}`}  onClick={onDeletePress} />
+
+            </div>
+        </Stack>
+    );
+};
+
+
                 {/* <div
                     className={`${styles.questionInputSendButton}}`}
                     aria-label="Boton hablar"
@@ -105,7 +128,3 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend }: Pr
                 >
                     <SlideMicrophone32Filled primaryFill="rgba(115, 118, 225, 1)" />
                 </div> */}
-            </div>
-        </Stack>
-    );
-};

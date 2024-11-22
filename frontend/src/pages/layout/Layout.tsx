@@ -19,15 +19,15 @@ const Layout = () => {
                         <img height="70px" src={asgpt} alt="ASGPT Logo" />
                         <h3 className={styles.headerTitle}></h3>
                     </Link>
-                    <button
+                    {/* <button
                         className={`${btnStyles.buttonStructure} ${btnStyles.commandBtn} ${btnStyles.btn}`}
                         onClick={() => {
                             toggleMenu();
                         }}
                     > { }
                         {isMenuOpen ? <BiHide color="#fff" size="25px" /> : <BiShowAlt color="#fff" size="25px" />}
-                        <span className={styles.text}>Historial</span>
-                    </button>
+                        <span className={styles.text}></span>
+                    </button> */}
                 </div>
             </header>
             <Outlet />
