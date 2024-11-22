@@ -120,7 +120,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
             >
                 <PivotItem
                     itemKey={AnalysisPanelTabs.Items}
-                    headerText="Itéms"
+                    headerText="Items"
                     // headerButtonProps={dataPoints.length === 0 ? { disabled: false,  style: { color: "grey" } } : undefined}
                     headerButtonProps={
                         dataPoints.length === 0
@@ -180,14 +180,14 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                                 </>
                             ))
                         ) : (
-                            <p>No hay itéms disponibles.</p>
+                            <p>No items available.</p>
                         )}
                     </div>
                 </PivotItem>
 
                 <PivotItem
                     itemKey={AnalysisPanelTabs.CitationTab}
-                    headerText="Citación"
+                    headerText="Citation"
                     // headerButtonProps={isDisabledCitationTab ? pivotItemDisabledStyle : undefined}
                     headerButtonProps={
                         isDisabledCitationTab
@@ -201,7 +201,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                                 {extractFilename(activeCitation)}
                             </button>
                         ) : (
-                            <p>No hay citaciones disponibles</p>
+                            <p>No citation available</p>
                         )}
                     </div>
                 </PivotItem>

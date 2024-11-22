@@ -41,6 +41,7 @@ interface ChatHistoryItem {
 
 interface ChatHistoryPanelProps {
   onConversationSelected: (conversationId: string) => void;
+  onDelete: (conversationId: string) => void;
 }
 
 export enum ChatHistoryPanelTabs {
@@ -57,7 +58,7 @@ const commandBarStyle: ICommandBarStyles = {
 
 const commandBarButtonStyle: Partial<IStackStyles> = { root: { height: '50px' } }
 
-export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelProps) {
+export function ChatHistoryPanel({ onConversationSelected, onDelete }: ChatHistoryPanelProps) {
   const [showContextualMenu, setShowContextualMenu] = React.useState(false)
   const [hideClearAllDialog, { toggle: toggleClearAllDialog }] = useBoolean(true)
   const [clearing, setClearing] = React.useState(false)
@@ -136,15 +137,15 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
   // useEffect(() => {
   //   console.log("Updated chatHistory:", chatHistory, "and quantity: ", chatHistory.length);
   // }, [chatHistory]);
-  
+
   const handleConversationSelected = (conversationId: string) => {
 
     setActiveConversationId(prevId => (prevId === conversationId ? prevId : conversationId))
     onConversationSelected(conversationId)
   }
 
-   // New handler to remove a conversation from the state
-   const handleDeleteConversation = (conversationId: string) => {
+  // New handler to remove a conversation from the state
+  const handleDeleteConversation = (conversationId: string) => {
     setChatHistory(prevHistory => prevHistory.filter(conv => conv.id !== conversationId));
   };
 
@@ -160,7 +161,7 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
           </h2>
 
           <h2 className={styles.headingQuantity}>
-          conversaciones: {chatHistory.length} 
+            conversaciones: {chatHistory.length}
           </h2>
         </StackItem>
       </Stack>
@@ -182,15 +183,28 @@ export function ChatHistoryPanel({ onConversationSelected }: ChatHistoryPanelPro
       {/* Chat history list */}
       <Stack>
         <Stack>
-          {chatHistory.map((item: ChatHistoryItem) => (
-              <ChatHistoryListItem 
+          {/* {chatHistory.map((item: ChatHistoryItem) => (
+            <ChatHistoryListItem
               key={item.id} // Add a unique key prop
               conversation={item}
               isActive={item.id === activeConversationId}
               onClick={() => handleConversationSelected(item.id)}
               onDelete={handleDeleteConversation} // Pass the onDelete prop
             />
+          ))} */}
+          {chatHistory.map((item: ChatHistoryItem) => (
+            <ChatHistoryListItem
+              key={item.id}
+              conversation={item}
+              isActive={item.id === activeConversationId}
+              onClick={() => handleConversationSelected(item.id)}
+              onDelete={conversationId => {
+                handleDeleteConversation(conversationId);
+                onDelete(conversationId); // Notify Chat.tsx
+              }}
+            />
           ))}
+
         </Stack>
 
       </Stack>

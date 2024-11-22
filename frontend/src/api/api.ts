@@ -310,8 +310,10 @@ export const delete_Conversation = async (conversation_id: string): Promise<{ su
     const data = await response.json();
 
     if (response.ok) {
+      console.log("Successfully deleted:", conversation_id);
       return { success: true, message: data.message };
     } else {
+      console.error("Deletion failed:", data.error);
       return { success: false, message: data.error };
     }
   } catch (error) {
