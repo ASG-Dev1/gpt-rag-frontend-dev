@@ -50,6 +50,7 @@ export const Answer = ({
     const sanitizedAnswerHtml = DOMPurify.sanitize(parsedAnswer.answerHtml);
     const [isCopied, setIsCopied] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
+    const [hideCitations, setHideCitations] = useState(false);
 
     function copyButton() {
         navigator.clipboard.writeText(answer.answer)
@@ -67,18 +68,18 @@ export const Answer = ({
                     <AnswerIcon />
                     <div className={styles.answerBtns}>
 
-                        <div onMouseEnter={() => setIsHovered(true) } onMouseLeave={() => setIsHovered(false) } >
+                        <div onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} >
                             {isHovered
-                                ? <i className={`bi bi-lightbulb-fill ${styles.itemsInfo}`} 
-                                     style={{ color: "#f3ea64", transition: "color .5s ease"}} 
-                                     onClick={() => answer.thoughts && onThoughtProcessClicked()}>
-                                  </i>
-                                : <i className={`bi bi-lightbulb ${styles.itemsInfo}`} 
-                                     style={{ color: "#0e307c"}} 
-                                     onClick={() => answer.thoughts && onThoughtProcessClicked()}>
-                                  </i>}
+                                ? <i className={`bi bi-lightbulb-fill ${styles.itemsInfo}`}
+                                    style={{ color: "#f3ea64", transition: "color .5s ease" }}
+                                    onClick={() => answer.thoughts && onThoughtProcessClicked()}>
+                                </i>
+                                : <i className={`bi bi-lightbulb ${styles.itemsInfo}`}
+                                    style={{ color: "#0e307c" }}
+                                    onClick={() => answer.thoughts && onThoughtProcessClicked()}>
+                                </i>}
                         </div>
-                        
+
                         {/* <IconButton
                             style={{ color: "black" }}
                             iconProps={{ iconName: "Lightbulb" }}
@@ -138,7 +139,7 @@ export const Answer = ({
                 <div className={styles.answerText} dangerouslySetInnerHTML={{ __html: sanitizedAnswerHtml }}></div>
             </Stack.Item>
 
-            {!!parsedAnswer.citations.length && showSources && (
+            {!!parsedAnswer.citations.length && showSources && !hideCitations === false && (
                 <Stack.Item>
                     <Stack horizontal wrap tokens={{ childrenGap: 5 }}>
                         <span className={styles.citationLearnMore}>Sources:</span>
