@@ -25,3 +25,15 @@
 .ms-Button:hover {
     background: transparent !important;
 }
+
+.closeAnalysisTab {
+    height: 3rem;
+    height: 3rem;
+    width: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 93%;
+    top: 16px;
+}

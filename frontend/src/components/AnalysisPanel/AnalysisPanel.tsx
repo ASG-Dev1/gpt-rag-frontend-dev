@@ -10,6 +10,8 @@ import PdfModal from "../PdfModal/PdfModal";
 import { useState } from 'react'
 import css from '../../components/common/Button.module.css'
 import { AccordionItemList } from "../AccordionItemsList/AccordionItemList";
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 
 
 interface Props {
@@ -113,79 +115,84 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
     console.log('Items1.data_points type:', typeof Items1.data_points);
     return (
         <>
-            <Pivot
-                className={className}
-                selectedKey={activeTab}
-                onLinkClick={pivotItem => pivotItem && onActiveTabChanged(pivotItem.props.itemKey! as AnalysisPanelTabs)}
-            >
-                <PivotItem
-                    itemKey={AnalysisPanelTabs.Items}
-                    headerText="Items"
-                    // headerButtonProps={dataPoints.length === 0 ? { disabled: false,  style: { color: "grey" } } : undefined}
-                    headerButtonProps={
-                        dataPoints.length === 0
-                            ? { disabled: false, style: { color: "grey" } } // Keep grey when no data points
-                            : { style: { color: "black", fontSize: '1rem' }, className: styles.pivotHeaderWhite } // White styling with custom class otherwise
-                    }
+            <div className={className}>
+            <div className={`${css.buttonStructure} ${styles.closeAnalysisTab}`}>
+                    <i className={`bi bi-x-lg`} style={{ color: "white" }}></i>
+                </div>
 
+                <Pivot
+
+                    selectedKey={activeTab}
+                    onLinkClick={pivotItem => pivotItem && onActiveTabChanged(pivotItem.props.itemKey! as AnalysisPanelTabs)}
                 >
-                    <div>
-                        {Items1.data_points && Items1.data_points.length > 0 ? (
-                            Items1.data_points.map((item, index) => (
-                                <>
-                                    {/* Display the fields you need in an accordion */}
-                                    <AccordionItemList
-                                        header={item.Marca_de_Articulo + " " + item.Modelo_de_Articulo + " (" + item.Numero_de_Caso + ")"}
-                                        content={{
-                                            // Requisition Details
-                                            "I.  Detalles de Requisición": "title",
-                                            "Número de Requisición:   ": item.Numero_de_Requisicion,
-                                            "Título de Requisición:   ": item.Titulo_de_Requisicion,
-                                            "Fecha Recibo de Requisición:   ": item.Fecha_Recibo_de_Requisicion,
-                                            "Categoría de Requisición:   ": item.Categoria_de_Requisicion,
-                                            "Subcategoría de Requisición:   ": item.SubCategoria_de_Requisicion,
-                                            "Agencia:   ": item.Agencia,
-                                            "Nombre de Agencia de Entrega:   ": item.Nombre_de_Agencia_de_Entrega,
-                                            "Método de Adquisición:   ": item.Metodo_de_Adquisicion,
+                    <PivotItem
+                        itemKey={AnalysisPanelTabs.Items}
+                        headerText="Items"
+                        // headerButtonProps={dataPoints.length === 0 ? { disabled: false,  style: { color: "grey" } } : undefined}
+                        headerButtonProps={
+                            dataPoints.length === 0
+                                ? { disabled: false, style: { color: "grey" } } // Keep grey when no data points
+                                : { style: { color: "black", fontSize: '1rem' }, className: styles.pivotHeaderWhite } // White styling with custom class otherwise
+                        }
 
-                                            // Item Details
-                                            "II.  Detalles de Artículo": "title",
-                                            "Descripción de Artículo:   ": item.Descripcion_de_Articulo,
-                                            "Marca de Artículo:   ": item.Marca_de_Articulo,
-                                            "Modelo de Artículo:   ": item.Modelo_de_Articulo,
-                                            "Garantía de Artículo:   ": item.Garantia_de_Articulo,
-                                            "Unidad de Medida:   ": item.Unidad_de_Medida,
-                                            "Cantidad:   ": item.Cantidad,
-                                            "Costo Unitario Estimado de Artículo:   ": item.Costo_Unitario_Estimado_de_Articulo,
-                                            "Costo Estimado Total de Orden de Artículo:": item.Costo_Estimado_Total_de_Orden_de_Articulo,
-                                            "Costo Final de Orden de Artículo:": item.Costo_Final_de_Orden_de_Articulo,
+                    >
+                        <div>
+                            {Items1.data_points && Items1.data_points.length > 0 ? (
+                                Items1.data_points.map((item, index) => (
+                                    <>
+                                        {/* Display the fields you need in an accordion */}
+                                        <AccordionItemList
+                                            header={item.Marca_de_Articulo + " " + item.Modelo_de_Articulo + " (" + item.Numero_de_Caso + ")"}
+                                            content={{
+                                                // Requisition Details
+                                                "I.  Detalles de Requisición": "title",
+                                                "Número de Requisición:   ": item.Numero_de_Requisicion,
+                                                "Título de Requisición:   ": item.Titulo_de_Requisicion,
+                                                "Fecha Recibo de Requisición:   ": item.Fecha_Recibo_de_Requisicion,
+                                                "Categoría de Requisición:   ": item.Categoria_de_Requisicion,
+                                                "Subcategoría de Requisición:   ": item.SubCategoria_de_Requisicion,
+                                                "Agencia:   ": item.Agencia,
+                                                "Nombre de Agencia de Entrega:   ": item.Nombre_de_Agencia_de_Entrega,
+                                                "Método de Adquisición:   ": item.Metodo_de_Adquisicion,
 
-                                            // Contract & Order Information
-                                            "III.  Información de Orden y Contrato": "title",
-                                            "Nombre de Archivo de Orden de Compra:   ": item.Nombre_de_Archivo_de_Orden_de_Compra,
-                                            "Número de Contrato:   ": item.Numero_de_Contrato,
-                                            "Número de Orden de Compra:   ": item.Numero_de_Orden_de_Compra,
+                                                // Item Details
+                                                "II.  Detalles de Artículo": "title",
+                                                "Descripción de Artículo:   ": item.Descripcion_de_Articulo,
+                                                "Marca de Artículo:   ": item.Marca_de_Articulo,
+                                                "Modelo de Artículo:   ": item.Modelo_de_Articulo,
+                                                "Garantía de Artículo:   ": item.Garantia_de_Articulo,
+                                                "Unidad de Medida:   ": item.Unidad_de_Medida,
+                                                "Cantidad:   ": item.Cantidad,
+                                                "Costo Unitario Estimado de Artículo:   ": item.Costo_Unitario_Estimado_de_Articulo,
+                                                "Costo Estimado Total de Orden de Artículo:": item.Costo_Estimado_Total_de_Orden_de_Articulo,
+                                                "Costo Final de Orden de Artículo:": item.Costo_Final_de_Orden_de_Articulo,
 
-                                            // Supplier Information
-                                            "IV.  Información de Suplidor": "title",
-                                            "Nombre de Suplidor:   ": item.Nombre_de_Suplidor,
-                                            "Teléfono de Contacto de Suplidor:   ": item.Telefono_de_Contacto_de_Suplidor,
-                                            "Email de Suplidor:   ": item.Email_de_Suplidor,
-                                        }}
+                                                // Contract & Order Information
+                                                "III.  Información de Orden y Contrato": "title",
+                                                "Nombre de Archivo de Orden de Compra:   ": item.Nombre_de_Archivo_de_Orden_de_Compra,
+                                                "Número de Contrato:   ": item.Numero_de_Contrato,
+                                                "Número de Orden de Compra:   ": item.Numero_de_Orden_de_Compra,
 
-                                        url={item.Url_de_Archivo_de_Orden_de_Compra}
-                                        onUrlClick={handleDataPointUrlClick} // Use this for URL click in data points
-                                        index={index.toString()}
-                                    />
-                                </>
-                            ))
-                        ) : (
-                            <p>No items available.</p>
-                        )}
-                    </div>
-                </PivotItem>
+                                                // Supplier Information
+                                                "IV.  Información de Suplidor": "title",
+                                                "Nombre de Suplidor:   ": item.Nombre_de_Suplidor,
+                                                "Teléfono de Contacto de Suplidor:   ": item.Telefono_de_Contacto_de_Suplidor,
+                                                "Email de Suplidor:   ": item.Email_de_Suplidor,
+                                            }}
 
-                {/* <PivotItem
+                                            url={item.Url_de_Archivo_de_Orden_de_Compra}
+                                            onUrlClick={handleDataPointUrlClick} // Use this for URL click in data points
+                                            index={index.toString()}
+                                        />
+                                    </>
+                                ))
+                            ) : (
+                                <p>No items available.</p>
+                            )}
+                        </div>
+                    </PivotItem>
+
+                    {/* <PivotItem
                     itemKey={AnalysisPanelTabs.CitationTab}
                     headerText="Citation"
                     // headerButtonProps={isDisabledCitationTab ? pivotItemDisabledStyle : undefined}
@@ -205,10 +212,10 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                         )}
                     </div>
                 </PivotItem> */}
-                <div className={styles.closeAnalysisTab}>
-                <i className="bi bi-x-lg"></i>
-                </div>
-            </Pivot>
+
+                </Pivot>
+            </div>
+
 
             {/* Modal for displaying the PDF for  */}
             {/* {pdfData && (
