@@ -21,11 +21,12 @@ interface Props {
     activeCitation: string | undefined;
     citationHeight: string;
     answer: AskResponse;
+    onCloseAnalysisTab: React.Dispatch<React.SetStateAction<AnalysisPanelTabs | undefined>>;
 }
 
 const pivotItemDisabledStyle = { disabled: true, style: { color: "grey" } };
 
-export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeight, className, onActiveTabChanged }: Props) => {
+export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeight, className, onActiveTabChanged, onCloseAnalysisTab }: Props) => {
 
     const isDisabledThoughtProcessTab: boolean = !answer.thoughts;
     const isDisabledItemsTab: boolean = !answer.thoughts;
@@ -108,6 +109,10 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
         return result;
     }
 
+    const handleCloseTab = () => {
+        onCloseAnalysisTab(undefined);
+    }
+
 
     const extractedData = extractDataFromResponse(Items1);
     console.log('Extracted Data:', extractedData);
@@ -116,9 +121,9 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
     return (
         <>
             <div className={className}>
-            <div className={`${css.buttonStructure} ${styles.closeAnalysisTab}`}>
+            <div className={`${css.buttonStructure} ${styles.closeAnalysisTab}`} onClick={handleCloseTab}>
                     <i className={`bi bi-x-lg`} style={{ color: "white" }}></i>
-                </div>
+            </div>
 
                 <Pivot
 

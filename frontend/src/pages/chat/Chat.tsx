@@ -319,7 +319,7 @@ const Chat = () => {
                                                     onFollowupQuestionClicked={makeApiRequestGpt}
                                                     showFollowupQuestions={false}
                                                     showSources={true}
-                                                />
+                                                    />
                                             ) : (
 
                                                 // CHANGED currentConversation.length - 1 ? (     TO      conversation.length - 1 ? (
@@ -375,12 +375,13 @@ const Chat = () => {
                             className={styles.chatAnalysisPanel}
                             activeCitation={activeCitation}
                             onActiveTabChanged={x => onToggleTab(x as AnalysisPanelTabs, selectedAnswer)}
+                            onCloseAnalysisTab={setActiveAnalysisPanelTab}
                             citationHeight="720px"
                             answer={(isViewingHistory ? historyConversation : currentConversation)[selectedAnswer]?.bot!}
                             activeTab={activeAnalysisPanelTab}
                         />
                     )}
-
+                        
                     <Panel
                         headerText="Configure answer generation"
                         isOpen={isConfigPanelOpen}
