@@ -3,7 +3,7 @@ name: Build and deploy Python app with frontend to Azure Web App - webgpt0jdjja
 on:
   push:
     branches:
-      - gpt-rag-frontend-CURRENT-DEV
+      - development
   workflow_dispatch:
 
 jobs:
