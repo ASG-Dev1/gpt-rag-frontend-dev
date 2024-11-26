@@ -8,7 +8,7 @@ import { AskResponse } from "../../api";
 import { AnalysisPanelTabs } from "./AnalysisPanelTabs";
 import PdfModal from "../PdfModal/PdfModal";
 import { useState } from 'react'
-import css from '../../components/common/Button.module.css'
+import css from "../Common/Button.module.css"
 import { AccordionItemList } from "../AccordionItemsList/AccordionItemList";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
