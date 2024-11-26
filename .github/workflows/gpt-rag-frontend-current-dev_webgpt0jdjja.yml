@@ -37,7 +37,6 @@ jobs:
           cd frontend
           npm install
           npm run build
-          mv build ../backend/static  # Move build output to backend/static directory
 
       # Zip the deployment artifact
       - name: Zip artifact for deployment
