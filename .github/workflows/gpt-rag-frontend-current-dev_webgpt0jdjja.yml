@@ -22,7 +22,7 @@ jobs:
           source ./backend/backend_env/bin/activate
       
       - name: Install dependencies
-        run: 
+        run: | 
           cd backend
           pip install -r requirements.txt
         
