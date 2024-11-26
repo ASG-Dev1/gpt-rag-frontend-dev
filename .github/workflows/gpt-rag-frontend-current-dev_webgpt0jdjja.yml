@@ -82,4 +82,4 @@ jobs:
         with:
           app-name: 'webgpt0jdjja'
           slot-name: 'Production'
-          package: ./backend  # Specify the backend folder as the deployment source
+          package: ./backend  # Specify the backend folder as the deployment source.
