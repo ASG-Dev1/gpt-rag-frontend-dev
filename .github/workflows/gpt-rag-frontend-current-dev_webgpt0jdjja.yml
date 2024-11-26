@@ -3,7 +3,7 @@ name: Build and deploy Python app with frontend to Azure Web App - webgpt0jdjja
 on:
   push:
     branches:
-      - gpt-rag-frontend-CURRENT-DEV
+      - development
   workflow_dispatch:
 
 jobs:
@@ -37,7 +37,6 @@ jobs:
           cd frontend
           npm install
           npm run build
-          mv build ../backend/static  # Move build output to backend/static directory
 
       # Zip the deployment artifact
       - name: Zip artifact for deployment
