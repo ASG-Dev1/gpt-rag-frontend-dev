@@ -3,7 +3,7 @@
 }
 
 .buttonStructure {
-  border-radius: 0.6875rem !important;
+  border-radius: 0.6875rem ;
   background: #0e307c !important;
   color: white;
   border: none;
@@ -50,9 +50,9 @@
   margin-right: 3rem;
 }
 
-.deleteConversationBtn,
 .backBtn {
   height: 3rem;
+  border-radius: 50% !important;
 }
 
 .buttonCitation {

@@ -122,7 +122,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
         <>
             <div className={className}>
             <div className={`${css.buttonStructure} ${styles.closeAnalysisTab}`} onClick={handleCloseTab}>
-                    <i className={`bi bi-x-lg`} style={{ color: "white" }}></i>
+                    <i className={`bi bi-x`} style={{ color: "white" }}></i>
             </div>
 
                 <Pivot

@@ -1,22 +1,16 @@
 .container {
+    height: 2rem;
+    width: 2rem;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
     cursor: pointer;
     border-radius: 29px;
-    padding: 11px;
+    padding: 0;
     color: white;
 }
 
 .disabled {
     opacity: 0.4;
-}
-
-.icon {
-    color: white;
-    width: 28px !important;
-    /* Desired width */
-    height: 28px !important;
-    /* Desired height */
 }

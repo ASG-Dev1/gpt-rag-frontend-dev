@@ -1,5 +1,5 @@
-import { AddFilled } from "@fluentui/react-icons";
 import styles from "./NewChatButton.module.css";
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 interface Props {
     className?: string;
@@ -20,7 +20,7 @@ if (userLanguage.startsWith('pt')) {
 export const NewChatButton = ({ className, disabled, onClick }: Props) => {
     return (
         <a className={`${styles.container} ${className ?? ""} ${disabled && styles.disabled}`} onClick={onClick}>
-            <AddFilled className={styles.icon} />
+           <i className={`bi bi-plus-lg `} style={{color:"white"}}></i>
         </a>
     );
 };
