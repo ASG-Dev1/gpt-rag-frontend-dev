@@ -46,14 +46,25 @@ export const Answer = ({
         return <div>No answer available</div>;
     }
 
-    const parsedAnswer = useMemo(() => parseAnswerToHtml(answer.answer, !!showSources, onCitationClicked), [answer]);
+    // TESTING TO NOT SHOW RESPONSE NOR ANSWER IN ANSWERTEXT WHEN RESPONDING TO A USER QUESTION 
+    const cleanAnswer = answer.answer.replace(/^RESPONSE:\s*/i, '').replace(/^ANSWER:\s*/i, '');
+    const parsedAnswer = useMemo(
+        () => parseAnswerToHtml(cleanAnswer, !!showSources, onCitationClicked),
+        [cleanAnswer, showSources, onCitationClicked]
+    );
+    console.log("Parsed Answer html:", parsedAnswer.answerHtml);
+
+    //COMMENTED TO TEST THE ABOVE (CLEANANSWER)
+    // const parsedAnswer = useMemo(() => parseAnswerToHtml(answer.answer, !!showSources, onCitationClicked), [answer]);
     const sanitizedAnswerHtml = DOMPurify.sanitize(parsedAnswer.answerHtml);
     const [isCopied, setIsCopied] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const [hideCitations, setHideCitations] = useState(false);
 
     function copyButton() {
-        navigator.clipboard.writeText(answer.answer)
+        //COMMENTED TO TEST THE ABOVE (CLEANANSWER)
+        // navigator.clipboard.writeText(answer.answer)
+        navigator.clipboard.writeText(cleanAnswer)
         // Set the copied state to true
         setIsCopied(true);
         // Reset the copied state after 2 seconds
@@ -142,7 +153,7 @@ export const Answer = ({
             {!!parsedAnswer.citations.length && showSources && !hideCitations === false && (
                 <Stack.Item>
                     <Stack horizontal wrap tokens={{ childrenGap: 5 }}>
-                        <span className={styles.citationLearnMore}>Sources:</span>
+                        <span className={styles.citationLearnMore}></span>
                         <div className={styles.sourcesColumns}>
                             {parsedAnswer.citations.map((x, i) => {
                                 const path = getCitationFilePath(x);
